@@ -1,0 +1,54 @@
+import uuid
+
+from app.extensions import db
+from app.utils.helpers import generate_user_icon
+from .base import DatabaseHelperMixin, TimestampMixin
+
+
+class User(db.Model, TimestampMixin, DatabaseHelperMixin):
+    __tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(10))
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    verified = db.Column(db.Boolean, default=False)
+    edited = db.Column(db.Boolean, default=False)
+    org = db.Column(db.String(500))
+    industry = db.Column(db.String(255))
+    admin = db.Column(db.Boolean, default=False)
+    deleted = db.Column(db.String(100))
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    # Relationships
+    tasks = db.relationship(
+        "Task", backref="owner", lazy=True, cascade="all, delete-orphan"
+    )
+    dictionaries = db.relationship("Dictionary", backref="owner", lazy=True)
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if not self.uuid:
+            self.uuid = self.generate_unique_uuid()
+
+    @staticmethod
+    def generate_unique_uuid():
+        """Generate a unique 6-character UUID"""
+        while True:
+            new_uuid = uuid.uuid4().hex[:6]
+            if not User.query.filter_by(uuid=new_uuid).first():
+                return new_uuid
+
+    def display_name(self):
+        # Return concatenation of name components
+        if self.title:
+            return f"{self.title} {self.first_name} {self.last_name}"
+        else:
+            return f"{self.first_name} {self.last_name}"
+
+    def profile_image(self, force=False):
+        return generate_user_icon(f"{self.first_name} {self.last_name}", self.id, force)
+
+    def __repr__(self):
+        return self.display_name()
