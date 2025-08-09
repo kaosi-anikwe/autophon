@@ -20,6 +20,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     admin = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.String(100))
     password_hash = db.Column(db.String(255), nullable=False)
+    tokens_revoked_at = db.Column(db.DateTime)  # For global token invalidation
 
     # Relationships
     tasks = db.relationship(
@@ -49,6 +50,14 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     def profile_image(self, force=False):
         return generate_user_icon(f"{self.first_name} {self.last_name}", self.id, force)
+
+    def revoke_all_tokens(self, reason="manual"):
+        """Revoke all tokens for this user by updating the revocation timestamp"""
+        from datetime import datetime, timezone
+
+        self.tokens_revoked_at = datetime.now(timezone.utc)
+        self.update()
+        return self.tokens_revoked_at
 
     def __repr__(self):
         return self.display_name()

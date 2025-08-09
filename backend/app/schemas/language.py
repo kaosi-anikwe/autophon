@@ -7,24 +7,32 @@ from app.models.language import Language, LanguageType
 
 class LanguageSchema(SQLAlchemyAutoSchema):
     """Schema for serializing Language model"""
-    
+
     class Meta:
         model = Language
         load_instance = True
-        
+
     # Enum field
     type = fields.Enum(LanguageType, by_value=True)
-    
+
     # Nested relationships
-    engines = fields.Nested('EngineSchema', many=True, dump_only=True, exclude=('languages',))
-    alternatives = fields.Nested('LanguageSchema', many=True, dump_only=True, 
-                                exclude=('alternatives', 'engines', 'tasks'))
-    tasks = fields.Nested('TaskSchema', many=True, dump_only=True, exclude=('language',))
+    engines = fields.Nested(
+        "EngineSchema", many=True, dump_only=True, exclude=("languages",)
+    )
+    alternatives = fields.Nested(
+        "LanguageSchema",
+        many=True,
+        dump_only=True,
+        exclude=("alternatives", "engines", "tasks"),
+    )
+    tasks = fields.Nested(
+        "TaskSchema", many=True, dump_only=True, exclude=("language",)
+    )
 
 
 class LanguageCreateSchema(Schema):
     """Schema for creating new languages"""
-    
+
     code = fields.Str(required=True, validate=validate.Length(min=1, max=50))
     display_name = fields.Str(required=True, validate=validate.Length(min=1, max=200))
     language_name = fields.Str(required=True, validate=validate.Length(min=1, max=100))
@@ -37,7 +45,7 @@ class LanguageCreateSchema(Schema):
 
 class LanguageUpdateSchema(Schema):
     """Schema for updating existing languages"""
-    
+
     code = fields.Str(validate=validate.Length(min=1, max=50))
     display_name = fields.Str(validate=validate.Length(min=1, max=200))
     language_name = fields.Str(validate=validate.Length(min=1, max=100))
@@ -50,7 +58,7 @@ class LanguageUpdateSchema(Schema):
 
 class LanguageSimpleSchema(Schema):
     """Simple schema for language references"""
-    
+
     id = fields.Int(dump_only=True)
     code = fields.Str(dump_only=True)
     display_name = fields.Str(dump_only=True)
@@ -61,7 +69,7 @@ class LanguageSimpleSchema(Schema):
 
 class LanguageHomepageSchema(Schema):
     """Schema for homepage language display"""
-    
+
     id = fields.Int(dump_only=True)
     code = fields.Str(dump_only=True)
     display_name = fields.Str(dump_only=True)
