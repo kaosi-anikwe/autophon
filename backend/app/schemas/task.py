@@ -1,24 +1,8 @@
-from enum import Enum
 from decimal import Decimal
 from marshmallow import Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from app.models.task import Task, TaskFile, TaskFileName
-
-
-class TaskStatus(Enum):
-    PENDING = "pending"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    CANCELLED = "cancelled"
-
-
-class FileType(Enum):
-    AUDIO = "audio"
-    TEXTGRID = "textgrid"
-    HELD = "held"
-    OUTPUT = "output"
+from app.models.task import Task, TaskFile, TaskFileName, TaskStatus, FileType
 
 
 class TaskFileSchema(SQLAlchemyAutoSchema):
@@ -67,12 +51,12 @@ class TaskCreateSchema(Schema):
     user_id = fields.Int(required=True)
     lang_id = fields.Int()
     engine_id = fields.Int()
-    anonymous = fields.Bool(missing=False)
+    anonymous = fields.Bool(load_default=False)
     trans_choice = fields.Str(validate=validate.Length(max=50))
     lang = fields.Str(validate=validate.Length(max=100))
-    multitier = fields.Bool(missing=False)
-    no_of_files = fields.Int(validate=validate.Range(min=1), missing=1)
-    no_of_tiers = fields.Int(validate=validate.Range(min=1), missing=1)
+    multitier = fields.Bool(load_default=False)
+    no_of_files = fields.Int(validate=validate.Range(min=1), load_default=1)
+    no_of_tiers = fields.Int(validate=validate.Range(min=1), load_default=1)
 
 
 class TaskUpdateSchema(Schema):

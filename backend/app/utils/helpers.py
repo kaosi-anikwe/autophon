@@ -2,7 +2,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 UPLOADS = os.getenv("UPLOADS")
-ADMIN_UPDATES = os.getenv("ADMIN_UPDATES")
+ADMIN = os.getenv("ADMIN")
 
 
 def generate_user_icon(name, user_id, force=False):
@@ -10,7 +10,7 @@ def generate_user_icon(name, user_id, force=False):
     os.makedirs(os.path.dirname(image_path), exist_ok=True)
     if not os.path.exists(image_path) or force:
         # Load the template image
-        template_path = os.path.join(ADMIN_UPDATES, "profile_template.png")
+        template_path = os.path.join(ADMIN, "profile_template.png")
         image = Image.open(template_path).convert("RGBA")
         # Create a drawing context
         draw = ImageDraw.Draw(image)

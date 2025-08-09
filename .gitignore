@@ -32,3 +32,19 @@ Thumbs.db
 # File uploads
 backend/app/uploads/*
 !backend/app/uploads/.gitkeep
+
+# Admin
+admin/users.xlsx
+admin/history.xlsx
+admin/users
+admin/history
+admin/switch.txt
+admin/blocked_emails.txt
+databases
+logs
+shell_scripts
+uploads/*
+!uploads/README.txt
+.vscode
+.env
+

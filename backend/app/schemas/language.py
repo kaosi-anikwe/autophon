@@ -38,9 +38,9 @@ class LanguageCreateSchema(Schema):
     language_name = fields.Str(required=True, validate=validate.Length(min=1, max=100))
     type = fields.Enum(LanguageType, by_value=True, required=True)
     alphabet = fields.Str(required=True, validate=validate.Length(min=1, max=100))
-    priority = fields.Int(validate=validate.Range(min=0), missing=99)
-    homepage = fields.Bool(missing=False)
-    is_active = fields.Bool(missing=True)
+    priority = fields.Int(validate=validate.Range(min=0), load_default=99)
+    homepage = fields.Bool(load_default=False)
+    is_active = fields.Bool(load_default=True)
 
 
 class LanguageUpdateSchema(Schema):

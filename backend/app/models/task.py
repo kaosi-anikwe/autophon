@@ -1,6 +1,21 @@
+from enum import Enum
 from app.extensions import db
-from app.schemas.task import TaskStatus, FileType
 from .base import TimestampMixin, DatabaseHelperMixin
+
+
+class TaskStatus(Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class FileType(Enum):
+    AUDIO = "audio"
+    TEXTGRID = "textgrid"
+    HELD = "held"
+    OUTPUT = "output"
 
 
 class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
@@ -27,7 +42,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
     missingprondict = db.Column(db.String(500))
 
     # Processing results
-    size = db.Column(db.Decimal(10, 2))
+    size = db.Column(db.Numeric(10, 2))
     words = db.Column(db.Integer)
     missing_words = db.Column(db.Integer)
     duration = db.Column(db.Integer)

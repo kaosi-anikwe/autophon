@@ -22,7 +22,7 @@ class EngineCreateSchema(Schema):
     code = fields.Str(required=True, validate=validate.Length(min=1, max=20))
     name = fields.Str(required=True, validate=validate.Length(min=1, max=200))
     documentation_link = fields.Url(validate=validate.Length(max=500))
-    is_active = fields.Bool(missing=True)
+    is_active = fields.Bool(load_default=True)
 
 
 class EngineUpdateSchema(Schema):

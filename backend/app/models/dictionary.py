@@ -16,16 +16,20 @@ class UserDictionary(db.Model, TimestampMixin, DatabaseHelperMixin):
     file_path = db.Column(db.String(500))
 
     def __repr__(self):
-        return f"<UserDictionary {self.name}>"
+        return f"<UserDictionary {self.lang}>"
 
     def save_to_file(self):
-        """Save dictionary conent to file and update file_path"""
+        """Save dictionary content to file and update file_path"""
         import os
         from .user import User
 
         upload_dir = os.getenv("UPLOAD_DIR")
+        user = User.query.get(self.user_id)
+        if not user or not upload_dir:
+            return None
+            
         file_path = os.path.join(
-            upload_dir, User.query.get().uuid, "dicts", f"{self.lang}.dict"
+            upload_dir, user.uuid, "dicts", f"{self.lang}.dict"
         )
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 

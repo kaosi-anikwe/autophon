@@ -1,0 +1,29 @@
+{
+  "langs": [
+    { "danDK_MFA1_v040": "Danish – DanFA 4.0", "type": "nordic", "alphabet": "DanFAbet", "alternatives": ["norNO_MFA1_v010"], "language": "Danish", "priority": 1, "homepage": true },
+    { "ovdSE_MFA1_v010": "Elfdalian – ElfFA 1.0", "type": "future", "alphabet": "ElfFAbet", "alternatives": ["sweSE_MFA1_v020"], "language": "Elfdalian", "priority": 17, "homepage": false },
+    { "engGB_MFA1_v010": "English, UK – MFA 1.0", "type": "other", "alphabet": "ARPAbet", "alternatives": ["engUS_MFA1_v010"], "language": "English, UK", "priority": 2, "homepage": true },
+    { "engUS_MFA1_v010": "English, US – MFA 1.0", "type": "other", "alphabet":"ARPAbet", "alternatives": ["engGB_MFA1_v010"], "language": "English, US", "priority": 3, "homepage": false },
+    { "engUS_MFA2_v0200a": "English, US – MFA 2.0", "type": "other", "alphabet":"ARPAbet", "language": "English, US", "priority": 11, "homepage": false },
+    { "engUS_FAVE_v010": "English, US – FAVE-Align", "type": "other", "alphabet":"ARPAbet", "language": "English, US", "priority": 12, "homepage": false },
+    { "faoFO_MFA1_v010": "Faroese – FarFA 1.0", "type": "nordic", "alphabet": "BLARK_X-Sampa", "alternatives": ["islIS_MFA1_v010"], "language": "Faroese", "priority": 6, "homepage": true },
+    { "finFI_MFA1_v010": "Finnish – FinFA 1.0", "type": "future", "alphabet": "FinFAbet", "language": "Finnish", "priority": 15, "homepage": false },
+    { "fraFR_MFA1_v010": "French, FR – MFA 1.0", "type": "other", "alphabet": "Lexique", "alternatives": ["fraCA_MFA1_v010"], "language": "French, FR", "priority": 7, "homepage": true },
+    { "fraCA_MFA1_v010": "French, CA – MFA 1.0", "type": "other", "alphabet":"Lexique", "alternatives": ["fraFR_MFA1_v010"], "language": "French, CA", "priority": 13, "homepage": false },
+    { "deuDE_MFA1_v010": "German – MFA 1.0", "type": "other", "alphabet":"CELEX2_DISC", "language": "German", "priority": 9, "homepage": true },
+    { "kalGL_MFA1_v010": "Greenlandic – GreenFA 1.0", "type": "future", "alphabet": "GreenFAbet", "language": "Greenlandic", "priority": 16, "homepage": false },
+    { "kpeGN_MFA1_v010": "Kpelle, GN – KpelleFA 1.0", "type": "other", "alphabet": "African_IPA", "language": "Kpelle, GN", "priority": 5, "homepage": false },
+    { "islIS_MFA1_v010": "Icelandic – IceFA 1.0", "type": "nordic", "alphabet": "Grammatek_X-Sampa", "alternatives": ["faoFO_MFA1_v010"], "language": "Icelandic", "priority": 14, "homepage": true },
+    { "norNO_MFA1_v010": "Norwegian, bm – NoFA 1.0", "type": "nordic", "alphabet": "NoFAbet", "alternatives": ["danDK_MFA1_v040"], "language": "Norwegian, bm", "priority": 4, "homepage": true },
+    { "smiNO_MFA1_v010": "Sami – SamFA 1.0", "type": "future", "alphabet": "SamFAbet", "language": "Sami", "priority": 18, "homepage": false },
+    { "sweSE_MFA1_v020": "Swedish – SweFA 2.0", "type": "nordic", "alphabet": "SweFAbet", "language": "Swedish", "priority": 5, "homepage": true },
+    { "spaUS_FASE_v011": "Spanish, US – faseAlign", "type": "other", "alphabet": "ARPAbet", "language": "Spanish, US", "priority": 8, "homepage": true }
+  ],
+  "ngins": [
+    { "code": "MFA1", "name": "Montreal Forced Aligner 1.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/v1.0/" },
+    { "code": "MFA2", "name": "Montreal Forced Aligner 2.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/latest/changelog/news_2.0.html" },
+    { "code": "FAVE", "name": "FAVE-Align", "link": "https://github.com/JoFrhwld/FAVE/wiki/Installing-FAVE-align" },
+    { "code": "FASE", "name": "faseAlign", "link": "https://fasealign.readthedocs.io/en/latest/" }
+  ]
+}
+

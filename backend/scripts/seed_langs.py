@@ -5,11 +5,11 @@ from app.models.language import Language, LanguageType
 from app.models.engine import Engine
 
 
-def seed_from_json():
+def seed_from_json(json_file):
     app = create_app()
     with app.app_context():
         # Load JSON data
-        with open("langs.json", "r") as f:
+        with open(json_file, "r") as f:
             data = json.load(f)
 
         # Seed engines first

@@ -9,6 +9,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(6), unique=True)
     title = db.Column(db.String(10))
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
@@ -22,11 +23,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     tokens_revoked_at = db.Column(db.DateTime)  # For global token invalidation
 
-    # Relationships
-    tasks = db.relationship(
-        "Task", backref="owner", lazy=True, cascade="all, delete-orphan"
-    )
-    dictionaries = db.relationship("Dictionary", backref="owner", lazy=True)
+    # Relationships - defined after class definition to avoid circular imports
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -61,3 +58,12 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     def __repr__(self):
         return self.display_name()
+
+
+# Configure relationships after imports
+def configure_relationships():
+    """Configure model relationships after all models are imported"""
+    User.tasks = db.relationship(
+        "Task", backref="owner", lazy=True, cascade="all, delete-orphan"
+    )
+    User.dictionaries = db.relationship("UserDictionary", backref="owner", lazy=True)
