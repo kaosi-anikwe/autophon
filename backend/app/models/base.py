@@ -1,4 +1,7 @@
 from app.extensions import db
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 # timestamp to be inherited by other class models
@@ -25,12 +28,30 @@ class TimestampMixin(object):
 # db helper functions
 class DatabaseHelperMixin(object):
     def update(self):
-        db.session.commit()
+        try:
+            db.session.commit()
+            logger.debug(f"Updated {self.__class__.__name__} record")
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Failed to update {self.__class__.__name__}: {str(e)}")
+            raise
 
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+            logger.debug(f"Inserted new {self.__class__.__name__} record")
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Failed to insert {self.__class__.__name__}: {str(e)}")
+            raise
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            logger.debug(f"Deleted {self.__class__.__name__} record")
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Failed to delete {self.__class__.__name__}: {str(e)}")
+            raise

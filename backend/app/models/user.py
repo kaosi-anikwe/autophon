@@ -46,14 +46,18 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
             return f"{self.first_name} {self.last_name}"
 
     def profile_image(self, force=False):
-        return generate_user_icon(f"{self.first_name} {self.last_name}", self.id, force)
+        return generate_user_icon(f"{self.first_name} {self.last_name}", self.uuid, force)
 
     def revoke_all_tokens(self, reason="manual"):
         """Revoke all tokens for this user by updating the revocation timestamp"""
         from datetime import datetime, timezone
+        from app.utils.logger import get_logger
+        
+        logger = get_logger(__name__)
 
         self.tokens_revoked_at = datetime.now(timezone.utc)
         self.update()
+        logger.info(f"All tokens revoked for user {self.email} (ID: {self.id}) - Reason: {reason}")
         return self.tokens_revoked_at
 
     def __repr__(self):

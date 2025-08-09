@@ -16,6 +16,9 @@ from app.extensions import db
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
 from app.schemas import UserCreateSchema, UserLoginSchema, UserSchema, UserUpdateSchema
+from app.utils.logger import get_logger, log_exception, log_request_info, log_response_info
+
+logger = get_logger(__name__)
 
 
 class Register(Resource):
@@ -23,6 +26,7 @@ class Register(Resource):
 
     def post(self):
         """Register new user"""
+        log_request_info(logger, request)
         try:
             schema = UserCreateSchema()
             data = schema.load(request.get_json())
@@ -44,20 +48,32 @@ class Register(Resource):
 
             # Return user data and tokens
             user_schema = UserSchema(exclude=["password_hash"])
-            return {
+            response = {
                 "message": "User registered successfully",
                 "user": user_schema.dump(user),
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-            }, 201
+            }
+            logger.info(f"User registered successfully: {user.email} (ID: {user.id})")
+            log_response_info(logger, response, 201)
+            return response, 201
 
         except ValidationError as e:
-            return {"message": "Validation error", "errors": e.messages}, 400
-        except IntegrityError:
+            logger.warning(f"Registration validation error: {e.messages}")
+            response = {"message": "Validation error", "errors": e.messages}
+            log_response_info(logger, response, 400)
+            return response, 400
+        except IntegrityError as e:
             db.session.rollback()
-            return {"message": "User with this email already exists"}, 409
+            logger.warning(f"Registration integrity error: {str(e)}")
+            response = {"message": "User with this email already exists"}
+            log_response_info(logger, response, 409)
+            return response, 409
         except Exception as e:
-            return {"message": f"Registration failed: {str(e)}"}, 500
+            log_exception(logger, "Registration failed")
+            response = {"message": f"Registration failed: {str(e)}"}
+            log_response_info(logger, response, 500)
+            return response, 500
 
 
 class Login(Resource):
@@ -65,6 +81,7 @@ class Login(Resource):
 
     def post(self):
         """Authenticate user and return tokens"""
+        log_request_info(logger, request)
         try:
             schema = UserLoginSchema()
             data = schema.load(request.get_json())
@@ -76,11 +93,17 @@ class Login(Resource):
             if not user or not check_password_hash(
                 user.password_hash, data["password"]
             ):
-                return {"message": "Invalid email or password"}, 401
+                logger.warning(f"Failed login attempt for email: {data.get('email', 'unknown')}")
+                response = {"message": "Invalid email or password"}
+                log_response_info(logger, response, 401)
+                return response, 401
 
             # Check if user is deleted
             if user.deleted:
-                return {"message": "Account has been deactivated"}, 401
+                logger.warning(f"Login attempt for deactivated account: {user.email}")
+                response = {"message": "Account has been deactivated"}
+                log_response_info(logger, response, 401)
+                return response, 401
 
             # Create tokens
             access_token = create_access_token(identity=user.id)
@@ -88,17 +111,26 @@ class Login(Resource):
 
             # Return user data and tokens
             user_schema = UserSchema(exclude=["password_hash"])
-            return {
+            response = {
                 "message": "Login successful",
                 "user": user_schema.dump(user),
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-            }, 200
+            }
+            logger.info(f"User logged in successfully: {user.email} (ID: {user.id})")
+            log_response_info(logger, response, 200)
+            return response, 200
 
         except ValidationError as e:
-            return {"message": "Validation error", "errors": e.messages}, 400
+            logger.warning(f"Login validation error: {e.messages}")
+            response = {"message": "Validation error", "errors": e.messages}
+            log_response_info(logger, response, 400)
+            return response, 400
         except Exception as e:
-            return {"message": f"Login failed: {str(e)}"}, 500
+            log_exception(logger, "Login failed")
+            response = {"message": f"Login failed: {str(e)}"}
+            log_response_info(logger, response, 500)
+            return response, 500
 
 
 class Logout(Resource):
@@ -126,10 +158,14 @@ class Logout(Resource):
                 reason="logout",
             )
 
+            logger.info(f"User logged out successfully: {current_user_id}")
             return {"message": "Successfully logged out"}, 200
 
         except Exception as e:
-            return {"message": f"Logout failed: {str(e)}"}, 500
+            log_exception(logger, "Logout failed")
+            response = {"message": f"Logout failed: {str(e)}"}
+            log_response_info(logger, response, 500)
+            return response, 500
 
 
 class RefreshToken(Resource):

@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from app.extensions import db, migrate, jwt, cors, ma
 from app.config import config
+from app.utils.logger import setup_logging
 
 
 def create_app(config_name=None):
@@ -11,12 +12,19 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
+    # Setup logging
+    logger = setup_logging(app)
+    
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     cors.init_app(app)
     ma.init_app(app)
+    
+    # Initialize logger in extensions
+    from app.extensions import init_logger
+    init_logger()
 
     # Register blueprints
     from app.api.v1.routes import api_bp

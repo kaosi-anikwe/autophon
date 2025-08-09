@@ -8,6 +8,9 @@ from sqlalchemy.exc import IntegrityError
 from app.extensions import db
 from app.models.user import User
 from app.schemas import UserSchema, UserCreateSchema, UserUpdateSchema, UserPublicSchema
+from app.utils.logger import get_logger, log_exception
+
+logger = get_logger(__name__)
 
 
 class UserListResource(Resource):
@@ -20,6 +23,7 @@ class UserListResource(Resource):
             schema = UserPublicSchema(many=True)
             return {"users": schema.dump(users), "count": len(users)}, 200
         except Exception as e:
+            log_exception(logger, "Error retrieving users")
             return {"message": f"Error retrieving users: {str(e)}"}, 500
 
     def post(self):
@@ -52,6 +56,7 @@ class UserListResource(Resource):
             db.session.rollback()
             return {"message": "User with this email already exists"}, 409
         except Exception as e:
+            log_exception(logger, "Error creating user")
             return {"message": f"Error creating user: {str(e)}"}, 500
 
 
@@ -78,6 +83,7 @@ class UserResource(Resource):
             return {"user": schema.dump(user)}, 200
 
         except Exception as e:
+            log_exception(logger, "Error retrieving user")
             return {"message": f"Error retrieving user: {str(e)}"}, 500
 
     @jwt_required()
@@ -113,6 +119,7 @@ class UserResource(Resource):
         except ValidationError as e:
             return {"message": "Validation error", "errors": e.messages}, 400
         except Exception as e:
+            log_exception(logger, "Error updating user")
             return {"message": f"Error updating user: {str(e)}"}, 500
 
     @jwt_required()
@@ -139,6 +146,7 @@ class UserResource(Resource):
             return {"message": "User deleted successfully"}, 200
 
         except Exception as e:
+            log_exception(logger, "Error deleting user")
             return {"message": f"Error deleting user: {str(e)}"}, 500
 
 
@@ -159,6 +167,7 @@ class UserProfileResource(Resource):
             return {"user": schema.dump(user)}, 200
 
         except Exception as e:
+            log_exception(logger, "Error retrieving profile")
             return {"message": f"Error retrieving profile: {str(e)}"}, 500
 
     @jwt_required()
@@ -189,6 +198,7 @@ class UserProfileResource(Resource):
         except ValidationError as e:
             return {"message": "Validation error", "errors": e.messages}, 400
         except Exception as e:
+            log_exception(logger, "Error updating profile")
             return {"message": f"Error updating profile: {str(e)}"}, 500
 
 
@@ -217,4 +227,5 @@ class UserTasksResource(Resource):
             return {"tasks": schema.dump(user.tasks), "count": len(user.tasks)}, 200
 
         except Exception as e:
+            log_exception(logger, "Error retrieving user tasks")
             return {"message": f"Error retrieving user tasks: {str(e)}"}, 500

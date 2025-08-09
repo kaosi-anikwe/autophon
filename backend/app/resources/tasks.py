@@ -7,6 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from app.extensions import db
 from app.models.task import Task, TaskFile, TaskFileName
 from app.models.user import User
+from app.utils.logger import get_logger, log_exception
+
+logger = get_logger(__name__)
 from app.schemas import (
     TaskSchema,
     TaskCreateSchema,
@@ -72,6 +75,7 @@ class TaskListResource(Resource):
             return {"tasks": schema.dump(tasks), "count": len(tasks)}, 200
 
         except Exception as e:
+            log_exception(logger, "Error retrieving tasks")
             return {"message": f"Error retrieving tasks: {str(e)}"}, 500
 
     @jwt_required()
@@ -108,6 +112,7 @@ class TaskListResource(Resource):
             db.session.rollback()
             return {"message": "Task with this ID already exists"}, 409
         except Exception as e:
+            log_exception(logger, "Error creating task")
             return {"message": f"Error creating task: {str(e)}"}, 500
 
 
@@ -435,4 +440,5 @@ class TaskBulkDeleteResource(Resource):
             return response, status_code
 
         except Exception as e:
+            log_exception(logger, "Error during bulk delete")
             return {"message": f"Error during bulk delete: {str(e)}"}, 500

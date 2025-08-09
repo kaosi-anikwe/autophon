@@ -1,8 +1,12 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
 
+from app.utils.logger import get_logger
+
 UPLOADS = os.getenv("UPLOADS")
 ADMIN = os.getenv("ADMIN")
+
+logger = get_logger(__name__)
 
 
 def generate_user_icon(name, user_id, force=False):
@@ -22,7 +26,10 @@ def generate_user_icon(name, user_id, force=False):
         font = ImageFont.truetype(font_path, font_size)
         # Get the size of the image and the text
         image_width, image_height = image.size
-        text_width, text_height = draw.textsize(initials, font=font)
+        # Use textbbox instead of deprecated textsize
+        bbox = draw.textbbox((0, 0), initials, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
         # Calculate the position to center the text on the image
         x = (image_width - text_width) / 2 + 5
         y = (image_height - text_height) / 2 - 10

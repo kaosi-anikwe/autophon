@@ -7,6 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from app.extensions import db
 from app.models.language import Language, LanguageType
 from app.models.user import User
+from app.utils.logger import get_logger, log_exception
+
+logger = get_logger(__name__)
 from app.schemas import (
     LanguageSchema,
     LanguageCreateSchema,
@@ -55,6 +58,7 @@ class LanguageListResource(Resource):
             return {"languages": schema.dump(languages), "count": len(languages)}, 200
 
         except Exception as e:
+            log_exception(logger, "Error retrieving languages")
             return {"message": f"Error retrieving languages: {str(e)}"}, 500
 
     @jwt_required()
@@ -90,6 +94,7 @@ class LanguageListResource(Resource):
             db.session.rollback()
             return {"message": "Language with this code already exists"}, 409
         except Exception as e:
+            log_exception(logger, "Error creating language")
             return {"message": f"Error creating language: {str(e)}"}, 500
 
 
@@ -174,6 +179,7 @@ class LanguageResource(Resource):
             return {"message": "Language deleted successfully"}, 200
 
         except Exception as e:
+            log_exception(logger, "Error deleting language")
             return {"message": f"Error deleting language: {str(e)}"}, 500
 
 
