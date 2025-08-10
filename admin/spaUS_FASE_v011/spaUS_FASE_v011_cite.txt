@@ -1,0 +1,7 @@
+*How to cite*
+
+1. Boersma, P. & Weenink, D. (2017). Praat: doing phonetics by computer [softw. ], ver.6.0.36. www.praat.org
+
+2. Wilbanks, E. (2022). faseAlign (Version 1.1.14). https://github.com/EricWilbanks/faseAlign
+
+3. Young, N. J. & Anikwe, K. H. (2025). Autophon -- Automatic phonetic annotation and online forced aligner. www.autophon.org

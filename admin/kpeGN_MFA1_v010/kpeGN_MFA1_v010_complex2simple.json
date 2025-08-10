@@ -1,0 +1,278 @@
+[
+  {
+    "simple": "b",
+    "complex": "b"
+  },
+  {
+    "simple": "b",
+    "complex": "ɓ"
+  },
+  {
+    "simple": "d",
+    "complex": "d"
+  },
+  {
+    "simple": "f",
+    "complex": "f"
+  },
+  {
+    "simple": "g",
+    "complex": "g"
+  },
+  {
+    "simple": "b",
+    "complex": "gb"
+  },
+  {
+    "simple": "g",
+    "complex": "gw"
+  },
+  {
+    "simple": "R",
+    "complex": "ɣ"
+  },
+  {
+    "simple": "R",
+    "complex": "h"
+  },
+  {
+    "simple": "Z",
+    "complex": "j"
+  },
+  {
+    "simple": "k",
+    "complex": "k"
+  },
+  {
+    "simple": "p",
+    "complex": "kp"
+  },
+  {
+    "simple": "k",
+    "complex": "kw"
+  },
+  {
+    "simple": "l",
+    "complex": "l"
+  },
+  {
+    "simple": "m",
+    "complex": "m"
+  },
+  {
+    "simple": "n",
+    "complex": "n"
+  },
+  {
+    "simple": "n",
+    "complex": "ɲ"
+  },
+  {
+    "simple": "G",
+    "complex": "ŋ"
+  },
+  {
+    "simple": "G",
+    "complex": "ŋw"
+  },
+  {
+    "simple": "p",
+    "complex": "p"
+  },
+  {
+    "simple": "s",
+    "complex": "s"
+  },
+  {
+    "simple": "t",
+    "complex": "t"
+  },
+  {
+    "simple": "v",
+    "complex": "v"
+  },
+  {
+    "simple": "w",
+    "complex": "w"
+  },
+  {
+    "simple": "z",
+    "complex": "z"
+  },
+  {
+    "simple": "j",
+    "complex": "y"
+  },
+  {
+    "simple": "R",
+    "complex": "hw"
+  },
+  {
+    "simple": "Z",
+    "complex": "ʒ"
+  },
+  {
+    "simple": "l",
+    "complex": "r"
+  },
+  {
+    "simple": "a",
+    "complex": "a"
+  },
+  {
+    "simple": "e",
+    "complex": "e"
+  },
+  {
+    "simple": "E",
+    "complex": "ɛ"
+  },
+  {
+    "simple": "i",
+    "complex": "i"
+  },
+  {
+    "simple": "o",
+    "complex": "o"
+  },
+  {
+    "simple": "O",
+    "complex": "ɔ"
+  },
+  {
+    "simple": "u",
+    "complex": "u"
+  },
+  {
+    "simple": "^",
+    "complex": "ə"
+  },
+  {
+    "simple": "a",
+    "complex": "á"
+  },
+  {
+    "simple": "a",
+    "complex": "à"
+  },
+  {
+    "simple": "a",
+    "complex": "â"
+  },
+  {
+    "simple": "a",
+    "complex": "ǎ"
+  },
+  {
+    "simple": "e",
+    "complex": "é"
+  },
+  {
+    "simple": "e",
+    "complex": "è"
+  },
+  {
+    "simple": "e",
+    "complex": "ê"
+  },
+  {
+    "simple": "e",
+    "complex": "ě"
+  },
+  {
+    "simple": "E",
+    "complex": "ɛ́"
+  },
+  {
+    "simple": "E",
+    "complex": "ɛ̀"
+  },
+  {
+    "simple": "E",
+    "complex": "ɛ̂"
+  },
+  {
+    "simple": "E",
+    "complex": "ɛ̌"
+  },
+  {
+    "simple": "i",
+    "complex": "í"
+  },
+  {
+    "simple": "i",
+    "complex": "ì"
+  },
+  {
+    "simple": "i",
+    "complex": "î"
+  },
+  {
+    "simple": "i",
+    "complex": "ǐ"
+  },
+  {
+    "simple": "o",
+    "complex": "ó"
+  },
+  {
+    "simple": "o",
+    "complex": "ò"
+  },
+  {
+    "simple": "o",
+    "complex": "ô"
+  },
+  {
+    "simple": "o",
+    "complex": "ǒ"
+  },
+  {
+    "simple": "O",
+    "complex": "ɔ́"
+  },
+  {
+    "simple": "O",
+    "complex": "ɔ̀"
+  },
+  {
+    "simple": "O",
+    "complex": "ɔ̂"
+  },
+  {
+    "simple": "O",
+    "complex": "ɔ̌"
+  },
+  {
+    "simple": "u",
+    "complex": "ú"
+  },
+  {
+    "simple": "u",
+    "complex": "ù"
+  },
+  {
+    "simple": "u",
+    "complex": "û"
+  },
+  {
+    "simple": "u",
+    "complex": "ǔ"
+  },
+  {
+    "simple": "^",
+    "complex": "ə́"
+  },
+  {
+    "simple": "^",
+    "complex": "ə̀"
+  },
+  {
+    "simple": "^",
+    "complex": "ə̂"
+  },
+  {
+    "simple": "^",
+    "complex": "ə̌"
+  }
+]

@@ -1,0 +1,482 @@
+[
+  {
+    "dummy": "AA0",
+    "ipa": "ɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AA1",
+    "ipa": "ˈɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AA2",
+    "ipa": "ˌɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AE0",
+    "ipa": "æ",
+    "example": ""
+  },
+  {
+    "dummy": "AE1",
+    "ipa": "ˈæ",
+    "example": ""
+  },
+  {
+    "dummy": "AE2",
+    "ipa": "ˌæ",
+    "example": ""
+  },
+  {
+    "dummy": "AH0",
+    "ipa": "ʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AH1",
+    "ipa": "ˈʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AH2",
+    "ipa": "ˌʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AO0",
+    "ipa": "ɔ",
+    "example": ""
+  },
+  {
+    "dummy": "AO1",
+    "ipa": "ˈɔ",
+    "example": ""
+  },
+  {
+    "dummy": "AO2",
+    "ipa": "ˌɔ",
+    "example": ""
+  },
+  {
+    "dummy": "AW0",
+    "ipa": "aʊ",
+    "example": ""
+  },
+  {
+    "dummy": "AW1",
+    "ipa": "ˈaʊ",
+    "example": ""
+  },
+  {
+    "dummy": "AW2",
+    "ipa": "ˌaʊ",
+    "example": ""
+  },
+  {
+    "dummy": "AX0",
+    "ipa": "ə",
+    "example": ""
+  },
+  {
+    "dummy": "AX1",
+    "ipa": "ˈə",
+    "example": ""
+  },
+  {
+    "dummy": "AX2",
+    "ipa": "ˌə",
+    "example": ""
+  },
+  {
+    "dummy": "AXR0",
+    "ipa": "ɚ",
+    "example": ""
+  },
+  {
+    "dummy": "AXR1",
+    "ipa": "ˈɚ",
+    "example": ""
+  },
+  {
+    "dummy": "AXR2",
+    "ipa": "ˌɚ",
+    "example": ""
+  },
+  {
+    "dummy": "AY0",
+    "ipa": "aɪ",
+    "example": ""
+  },
+  {
+    "dummy": "AY1",
+    "ipa": "ˈaɪ",
+    "example": ""
+  },
+  {
+    "dummy": "AY2",
+    "ipa": "ˌaɪ",
+    "example": ""
+  },
+  {
+    "dummy": "B",
+    "ipa": "b",
+    "example": ""
+  },
+  {
+    "dummy": "br",
+    "ipa": "breath",
+    "example": ""
+  },
+  {
+    "dummy": "cg",
+    "ipa": "cough",
+    "example": ""
+  },
+  {
+    "dummy": "CH",
+    "ipa": "tʃ",
+    "example": ""
+  },
+  {
+    "dummy": "D",
+    "ipa": "d",
+    "example": ""
+  },
+  {
+    "dummy": "DH",
+    "ipa": "ð",
+    "example": ""
+  },
+  {
+    "dummy": "DX",
+    "ipa": "ɾ",
+    "example": ""
+  },
+  {
+    "dummy": "EH0",
+    "ipa": "ɛ",
+    "example": ""
+  },
+  {
+    "dummy": "EH1",
+    "ipa": "ˈɛ",
+    "example": ""
+  },
+  {
+    "dummy": "EH2",
+    "ipa": "ˌɛ",
+    "example": ""
+  },
+  {
+    "dummy": "EL",
+    "ipa": "l̩",
+    "example": ""
+  },
+  {
+    "dummy": "EM",
+    "ipa": "m̩",
+    "example": ""
+  },
+  {
+    "dummy": "EN",
+    "ipa": "n̩",
+    "example": ""
+  },
+  {
+    "dummy": "ER0",
+    "ipa": "ɝ",
+    "example": ""
+  },
+  {
+    "dummy": "ER1",
+    "ipa": "ˈɝ",
+    "example": ""
+  },
+  {
+    "dummy": "ER2",
+    "ipa": "ˌɝ",
+    "example": ""
+  },
+  {
+    "dummy": "EY0",
+    "ipa": "eɪ",
+    "example": ""
+  },
+  {
+    "dummy": "EY1",
+    "ipa": "ˈeɪ",
+    "example": ""
+  },
+  {
+    "dummy": "EY2",
+    "ipa": "ˌeɪ",
+    "example": ""
+  },
+  {
+    "dummy": "F",
+    "ipa": "f",
+    "example": ""
+  },
+  {
+    "dummy": "G",
+    "ipa": "ɡ",
+    "example": ""
+  },
+  {
+    "dummy": "H",
+    "ipa": "h",
+    "example": ""
+  },
+  {
+    "dummy": "HH",
+    "ipa": "h",
+    "example": ""
+  },
+  {
+    "dummy": "IH0",
+    "ipa": "ɪ",
+    "example": ""
+  },
+  {
+    "dummy": "IH1",
+    "ipa": "ˈɪ",
+    "example": ""
+  },
+  {
+    "dummy": "IH2",
+    "ipa": "ˌɪ",
+    "example": ""
+  },
+  {
+    "dummy": "IX0",
+    "ipa": "ɨ",
+    "example": ""
+  },
+  {
+    "dummy": "IX1",
+    "ipa": "ˈɨ",
+    "example": ""
+  },
+  {
+    "dummy": "IX2",
+    "ipa": "ˌɨ",
+    "example": ""
+  },
+  {
+    "dummy": "IY0",
+    "ipa": "i",
+    "example": ""
+  },
+  {
+    "dummy": "IY1",
+    "ipa": "ˈi",
+    "example": ""
+  },
+  {
+    "dummy": "IY2",
+    "ipa": "ˌi",
+    "example": ""
+  },
+  {
+    "dummy": "JH",
+    "ipa": "dʒ",
+    "example": ""
+  },
+  {
+    "dummy": "K",
+    "ipa": "k",
+    "example": ""
+  },
+  {
+    "dummy": "L",
+    "ipa": "l",
+    "example": ""
+  },
+  {
+    "dummy": "lg",
+    "ipa": "laugh",
+    "example": ""
+  },
+  {
+    "dummy": "ls",
+    "ipa": "lipsmack",
+    "example": ""
+  },
+  {
+    "dummy": "M",
+    "ipa": "m",
+    "example": ""
+  },
+  {
+    "dummy": "N",
+    "ipa": "n",
+    "example": ""
+  },
+  {
+    "dummy": "NG",
+    "ipa": "ŋ",
+    "example": ""
+  },
+  {
+    "dummy": "ns",
+    "ipa": "noise",
+    "example": ""
+  },
+  {
+    "dummy": "NX",
+    "ipa": "ɾ̃",
+    "example": ""
+  },
+  {
+    "dummy": "OW0",
+    "ipa": "oʊ",
+    "example": ""
+  },
+  {
+    "dummy": "OW1",
+    "ipa": "ˈoʊ",
+    "example": ""
+  },
+  {
+    "dummy": "OW2",
+    "ipa": "ˌoʊ",
+    "example": ""
+  },
+  {
+    "dummy": "OY0",
+    "ipa": "ɔɪ",
+    "example": ""
+  },
+  {
+    "dummy": "OY1",
+    "ipa": "ˈɔɪ",
+    "example": ""
+  },
+  {
+    "dummy": "OY2",
+    "ipa": "ˌɔɪ",
+    "example": ""
+  },
+  {
+    "dummy": "P",
+    "ipa": "p",
+    "example": ""
+  },
+  {
+    "dummy": "Q",
+    "ipa": "ʔ",
+    "example": ""
+  },
+  {
+    "dummy": "R",
+    "ipa": "ɹ",
+    "example": ""
+  },
+  {
+    "dummy": "S",
+    "ipa": "s",
+    "example": ""
+  },
+  {
+    "dummy": "SH",
+    "ipa": "ʃ",
+    "example": ""
+  },
+  {
+    "dummy": "sil",
+    "ipa": "silence",
+    "example": ""
+  },
+  {
+    "dummy": "sp",
+    "ipa": "space",
+    "example": ""
+  },
+  {
+    "dummy": "T",
+    "ipa": "t",
+    "example": ""
+  },
+  {
+    "dummy": "TH",
+    "ipa": "θ",
+    "example": ""
+  },
+  {
+    "dummy": "UH0",
+    "ipa": "ʊ",
+    "example": ""
+  },
+  {
+    "dummy": "UH1",
+    "ipa": "ˈʊ",
+    "example": ""
+  },
+  {
+    "dummy": "UH2",
+    "ipa": "ˌʊ",
+    "example": ""
+  },
+  {
+    "dummy": "UW0",
+    "ipa": "u",
+    "example": ""
+  },
+  {
+    "dummy": "UW1",
+    "ipa": "ˈu",
+    "example": ""
+  },
+  {
+    "dummy": "UW2",
+    "ipa": "ˌu",
+    "example": ""
+  },
+  {
+    "dummy": "UX0",
+    "ipa": "ʉ",
+    "example": ""
+  },
+  {
+    "dummy": "UX1",
+    "ipa": "ˈʉ",
+    "example": ""
+  },
+  {
+    "dummy": "UX2",
+    "ipa": "ˌʉ",
+    "example": ""
+  },
+  {
+    "dummy": "V",
+    "ipa": "v",
+    "example": ""
+  },
+  {
+    "dummy": "W",
+    "ipa": "w",
+    "example": ""
+  },
+  {
+    "dummy": "WH",
+    "ipa": "ʍ",
+    "example": ""
+  },
+  {
+    "dummy": "Y",
+    "ipa": "j",
+    "example": ""
+  },
+  {
+    "dummy": "Z",
+    "ipa": "z",
+    "example": ""
+  },
+  {
+    "dummy": "ZH",
+    "ipa": "ʒ",
+    "example": ""
+  }
+]

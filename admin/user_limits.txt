@@ -1,0 +1,5 @@
+size_limit: 750000
+file_pair_limit: 10
+user_dict_limit: 50000
+a_size_limit: 25000
+a_upload_limit: 10

@@ -1,0 +1,30 @@
+### non-breaking spaces
+
+### misc transcription notes
+# note that the below might want to be removed once transcription gremlins are deployed
+"\([\.]+\)" rsubstitute "" 
+"\([x]+\)" rsubstitute "" 
+
+## ### misc punctuation issues
+# "(^)(\w)" rsubstitute "\1 \2"
+# "(\w)($)" rsubstitute "\1 \2"
+# "[ ]+" rsubstitute " "
+# "(^)[ ]+($)" rsubstitute "\1\2"
+"-\+" rsubstitute "- \+"
+"\+ " rsubstitute "\+"
+" \+[A-Za-zøæöåäØÆÖÅÄ]+" rsubstitute ""
+"," rsubstitute " "
+"\." rsubstitute " "
+"\: " rsubstitute " "
+"\;" rsubstitute " "
+"\' " rsubstitute " "
+" \'" rsubstitute " "
+"\!" rsubstitute " "
+"\?" rsubstitute " "
+"\%" rsubstitute " "
+"--" rsubstitute " "
+"`" rsubstitute " "
+"´" rsubstitute " "
+"-_" rsubstitute "-"
+
+### common mispellings unique to KpeGN

@@ -1,0 +1,346 @@
+[
+  {
+    "simple": "OEH2",
+    "complex": "%9"
+  },
+  {
+    "simple": "OE1",
+    "complex": "%9:"
+  },
+  {
+    "simple": "OEJ2",
+    "complex": "%9i"
+  },
+  {
+    "simple": "OEJ2",
+    "complex": "%9i:"
+  },
+  {
+    "simple": "AH1",
+    "complex": "%a"
+  },
+  {
+    "simple": "AA1",
+    "complex": "%a:"
+  },
+  {
+    "simple": "AEJ1",
+    "complex": "%ai"
+  },
+  {
+    "simple": "AEJ1",
+    "complex": "%ai:"
+  },
+  {
+    "simple": "AEW1",
+    "complex": "%au"
+  },
+  {
+    "simple": "AA1",
+    "complex": "%au:"
+  },
+  {
+    "simple": "EH1",
+    "complex": "%E"
+  },
+  {
+    "simple": "EE1",
+    "complex": "%E:"
+  },
+  {
+    "simple": "AEJ1",
+    "complex": "%ei"
+  },
+  {
+    "simple": "EE1",
+    "complex": "%ei:"
+  },
+  {
+    "simple": "II1",
+    "complex": "%i"
+  },
+  {
+    "simple": "IH1",
+    "complex": "%I"
+  },
+  {
+    "simple": "II1",
+    "complex": "%i:"
+  },
+  {
+    "simple": "II1",
+    "complex": "%I:"
+  },
+  {
+    "simple": "OAH1",
+    "complex": "%O"
+  },
+  {
+    "simple": "OA1",
+    "complex": "%O:"
+  },
+  {
+    "simple": "OJ1",
+    "complex": "%Oi"
+  },
+  {
+    "simple": "OU1",
+    "complex": "%ou"
+  },
+  {
+    "simple": "OA1",
+    "complex": "%ou:"
+  },
+  {
+    "simple": "OH1",
+    "complex": "%u"
+  },
+  {
+    "simple": "OO1",
+    "complex": "%u:"
+  },
+  {
+    "simple": "OEH2",
+    "complex": "%Y"
+  },
+  {
+    "simple": "YY2",
+    "complex": "%Y:"
+  },
+  {
+    "simple": "OEJ2",
+    "complex": "%Yi"
+  },
+  {
+    "simple": "OEH0",
+    "complex": "9"
+  },
+  {
+    "simple": "OEH0",
+    "complex": "9:"
+  },
+  {
+    "simple": "OEJ0",
+    "complex": "9i"
+  },
+  {
+    "simple": "OEJ0",
+    "complex": "9i:"
+  },
+  {
+    "simple": "AX0",
+    "complex": "a"
+  },
+  {
+    "simple": "AA0",
+    "complex": "a:"
+  },
+  {
+    "simple": "AEJ0",
+    "complex": "ai"
+  },
+  {
+    "simple": "AEJ0",
+    "complex": "ai:"
+  },
+  {
+    "simple": "AEW0",
+    "complex": "au"
+  },
+  {
+    "simple": "AA0",
+    "complex": "au:"
+  },
+  {
+    "simple": "K",
+    "complex": "c"
+  },
+  {
+    "simple": "KJ",
+    "complex": "C"
+  },
+  {
+    "simple": "K",
+    "complex": "c_h"
+  },
+  {
+    "simple": "DH",
+    "complex": "D"
+  },
+  {
+    "simple": "EH0",
+    "complex": "E"
+  },
+  {
+    "simple": "EH0",
+    "complex": "E:"
+  },
+  {
+    "simple": "AEJ0",
+    "complex": "ei"
+  },
+  {
+    "simple": "AEJ0",
+    "complex": "ei:"
+  },
+  {
+    "simple": "F",
+    "complex": "f"
+  },
+  {
+    "simple": "X",
+    "complex": "G"
+  },
+  {
+    "simple": "H",
+    "complex": "h"
+  },
+  {
+    "simple": "IH0",
+    "complex": "i"
+  },
+  {
+    "simple": "IH0",
+    "complex": "I"
+  },
+  {
+    "simple": "II0",
+    "complex": "i:"
+  },
+  {
+    "simple": "IH0",
+    "complex": "I:"
+  },
+  {
+    "simple": "J",
+    "complex": "j"
+  },
+  {
+    "simple": "NG",
+    "complex": "J"
+  },
+  {
+    "simple": "NG",
+    "complex": "J_0"
+  },
+  {
+    "simple": "K",
+    "complex": "k"
+  },
+  {
+    "simple": "K",
+    "complex": "k_h"
+  },
+  {
+    "simple": "L",
+    "complex": "l"
+  },
+  {
+    "simple": "L",
+    "complex": "l_0"
+  },
+  {
+    "simple": "M",
+    "complex": "m"
+  },
+  {
+    "simple": "M",
+    "complex": "m_0"
+  },
+  {
+    "simple": "N",
+    "complex": "n"
+  },
+  {
+    "simple": "NG",
+    "complex": "N"
+  },
+  {
+    "simple": "N",
+    "complex": "n_0"
+  },
+  {
+    "simple": "NG",
+    "complex": "N_0"
+  },
+  {
+    "simple": "OAH0",
+    "complex": "O"
+  },
+  {
+    "simple": "OAH0",
+    "complex": "O:"
+  },
+  {
+    "simple": "OJ0",
+    "complex": "Oi"
+  },
+  {
+    "simple": "OU0",
+    "complex": "ou"
+  },
+  {
+    "simple": "OA0",
+    "complex": "ou:"
+  },
+  {
+    "simple": "P",
+    "complex": "p"
+  },
+  {
+    "simple": "P",
+    "complex": "p_h"
+  },
+  {
+    "simple": "R",
+    "complex": "r"
+  },
+  {
+    "simple": "R",
+    "complex": "r_0"
+  },
+  {
+    "simple": "S",
+    "complex": "s"
+  },
+  {
+    "simple": "T",
+    "complex": "t"
+  },
+  {
+    "simple": "TH",
+    "complex": "T"
+  },
+  {
+    "simple": "T",
+    "complex": "t_h"
+  },
+  {
+    "simple": "OH0",
+    "complex": "u"
+  },
+  {
+    "simple": "OO0",
+    "complex": "u:"
+  },
+  {
+    "simple": "V",
+    "complex": "v"
+  },
+  {
+    "simple": "X",
+    "complex": "x"
+  },
+  {
+    "simple": "OEH0",
+    "complex": "Y"
+  },
+  {
+    "simple": "YY0",
+    "complex": "Y:"
+  },
+  {
+    "simple": "OEJ0",
+    "complex": "Yi"
+  }
+]

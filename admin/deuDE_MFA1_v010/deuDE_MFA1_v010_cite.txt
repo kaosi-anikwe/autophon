@@ -1,0 +1,11 @@
+*How to cite*
+
+1. Boersma, P. & Weenink, D. (2017). Praat: doing phonetics by computer [softw. ], ver.6.0.36. www.praat.org
+
+2. Gorman, K., Wagner, M., & Olson, E. (2024). ProsodyLab Dictionaries. https://github.com/prosodylab/prosodylab.dictionaries
+
+3. Gulikers, L., Rattink, G., & Piepenbrock, R. (1995). German Linguistic Guide. https://catalog.ldc.upenn.edu/docs/LDC96L14
+
+4. McAuliffe, M., Socolof, M., Mihuc, S., Wagner, M., & Sonderegger, M. (2017). Montreal Forced Aligner: Trainable text-speech alignment using Kaldi
+
+5. Young, N. J. & Anikwe, K. H. (2025). Autophon -- Automatic phonetic annotation and online forced aligner. www.autophon.org

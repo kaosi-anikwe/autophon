@@ -1,0 +1,19 @@
+{
+  "langs": [
+    { "da_DK": "Danish (DanFA 3.0)", "type": "nordic", "alphabet": "DanFAbet", "alternatives": ["no_NO"] },
+    { "da_XX": "Danish (DanFA 4.0)", "type": "nordic", "alphabet": "DanFAbet", "alternatives": ["no_NO"] },
+    { "ov_SE": "Elfdalian", "type": "future", "alphabet": "ElfFAbet", "alternatives": ["sv_SE"]  },
+    { "en_GB": "English - United Kingdom", "type": "other", "alphabet": "ARPAbet", "alternatives": ["en_US"] },
+    { "en_US": "English - North America", "type": "other", "alphabet":"ARPAbet", "alternatives": ["en_GB"] },
+    { "fo_FO": "Faroese (bootstrapped)", "type": "nordic", "alphabet": "BLARK_X-Sampa", "alternatives": ["is_IS"] },
+    { "fi_FI": "Finnish", "type": "future", "alphabet": "FinFAbet" },
+    { "fr_FR": "French - France", "type": "other", "alphabet": "Lexique", "alternatives": ["fr_CA"] },
+    { "fr_CA": "French - Canada", "type": "other", "alphabet":"Lexique", "alternatives": ["fr_FR"] },
+    { "de_DE": "German - Germany", "type": "other", "alphabet":"CELEX2_DISC"},
+    { "kl_GL": "Greenlandic", "type": "future", "alphabet": "GreenFAbet" },
+    { "is_IS": "Icelandic (bootstrapped)", "type": "nordic", "alphabet": "Grammatek_X-Sampa", "alternatives": ["fo_FO"] },
+    { "no_NO": "Norwegian - Bokmål", "type": "nordic", "alphabet": "NoFAbet", "alternatives": ["da_DK"] },
+    { "se_NO": "Sami", "type": "future", "alphabet": "SamFAbet" },
+    { "sv_SE": "Swedish - Sweden", "type": "nordic", "alphabet": "SweFAbet" }
+  ]
+}

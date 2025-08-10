@@ -1,0 +1,9 @@
+*How to cite*
+
+1. Boersma, P. & Weenink, D. (2017). Praat: doing phonetics by computer [softw. ], ver.6.0.36. www.praat.org
+
+2. McAuliffe, M., Socolof, M., Mihuc, S., Wagner, M., & Sonderegger, M. (2017). Montreal Forced Aligner: Trainable text-speech alignment using Kaldi
+
+3. McAuliffe, M. & Sonderegger, M. (2022). English language model v2.0.0a. https://mfa-models.readthedocs.io/en/latest/language_model/English/English%20language%20model%20v2_0_0a.html#English%20language%20model%20v2_0_0a
+
+4. Young, N. J. & Anikwe, K. H. (2025). Autophon -- Automatic phonetic annotation and online forced aligner. www.autophon.org

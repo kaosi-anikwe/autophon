@@ -1,0 +1,4 @@
+da_DK:150
+no_NO:150
+sv_SE:150
+en_GB:150

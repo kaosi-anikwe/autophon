@@ -1,0 +1,3682 @@
+[
+  {
+    "dummy": "AA0",
+    "ipa": "ɑː",
+    "example": ""
+  },
+  {
+    "dummy": "AA1",
+    "ipa": "ˈɑː",
+    "example": ""
+  },
+  {
+    "dummy": "AA2",
+    "ipa": "ˌɑː",
+    "example": ""
+  },
+  {
+    "dummy": "AAJ0",
+    "ipa": "ɑːj",
+    "example": ""
+  },
+  {
+    "dummy": "AAJ1",
+    "ipa": "ˈɑːj",
+    "example": ""
+  },
+  {
+    "dummy": "AAJ2",
+    "ipa": "ˌɑːj",
+    "example": ""
+  },
+  {
+    "dummy": "AAR0",
+    "ipa": "ɑːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AAR1",
+    "ipa": "ˈɑːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AAR2",
+    "ipa": "ˌɑːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AAs0",
+    "ipa": "ɑːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAs1",
+    "ipa": "ˈɑːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAs2",
+    "ipa": "ˌɑːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAJs0",
+    "ipa": "ɑːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAJs1",
+    "ipa": "ˈɑːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAJs2",
+    "ipa": "ˌɑːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AARs0",
+    "ipa": "ɑːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AARs1",
+    "ipa": "ˈɑːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AARs2",
+    "ipa": "ˌɑːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAWs0",
+    "ipa": "ɑːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAWs1",
+    "ipa": "ˈɑːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAWs2",
+    "ipa": "ˌɑːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AAW0",
+    "ipa": "ɑːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AAW1",
+    "ipa": "ˈɑːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AAW2",
+    "ipa": "ˌɑːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AE0",
+    "ipa": "ɛː",
+    "example": ""
+  },
+  {
+    "dummy": "AE1",
+    "ipa": "ˈɛː",
+    "example": ""
+  },
+  {
+    "dummy": "AE2",
+    "ipa": "ˌɛː",
+    "example": ""
+  },
+  {
+    "dummy": "AEE0",
+    "ipa": "æː",
+    "example": ""
+  },
+  {
+    "dummy": "AEE1",
+    "ipa": "ˈæː",
+    "example": ""
+  },
+  {
+    "dummy": "AEE2",
+    "ipa": "ˌæː",
+    "example": ""
+  },
+  {
+    "dummy": "AEEH0",
+    "ipa": "æ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEH1",
+    "ipa": "ˈæ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEH2",
+    "ipa": "ˌæ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJ0",
+    "ipa": "æj",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJ1",
+    "ipa": "ˈæj",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJ2",
+    "ipa": "ˌæj",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHR0",
+    "ipa": "æɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHR1",
+    "ipa": "ˈæɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHR2",
+    "ipa": "ˌæɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHs0",
+    "ipa": "æˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHs1",
+    "ipa": "ˈæˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHs2",
+    "ipa": "ˌæˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJs0",
+    "ipa": "æjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJs1",
+    "ipa": "ˈæjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHJs2",
+    "ipa": "ˌæjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHRs0",
+    "ipa": "æɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHRs1",
+    "ipa": "ˈæɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHRs2",
+    "ipa": "ˌæɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHWs0",
+    "ipa": "æʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHWs1",
+    "ipa": "ˈæʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHWs2",
+    "ipa": "ˌæʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHW0",
+    "ipa": "æʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHW1",
+    "ipa": "ˈæʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEHW2",
+    "ipa": "ˌæʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJ0",
+    "ipa": "æːj",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJ1",
+    "ipa": "ˈæːj",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJ2",
+    "ipa": "ˌæːj",
+    "example": ""
+  },
+  {
+    "dummy": "AEER0",
+    "ipa": "æːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEER1",
+    "ipa": "ˈæːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEER2",
+    "ipa": "ˌæːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEs0",
+    "ipa": "æːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEs1",
+    "ipa": "ˈæːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEs2",
+    "ipa": "ˌæːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJs0",
+    "ipa": "æːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJs1",
+    "ipa": "ˈæːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEJs2",
+    "ipa": "ˌæːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEERs0",
+    "ipa": "æːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEERs1",
+    "ipa": "ˈæːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEERs2",
+    "ipa": "ˌæːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEWs0",
+    "ipa": "æːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEWs1",
+    "ipa": "ˈæːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEWs2",
+    "ipa": "ˌæːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEEW0",
+    "ipa": "æːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEW1",
+    "ipa": "ˈæːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEEW2",
+    "ipa": "ˌæːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEH0",
+    "ipa": "ɛ",
+    "example": ""
+  },
+  {
+    "dummy": "AEH1",
+    "ipa": "ˈɛ",
+    "example": ""
+  },
+  {
+    "dummy": "AEH2",
+    "ipa": "ˌɛ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJ0",
+    "ipa": "ɛj",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJ1",
+    "ipa": "ˈɛj",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJ2",
+    "ipa": "ˌɛj",
+    "example": ""
+  },
+  {
+    "dummy": "AEHR0",
+    "ipa": "ɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEHR1",
+    "ipa": "ˈɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEHR2",
+    "ipa": "ˌɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEHs0",
+    "ipa": "ɛˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHs1",
+    "ipa": "ˈɛˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHs2",
+    "ipa": "ˌɛˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJs0",
+    "ipa": "ɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJs1",
+    "ipa": "ˈɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHJs2",
+    "ipa": "ˌɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHRs0",
+    "ipa": "ɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHRs1",
+    "ipa": "ˈɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHRs2",
+    "ipa": "ˌɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHWs0",
+    "ipa": "ɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHWs1",
+    "ipa": "ˈɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHWs2",
+    "ipa": "ˌɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEHW0",
+    "ipa": "ɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEHW1",
+    "ipa": "ˈɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEHW2",
+    "ipa": "ˌɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEJ0",
+    "ipa": "ɛːj",
+    "example": ""
+  },
+  {
+    "dummy": "AEJ1",
+    "ipa": "ˈɛːj",
+    "example": ""
+  },
+  {
+    "dummy": "AEJ2",
+    "ipa": "ˌɛːj",
+    "example": ""
+  },
+  {
+    "dummy": "AER0",
+    "ipa": "ɛːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AER1",
+    "ipa": "ˈɛːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AER2",
+    "ipa": "ˌɛːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEs0",
+    "ipa": "ɛːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEs1",
+    "ipa": "ˈɛːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEs2",
+    "ipa": "ˌɛːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEJs0",
+    "ipa": "ɛːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEJs1",
+    "ipa": "ˈɛːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEJs2",
+    "ipa": "ˌɛːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AERs0",
+    "ipa": "ɛːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AERs1",
+    "ipa": "ˈɛːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AERs2",
+    "ipa": "ˌɛːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEWs0",
+    "ipa": "ɛːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEWs1",
+    "ipa": "ˈɛːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEWs2",
+    "ipa": "ˌɛːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AEW0",
+    "ipa": "ɛːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEW1",
+    "ipa": "ˈɛːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AEW2",
+    "ipa": "ˌɛːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AH0",
+    "ipa": "ɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AH1",
+    "ipa": "ˈɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AH2",
+    "ipa": "ˌɑ",
+    "example": ""
+  },
+  {
+    "dummy": "AHJ0",
+    "ipa": "ɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AHJ1",
+    "ipa": "ˈɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AHJ2",
+    "ipa": "ˌɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AHR0",
+    "ipa": "ɑɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AHR1",
+    "ipa": "ˈɑɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AHR2",
+    "ipa": "ˌɑɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AHs0",
+    "ipa": "ɑˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHs1",
+    "ipa": "ˈɑˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHs2",
+    "ipa": "ˌɑˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHJs0",
+    "ipa": "ɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHJs1",
+    "ipa": "ˈɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHJs2",
+    "ipa": "ˌɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHRs0",
+    "ipa": "ɑɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHRs1",
+    "ipa": "ˈɑɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHRs2",
+    "ipa": "ˌɑɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHWs0",
+    "ipa": "ɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHWs1",
+    "ipa": "ˈɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHWs2",
+    "ipa": "ˌɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AHW0",
+    "ipa": "ɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AHW1",
+    "ipa": "ˈɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AHW2",
+    "ipa": "ˌɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AJ0",
+    "ipa": "ɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AJ1",
+    "ipa": "ˈɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AJ2",
+    "ipa": "ˌɑj",
+    "example": ""
+  },
+  {
+    "dummy": "AJs0",
+    "ipa": "ɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AJs1",
+    "ipa": "ˈɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AJs2",
+    "ipa": "ˌɑjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AO0",
+    "ipa": "ɒː",
+    "example": ""
+  },
+  {
+    "dummy": "AO1",
+    "ipa": "ˈɒː",
+    "example": ""
+  },
+  {
+    "dummy": "AO2",
+    "ipa": "ˌɒː",
+    "example": ""
+  },
+  {
+    "dummy": "AOH0",
+    "ipa": "ɒ",
+    "example": ""
+  },
+  {
+    "dummy": "AOH1",
+    "ipa": "ˈɒ",
+    "example": ""
+  },
+  {
+    "dummy": "AOH2",
+    "ipa": "ˌɒ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJ0",
+    "ipa": "ɒj",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJ1",
+    "ipa": "ˈɒj",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJ2",
+    "ipa": "ˌɒj",
+    "example": ""
+  },
+  {
+    "dummy": "AOHR0",
+    "ipa": "ɒɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOHR1",
+    "ipa": "ˈɒɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOHR2",
+    "ipa": "ˌɒɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOHs0",
+    "ipa": "ɒˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHs1",
+    "ipa": "ˈɒˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHs2",
+    "ipa": "ˌɒˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJs0",
+    "ipa": "ɒjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJs1",
+    "ipa": "ˈɒjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHJs2",
+    "ipa": "ˌɒjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHRs0",
+    "ipa": "ɒɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHRs1",
+    "ipa": "ˈɒɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHRs2",
+    "ipa": "ˌɒɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHWs0",
+    "ipa": "ɒʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHWs1",
+    "ipa": "ˈɒʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHWs2",
+    "ipa": "ˌɒʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOHW0",
+    "ipa": "ɒʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOHW1",
+    "ipa": "ˈɒʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOHW2",
+    "ipa": "ˌɒʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOJ0",
+    "ipa": "ɒːj",
+    "example": ""
+  },
+  {
+    "dummy": "AOJ1",
+    "ipa": "ˈɒːj",
+    "example": ""
+  },
+  {
+    "dummy": "AOJ2",
+    "ipa": "ˌɒːj",
+    "example": ""
+  },
+  {
+    "dummy": "AOR0",
+    "ipa": "ɒːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOR1",
+    "ipa": "ˈɒːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOR2",
+    "ipa": "ˌɒːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOs0",
+    "ipa": "ɒːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOs1",
+    "ipa": "ˈɒːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOs2",
+    "ipa": "ˌɒːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOJs0",
+    "ipa": "ɒːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOJs1",
+    "ipa": "ˈɒːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOJs2",
+    "ipa": "ˌɒːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AORs0",
+    "ipa": "ɒːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AORs1",
+    "ipa": "ˈɒːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AORs2",
+    "ipa": "ˌɒːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOWs0",
+    "ipa": "ɒːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOWs1",
+    "ipa": "ˈɒːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOWs2",
+    "ipa": "ˌɒːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AOW0",
+    "ipa": "ɒːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOW1",
+    "ipa": "ˈɒːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AOW2",
+    "ipa": "ˌɒːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AW0",
+    "ipa": "ɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AW1",
+    "ipa": "ˈɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AW2",
+    "ipa": "ˌɑʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AWs0",
+    "ipa": "ɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AWs1",
+    "ipa": "ˈɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AWs2",
+    "ipa": "ˌɑʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXH0",
+    "ipa": "ʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AXH1",
+    "ipa": "ˈʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AXH2",
+    "ipa": "ˌʌ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJ0",
+    "ipa": "ʌj",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJ1",
+    "ipa": "ˈʌj",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJ2",
+    "ipa": "ˌʌj",
+    "example": ""
+  },
+  {
+    "dummy": "AXHR0",
+    "ipa": "ʌɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AXHR1",
+    "ipa": "ˈʌɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AXHR2",
+    "ipa": "ˌʌɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AXHs0",
+    "ipa": "ʌˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHs1",
+    "ipa": "ˈʌˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHs2",
+    "ipa": "ˌʌˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJs0",
+    "ipa": "ʌjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJs1",
+    "ipa": "ˈʌjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHJs2",
+    "ipa": "ˌʌjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHRs0",
+    "ipa": "ʌɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHRs1",
+    "ipa": "ˈʌɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHRs2",
+    "ipa": "ˌʌɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHWs0",
+    "ipa": "ʌʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHWs1",
+    "ipa": "ˈʌʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHWs2",
+    "ipa": "ˌʌʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "AXHW0",
+    "ipa": "ʌʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AXHW1",
+    "ipa": "ˈʌʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "AXHW2",
+    "ipa": "ˌʌʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "B",
+    "ipa": "b",
+    "example": ""
+  },
+  {
+    "dummy": "BEEP",
+    "ipa": "BEEP",
+    "example": ""
+  },
+  {
+    "dummy": "D",
+    "ipa": "d",
+    "example": ""
+  },
+  {
+    "dummy": "DX",
+    "ipa": "ð",
+    "example": ""
+  },
+  {
+    "dummy": "DXQ",
+    "ipa": "ð̠ˠ̞",
+    "example": ""
+  },
+  {
+    "dummy": "EE0",
+    "ipa": "eː",
+    "example": ""
+  },
+  {
+    "dummy": "EE1",
+    "ipa": "ˈeː",
+    "example": ""
+  },
+  {
+    "dummy": "EE2",
+    "ipa": "ˌeː",
+    "example": ""
+  },
+  {
+    "dummy": "EEJ0",
+    "ipa": "eːj",
+    "example": ""
+  },
+  {
+    "dummy": "EEJ1",
+    "ipa": "ˈeːj",
+    "example": ""
+  },
+  {
+    "dummy": "EEJ2",
+    "ipa": "ˌeːj",
+    "example": ""
+  },
+  {
+    "dummy": "EER0",
+    "ipa": "eːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EER1",
+    "ipa": "ˈeːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EER2",
+    "ipa": "ˌeːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EEs0",
+    "ipa": "eːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEs1",
+    "ipa": "ˈeːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEs2",
+    "ipa": "ˌeːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEJs0",
+    "ipa": "eːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEJs1",
+    "ipa": "ˈeːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEJs2",
+    "ipa": "ˌeːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EERs0",
+    "ipa": "eːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EERs1",
+    "ipa": "ˈeːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EERs2",
+    "ipa": "ˌeːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEWs0",
+    "ipa": "eːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEWs1",
+    "ipa": "ˈeːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEWs2",
+    "ipa": "ˌeːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EEW0",
+    "ipa": "eːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EEW1",
+    "ipa": "ˈeːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EEW2",
+    "ipa": "ˌeːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EH0",
+    "ipa": "e",
+    "example": ""
+  },
+  {
+    "dummy": "EH1",
+    "ipa": "ˈe",
+    "example": ""
+  },
+  {
+    "dummy": "EH2",
+    "ipa": "ˌe",
+    "example": ""
+  },
+  {
+    "dummy": "EHJ0",
+    "ipa": "ej",
+    "example": ""
+  },
+  {
+    "dummy": "EHJ1",
+    "ipa": "ˈej",
+    "example": ""
+  },
+  {
+    "dummy": "EHJ2",
+    "ipa": "ˌej",
+    "example": ""
+  },
+  {
+    "dummy": "EHR0",
+    "ipa": "eɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EHR1",
+    "ipa": "ˈeɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EHR2",
+    "ipa": "ˌeɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EHs0",
+    "ipa": "eˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHs1",
+    "ipa": "ˈeˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHs2",
+    "ipa": "ˌeˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHJs0",
+    "ipa": "ejˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHJs1",
+    "ipa": "ˈejˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHJs2",
+    "ipa": "ˌejˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHRs0",
+    "ipa": "eɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHRs1",
+    "ipa": "ˈeɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHRs2",
+    "ipa": "ˌeɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHWs0",
+    "ipa": "eʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHWs1",
+    "ipa": "ˈeʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHWs2",
+    "ipa": "ˌeʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EHW0",
+    "ipa": "eʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EHW1",
+    "ipa": "ˈeʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EHW2",
+    "ipa": "ˌeʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EJ0",
+    "ipa": "ɛj",
+    "example": ""
+  },
+  {
+    "dummy": "EJ1",
+    "ipa": "ˈɛj",
+    "example": ""
+  },
+  {
+    "dummy": "EJ2",
+    "ipa": "ˌɛj",
+    "example": ""
+  },
+  {
+    "dummy": "EJs0",
+    "ipa": "ɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EJs1",
+    "ipa": "ˈɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EJs2",
+    "ipa": "ˌɛjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "ER0",
+    "ipa": "ɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "ER1",
+    "ipa": "ˈɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "ER2",
+    "ipa": "ˌɛɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "ERs0",
+    "ipa": "ɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "ERs1",
+    "ipa": "ˈɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "ERs2",
+    "ipa": "ˌɛɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EW0",
+    "ipa": "ɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EW1",
+    "ipa": "ˈɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EW2",
+    "ipa": "ˌɛʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "EWs0",
+    "ipa": "ɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EWs1",
+    "ipa": "ˈɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "EWs2",
+    "ipa": "ˌɛʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "F",
+    "ipa": "f",
+    "example": ""
+  },
+  {
+    "dummy": "G",
+    "ipa": "g",
+    "example": ""
+  },
+  {
+    "dummy": "H",
+    "ipa": "h",
+    "example": ""
+  },
+  {
+    "dummy": "IH0",
+    "ipa": "i",
+    "example": ""
+  },
+  {
+    "dummy": "IH1",
+    "ipa": "ˈi",
+    "example": ""
+  },
+  {
+    "dummy": "IH2",
+    "ipa": "ˌi",
+    "example": ""
+  },
+  {
+    "dummy": "IHJ0",
+    "ipa": "ij",
+    "example": ""
+  },
+  {
+    "dummy": "IHJ1",
+    "ipa": "ˈij",
+    "example": ""
+  },
+  {
+    "dummy": "IHJ2",
+    "ipa": "ˌij",
+    "example": ""
+  },
+  {
+    "dummy": "IHR0",
+    "ipa": "iɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IHR1",
+    "ipa": "ˈiɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IHR2",
+    "ipa": "ˌiɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IHs0",
+    "ipa": "iˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHs1",
+    "ipa": "ˈiˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHs2",
+    "ipa": "ˌiˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHJs0",
+    "ipa": "ijˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHJs1",
+    "ipa": "ˈijˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHJs2",
+    "ipa": "ˌijˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHRs0",
+    "ipa": "iɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHRs1",
+    "ipa": "ˈiɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHRs2",
+    "ipa": "ˌiɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHWs0",
+    "ipa": "iʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHWs1",
+    "ipa": "ˈiʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHWs2",
+    "ipa": "ˌiʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IHW0",
+    "ipa": "iʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IHW1",
+    "ipa": "ˈiʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IHW2",
+    "ipa": "ˌiʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "II0",
+    "ipa": "iː",
+    "example": ""
+  },
+  {
+    "dummy": "II1",
+    "ipa": "ˈiː",
+    "example": ""
+  },
+  {
+    "dummy": "II2",
+    "ipa": "ˌiː",
+    "example": ""
+  },
+  {
+    "dummy": "IIJ0",
+    "ipa": "iːj",
+    "example": ""
+  },
+  {
+    "dummy": "IIJ1",
+    "ipa": "ˈiːj",
+    "example": ""
+  },
+  {
+    "dummy": "IIJ2",
+    "ipa": "ˌiːj",
+    "example": ""
+  },
+  {
+    "dummy": "IIR0",
+    "ipa": "iːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IIR1",
+    "ipa": "ˈiːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IIR2",
+    "ipa": "ˌiːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IIs0",
+    "ipa": "iːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIs1",
+    "ipa": "ˈiːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIs2",
+    "ipa": "ˌiːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIJs0",
+    "ipa": "iːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIJs1",
+    "ipa": "ˈiːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIJs2",
+    "ipa": "ˌiːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIRs0",
+    "ipa": "iːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIRs1",
+    "ipa": "ˈiːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIRs2",
+    "ipa": "ˌiːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIWs0",
+    "ipa": "iːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIWs1",
+    "ipa": "ˈiːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIWs2",
+    "ipa": "ˌiːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IIW0",
+    "ipa": "iːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IIW1",
+    "ipa": "ˈiːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IIW2",
+    "ipa": "ˌiːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IR0",
+    "ipa": "iɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IR1",
+    "ipa": "ˈiɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IR2",
+    "ipa": "ˌiɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IRs0",
+    "ipa": "iɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IRs1",
+    "ipa": "ˈiɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IRs2",
+    "ipa": "ˌiɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IW0",
+    "ipa": "iʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IW1",
+    "ipa": "ˈiʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IW2",
+    "ipa": "ˌiʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "IWs0",
+    "ipa": "iʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IWs1",
+    "ipa": "ˈiʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "IWs2",
+    "ipa": "ˌiʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "J",
+    "ipa": "j",
+    "example": ""
+  },
+  {
+    "dummy": "K",
+    "ipa": "k",
+    "example": ""
+  },
+  {
+    "dummy": "L",
+    "ipa": "l",
+    "example": ""
+  },
+  {
+    "dummy": "LQ",
+    "ipa": "l̩",
+    "example": ""
+  },
+  {
+    "dummy": "M",
+    "ipa": "m",
+    "example": ""
+  },
+  {
+    "dummy": "MQ",
+    "ipa": "m̩",
+    "example": ""
+  },
+  {
+    "dummy": "N",
+    "ipa": "n",
+    "example": ""
+  },
+  {
+    "dummy": "NG",
+    "ipa": "ŋ",
+    "example": ""
+  },
+  {
+    "dummy": "NGQ",
+    "ipa": "ŋ̩",
+    "example": ""
+  },
+  {
+    "dummy": "NQ",
+    "ipa": "n̩",
+    "example": ""
+  },
+  {
+    "dummy": "OA0",
+    "ipa": "ɔː",
+    "example": ""
+  },
+  {
+    "dummy": "OA1",
+    "ipa": "ˈɔː",
+    "example": ""
+  },
+  {
+    "dummy": "OA2",
+    "ipa": "ˌɔː",
+    "example": ""
+  },
+  {
+    "dummy": "OAH0",
+    "ipa": "ɔ",
+    "example": ""
+  },
+  {
+    "dummy": "OAH1",
+    "ipa": "ˈɔ",
+    "example": ""
+  },
+  {
+    "dummy": "OAH2",
+    "ipa": "ˌɔ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJ0",
+    "ipa": "ɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJ1",
+    "ipa": "ˈɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJ2",
+    "ipa": "ˌɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OAHR0",
+    "ipa": "ɔɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAHR1",
+    "ipa": "ˈɔɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAHR2",
+    "ipa": "ˌɔɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAHs0",
+    "ipa": "ɔˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHs1",
+    "ipa": "ˈɔˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHs2",
+    "ipa": "ˌɔˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJs0",
+    "ipa": "ɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJs1",
+    "ipa": "ˈɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHJs2",
+    "ipa": "ˌɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHRs0",
+    "ipa": "ɔɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHRs1",
+    "ipa": "ˈɔɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHRs2",
+    "ipa": "ˌɔɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHWs0",
+    "ipa": "ɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHWs1",
+    "ipa": "ˈɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHWs2",
+    "ipa": "ˌɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAHW0",
+    "ipa": "ɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAHW1",
+    "ipa": "ˈɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAHW2",
+    "ipa": "ˌɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAJ0",
+    "ipa": "ɔːj",
+    "example": ""
+  },
+  {
+    "dummy": "OAJ1",
+    "ipa": "ˈɔːj",
+    "example": ""
+  },
+  {
+    "dummy": "OAJ2",
+    "ipa": "ˌɔːj",
+    "example": ""
+  },
+  {
+    "dummy": "OAR0",
+    "ipa": "ɔːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAR1",
+    "ipa": "ˈɔːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAR2",
+    "ipa": "ˌɔːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAs0",
+    "ipa": "ɔːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAs1",
+    "ipa": "ˈɔːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAs2",
+    "ipa": "ˌɔːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAJs0",
+    "ipa": "ɔːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAJs1",
+    "ipa": "ˈɔːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAJs2",
+    "ipa": "ˌɔːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OARs0",
+    "ipa": "ɔːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OARs1",
+    "ipa": "ˈɔːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OARs2",
+    "ipa": "ˌɔːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAWs0",
+    "ipa": "ɔːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAWs1",
+    "ipa": "ˈɔːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAWs2",
+    "ipa": "ˌɔːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OAW0",
+    "ipa": "ɔːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAW1",
+    "ipa": "ˈɔːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OAW2",
+    "ipa": "ˌɔːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OE0",
+    "ipa": "øː",
+    "example": ""
+  },
+  {
+    "dummy": "OE1",
+    "ipa": "ˈøː",
+    "example": ""
+  },
+  {
+    "dummy": "OE2",
+    "ipa": "ˌøː",
+    "example": ""
+  },
+  {
+    "dummy": "OEE0",
+    "ipa": "œː",
+    "example": ""
+  },
+  {
+    "dummy": "OEE1",
+    "ipa": "ˈœː",
+    "example": ""
+  },
+  {
+    "dummy": "OEE2",
+    "ipa": "ˌœː",
+    "example": ""
+  },
+  {
+    "dummy": "OEEH0",
+    "ipa": "œ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEH1",
+    "ipa": "ˈœ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEH2",
+    "ipa": "ˌœ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJ0",
+    "ipa": "œj",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJ1",
+    "ipa": "ˈœj",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJ2",
+    "ipa": "ˌœj",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHR0",
+    "ipa": "œɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHR1",
+    "ipa": "ˈœɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHR2",
+    "ipa": "ˌœɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHs0",
+    "ipa": "œˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHs1",
+    "ipa": "ˈœˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHs2",
+    "ipa": "ˌœˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJs0",
+    "ipa": "œjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJs1",
+    "ipa": "ˈœjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHJs2",
+    "ipa": "ˌœjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHRs0",
+    "ipa": "œɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHRs1",
+    "ipa": "ˈœɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHRs2",
+    "ipa": "ˌœɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHWs0",
+    "ipa": "œʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHWs1",
+    "ipa": "ˈœʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHWs2",
+    "ipa": "ˌœʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHW0",
+    "ipa": "œʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHW1",
+    "ipa": "ˈœʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEHW2",
+    "ipa": "ˌœʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJ0",
+    "ipa": "œːj",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJ1",
+    "ipa": "ˈœːj",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJ2",
+    "ipa": "ˌœːj",
+    "example": ""
+  },
+  {
+    "dummy": "OEER0",
+    "ipa": "œːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEER1",
+    "ipa": "ˈœːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEER2",
+    "ipa": "ˌœːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEs0",
+    "ipa": "œːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEs1",
+    "ipa": "ˈœːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEs2",
+    "ipa": "ˌœːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJs0",
+    "ipa": "œːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJs1",
+    "ipa": "ˈœːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEJs2",
+    "ipa": "ˌœːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEERs0",
+    "ipa": "œːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEERs1",
+    "ipa": "ˈœːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEERs2",
+    "ipa": "ˌœːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEWs0",
+    "ipa": "œːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEWs1",
+    "ipa": "ˈœːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEWs2",
+    "ipa": "ˌœːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEEW0",
+    "ipa": "œːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEW1",
+    "ipa": "ˈœːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEEW2",
+    "ipa": "ˌœːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEH0",
+    "ipa": "ø",
+    "example": ""
+  },
+  {
+    "dummy": "OEH1",
+    "ipa": "ˈø",
+    "example": ""
+  },
+  {
+    "dummy": "OEH2",
+    "ipa": "ˌø",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJ0",
+    "ipa": "øj",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJ1",
+    "ipa": "ˈøj",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJ2",
+    "ipa": "ˌøj",
+    "example": ""
+  },
+  {
+    "dummy": "OEHR0",
+    "ipa": "øɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEHR1",
+    "ipa": "ˈøɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEHR2",
+    "ipa": "ˌøɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEHs0",
+    "ipa": "øˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHs1",
+    "ipa": "ˈøˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHs2",
+    "ipa": "ˌøˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJs0",
+    "ipa": "øjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJs1",
+    "ipa": "ˈøjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHJs2",
+    "ipa": "ˌøjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHRs0",
+    "ipa": "øɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHRs1",
+    "ipa": "ˈøɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHRs2",
+    "ipa": "ˌøɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHWs0",
+    "ipa": "øʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHWs1",
+    "ipa": "ˈøʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHWs2",
+    "ipa": "ˌøʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEHW0",
+    "ipa": "øʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEHW1",
+    "ipa": "ˈøʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEHW2",
+    "ipa": "ˌøʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEJ0",
+    "ipa": "øːj",
+    "example": ""
+  },
+  {
+    "dummy": "OEJ1",
+    "ipa": "ˈøːj",
+    "example": ""
+  },
+  {
+    "dummy": "OEJ2",
+    "ipa": "ˌøːj",
+    "example": ""
+  },
+  {
+    "dummy": "OER0",
+    "ipa": "øːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OER1",
+    "ipa": "ˈøːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OER2",
+    "ipa": "ˌøːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEs0",
+    "ipa": "øːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEs1",
+    "ipa": "ˈøːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEs2",
+    "ipa": "ˌøːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEJs0",
+    "ipa": "øːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEJs1",
+    "ipa": "ˈøːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEJs2",
+    "ipa": "ˌøːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OERs0",
+    "ipa": "øːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OERs1",
+    "ipa": "ˈøːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OERs2",
+    "ipa": "ˌøːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEWs0",
+    "ipa": "øːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEWs1",
+    "ipa": "ˈøːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEWs2",
+    "ipa": "ˌøːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OEW0",
+    "ipa": "øːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEW1",
+    "ipa": "ˈøːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OEW2",
+    "ipa": "ˌøːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OH0",
+    "ipa": "o",
+    "example": ""
+  },
+  {
+    "dummy": "OH1",
+    "ipa": "ˈo",
+    "example": ""
+  },
+  {
+    "dummy": "OH2",
+    "ipa": "ˌo",
+    "example": ""
+  },
+  {
+    "dummy": "OHJ0",
+    "ipa": "oj",
+    "example": ""
+  },
+  {
+    "dummy": "OHJ1",
+    "ipa": "ˈoj",
+    "example": ""
+  },
+  {
+    "dummy": "OHJ2",
+    "ipa": "ˌoj",
+    "example": ""
+  },
+  {
+    "dummy": "OHR0",
+    "ipa": "oɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OHR1",
+    "ipa": "ˈoɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OHR2",
+    "ipa": "ˌoɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OHs0",
+    "ipa": "oˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHs1",
+    "ipa": "ˈoˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHs2",
+    "ipa": "ˌoˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHJs0",
+    "ipa": "ojˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHJs1",
+    "ipa": "ˈojˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHJs2",
+    "ipa": "ˌojˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHRs0",
+    "ipa": "oɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHRs1",
+    "ipa": "ˈoɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHRs2",
+    "ipa": "ˌoɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHWs0",
+    "ipa": "oʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHWs1",
+    "ipa": "ˈoʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHWs2",
+    "ipa": "ˌoʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OHW0",
+    "ipa": "oʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OHW1",
+    "ipa": "ˈoʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OHW2",
+    "ipa": "ˌoʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OJ0",
+    "ipa": "ɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OJ1",
+    "ipa": "ˈɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OJ2",
+    "ipa": "ˌɔj",
+    "example": ""
+  },
+  {
+    "dummy": "OJs0",
+    "ipa": "ɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OJs1",
+    "ipa": "ˈɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OJs2",
+    "ipa": "ˌɔjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OO0",
+    "ipa": "oː",
+    "example": ""
+  },
+  {
+    "dummy": "OO1",
+    "ipa": "ˈoː",
+    "example": ""
+  },
+  {
+    "dummy": "OO2",
+    "ipa": "ˌoː",
+    "example": ""
+  },
+  {
+    "dummy": "OOJ0",
+    "ipa": "oːj",
+    "example": ""
+  },
+  {
+    "dummy": "OOJ1",
+    "ipa": "ˈoːj",
+    "example": ""
+  },
+  {
+    "dummy": "OOJ2",
+    "ipa": "ˌoːj",
+    "example": ""
+  },
+  {
+    "dummy": "OOR0",
+    "ipa": "oːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OOR1",
+    "ipa": "ˈoːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OOR2",
+    "ipa": "ˌoːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OOs0",
+    "ipa": "oːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOs1",
+    "ipa": "ˈoːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOs2",
+    "ipa": "ˌoːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOJs0",
+    "ipa": "oːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOJs1",
+    "ipa": "ˈoːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOJs2",
+    "ipa": "ˌoːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OORs0",
+    "ipa": "oːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OORs1",
+    "ipa": "ˈoːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OORs2",
+    "ipa": "ˌoːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOWs0",
+    "ipa": "oːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOWs1",
+    "ipa": "ˈoːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOWs2",
+    "ipa": "ˌoːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OOW0",
+    "ipa": "oːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OOW1",
+    "ipa": "ˈoːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OOW2",
+    "ipa": "ˌoːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OR0",
+    "ipa": "oɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OR1",
+    "ipa": "ˈoɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OR2",
+    "ipa": "ˌoɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "ORs0",
+    "ipa": "oɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "ORs1",
+    "ipa": "ˈoɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "ORs2",
+    "ipa": "ˌoɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OW0",
+    "ipa": "ɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OW1",
+    "ipa": "ˈɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OW2",
+    "ipa": "ˌɔʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "OWs0",
+    "ipa": "ɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OWs1",
+    "ipa": "ˈɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "OWs2",
+    "ipa": "ˌɔʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "P",
+    "ipa": "p",
+    "example": ""
+  },
+  {
+    "dummy": "R",
+    "ipa": "ʁ",
+    "example": ""
+  },
+  {
+    "dummy": "S",
+    "ipa": "s",
+    "example": ""
+  },
+  {
+    "dummy": "SJ",
+    "ipa": "ɕ",
+    "example": ""
+  },
+  {
+    "dummy": "T",
+    "ipa": "t",
+    "example": ""
+  },
+  {
+    "dummy": "TH",
+    "ipa": "θ",
+    "example": ""
+  },
+  {
+    "dummy": "UH0",
+    "ipa": "u",
+    "example": ""
+  },
+  {
+    "dummy": "UH1",
+    "ipa": "ˈu",
+    "example": ""
+  },
+  {
+    "dummy": "UH2",
+    "ipa": "ˌu",
+    "example": ""
+  },
+  {
+    "dummy": "UHJ0",
+    "ipa": "uj",
+    "example": ""
+  },
+  {
+    "dummy": "UHJ1",
+    "ipa": "ˈuj",
+    "example": ""
+  },
+  {
+    "dummy": "UHJ2",
+    "ipa": "ˌuj",
+    "example": ""
+  },
+  {
+    "dummy": "UHR0",
+    "ipa": "uɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UHR1",
+    "ipa": "ˈuɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UHR2",
+    "ipa": "ˌuɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UHs0",
+    "ipa": "uˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHs1",
+    "ipa": "ˈuˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHs2",
+    "ipa": "ˌuˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHJs0",
+    "ipa": "ujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHJs1",
+    "ipa": "ˈujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHJs2",
+    "ipa": "ˌujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHRs0",
+    "ipa": "uɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHRs1",
+    "ipa": "ˈuɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHRs2",
+    "ipa": "ˌuɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHWs0",
+    "ipa": "uʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHWs1",
+    "ipa": "ˈuʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHWs2",
+    "ipa": "ˌuʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UHW0",
+    "ipa": "uʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UHW1",
+    "ipa": "ˈuʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UHW2",
+    "ipa": "ˌuʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UJ0",
+    "ipa": "uj",
+    "example": ""
+  },
+  {
+    "dummy": "UJ1",
+    "ipa": "ˈuj",
+    "example": ""
+  },
+  {
+    "dummy": "UJ2",
+    "ipa": "ˌuj",
+    "example": ""
+  },
+  {
+    "dummy": "UJs0",
+    "ipa": "ujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UJs1",
+    "ipa": "ˈujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UJs2",
+    "ipa": "ˌujˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UR0",
+    "ipa": "uɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UR1",
+    "ipa": "ˈuɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UR2",
+    "ipa": "ˌuɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "URs0",
+    "ipa": "uɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "URs1",
+    "ipa": "ˈuɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "URs2",
+    "ipa": "ˌuɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UU0",
+    "ipa": "uː",
+    "example": ""
+  },
+  {
+    "dummy": "UU1",
+    "ipa": "ˈuː",
+    "example": ""
+  },
+  {
+    "dummy": "UU2",
+    "ipa": "ˌuː",
+    "example": ""
+  },
+  {
+    "dummy": "UUJ0",
+    "ipa": "uːj",
+    "example": ""
+  },
+  {
+    "dummy": "UUJ1",
+    "ipa": "ˈuːj",
+    "example": ""
+  },
+  {
+    "dummy": "UUJ2",
+    "ipa": "ˌuːj",
+    "example": ""
+  },
+  {
+    "dummy": "UUR0",
+    "ipa": "uːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UUR1",
+    "ipa": "ˈuːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UUR2",
+    "ipa": "ˌuːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UUs0",
+    "ipa": "uːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUs1",
+    "ipa": "ˈuːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUs2",
+    "ipa": "ˌuːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUJs0",
+    "ipa": "uːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUJs1",
+    "ipa": "ˈuːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUJs2",
+    "ipa": "ˌuːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UURs0",
+    "ipa": "uːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UURs1",
+    "ipa": "ˈuːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UURs2",
+    "ipa": "ˌuːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUWs0",
+    "ipa": "uːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUWs1",
+    "ipa": "ˈuːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUWs2",
+    "ipa": "ˌuːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UUW0",
+    "ipa": "uːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UUW1",
+    "ipa": "ˈuːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UUW2",
+    "ipa": "ˌuːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXH0",
+    "ipa": "ə",
+    "example": ""
+  },
+  {
+    "dummy": "UXH1",
+    "ipa": "ˈə",
+    "example": ""
+  },
+  {
+    "dummy": "UXH2",
+    "ipa": "ˌə",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJ0",
+    "ipa": "əj",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJ1",
+    "ipa": "ˈəj",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJ2",
+    "ipa": "ˌəj",
+    "example": ""
+  },
+  {
+    "dummy": "UXHR0",
+    "ipa": "əɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXHR1",
+    "ipa": "ˈəɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXHR2",
+    "ipa": "ˌəɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXHs0",
+    "ipa": "əˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHs1",
+    "ipa": "ˈəˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHs2",
+    "ipa": "ˌəˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJs0",
+    "ipa": "əjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJs1",
+    "ipa": "ˈəjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHJs2",
+    "ipa": "ˌəjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHRs0",
+    "ipa": "əɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHRs1",
+    "ipa": "ˈəɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHRs2",
+    "ipa": "ˌəɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHWs0",
+    "ipa": "əʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHWs1",
+    "ipa": "ˈəʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHWs2",
+    "ipa": "ˌəʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "UXHW0",
+    "ipa": "əʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXHW1",
+    "ipa": "ˈəʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "UXHW2",
+    "ipa": "ˌəʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "V",
+    "ipa": "v",
+    "example": ""
+  },
+  {
+    "dummy": "W",
+    "ipa": "w",
+    "example": ""
+  },
+  {
+    "dummy": "YH0",
+    "ipa": "y",
+    "example": ""
+  },
+  {
+    "dummy": "YH1",
+    "ipa": "ˈy",
+    "example": ""
+  },
+  {
+    "dummy": "YH2",
+    "ipa": "ˌy",
+    "example": ""
+  },
+  {
+    "dummy": "YHJ0",
+    "ipa": "yj",
+    "example": ""
+  },
+  {
+    "dummy": "YHJ1",
+    "ipa": "ˈyj",
+    "example": ""
+  },
+  {
+    "dummy": "YHJ2",
+    "ipa": "ˌyj",
+    "example": ""
+  },
+  {
+    "dummy": "YHR0",
+    "ipa": "yɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YHR1",
+    "ipa": "ˈyɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YHR2",
+    "ipa": "ˌyɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YHs0",
+    "ipa": "yˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHs1",
+    "ipa": "ˈyˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHs2",
+    "ipa": "ˌyˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHJs0",
+    "ipa": "yjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHJs1",
+    "ipa": "ˈyjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHJs2",
+    "ipa": "ˌyjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHRs0",
+    "ipa": "yɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHRs1",
+    "ipa": "ˈyɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHRs2",
+    "ipa": "ˌyɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHWs0",
+    "ipa": "yʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHWs1",
+    "ipa": "ˈyʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHWs2",
+    "ipa": "ˌyʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YHW0",
+    "ipa": "yʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YHW1",
+    "ipa": "ˈyʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YHW2",
+    "ipa": "ˌyʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YR0",
+    "ipa": "yɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YR1",
+    "ipa": "ˈyɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YR2",
+    "ipa": "ˌyɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YRs0",
+    "ipa": "yɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YRs1",
+    "ipa": "ˈyɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YRs2",
+    "ipa": "ˌyɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YW0",
+    "ipa": "yʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YW1",
+    "ipa": "ˈyʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YW2",
+    "ipa": "ˌyʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YWs0",
+    "ipa": "yʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YWs1",
+    "ipa": "ˈyʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YWs2",
+    "ipa": "ˌyʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YY0",
+    "ipa": "yː",
+    "example": ""
+  },
+  {
+    "dummy": "YY1",
+    "ipa": "ˈyː",
+    "example": ""
+  },
+  {
+    "dummy": "YY2",
+    "ipa": "ˌyː",
+    "example": ""
+  },
+  {
+    "dummy": "YYJ0",
+    "ipa": "yːj",
+    "example": ""
+  },
+  {
+    "dummy": "YYJ1",
+    "ipa": "ˈyːj",
+    "example": ""
+  },
+  {
+    "dummy": "YYJ2",
+    "ipa": "ˌyːj",
+    "example": ""
+  },
+  {
+    "dummy": "YYR0",
+    "ipa": "yːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YYR1",
+    "ipa": "ˈyːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YYR2",
+    "ipa": "ˌyːɐ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YYs0",
+    "ipa": "yːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYs1",
+    "ipa": "ˈyːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYs2",
+    "ipa": "ˌyːˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYJs0",
+    "ipa": "yːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYJs1",
+    "ipa": "ˈyːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYJs2",
+    "ipa": "ˌyːjˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYRs0",
+    "ipa": "yːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYRs1",
+    "ipa": "ˈyːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYRs2",
+    "ipa": "ˌyːɐ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYWs0",
+    "ipa": "yːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYWs1",
+    "ipa": "ˈyːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYWs2",
+    "ipa": "ˌyːʊ̯ˀ",
+    "example": ""
+  },
+  {
+    "dummy": "YYW0",
+    "ipa": "yːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YYW1",
+    "ipa": "ˈyːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "YYW2",
+    "ipa": "ˌyːʊ̯",
+    "example": ""
+  },
+  {
+    "dummy": "Z",
+    "ipa": "z",
+    "example": ""
+  },
+  {
+    "dummy": "ZH",
+    "ipa": "ʑ",
+    "example": ""
+  }
+]

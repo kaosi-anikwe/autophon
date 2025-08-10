@@ -1,0 +1,11 @@
+Forced aligner
+Online forced aligner
+forced alignment
+phonetic annotation
+sociolinguistics
+variationist sociolinguistics
+Nordic phonetics
+taligenkänning
+automatisk segmentering
+automatic segmentation
+Montreal Forced Aligner

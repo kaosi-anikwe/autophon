@@ -1,0 +1,114 @@
+[
+  {
+    "simple": "a",
+    "complex": "a"
+  },
+  {
+    "simple": "e",
+    "complex": "e"
+  },
+  {
+    "simple": "i",
+    "complex": "i"
+  },
+  {
+    "simple": "o",
+    "complex": "o"
+  },
+  {
+    "simple": "u",
+    "complex": "u"
+  },
+  {
+    "simple": "p",
+    "complex": "p"
+  },
+  {
+    "simple": "t",
+    "complex": "t"
+  },
+  {
+    "simple": "k",
+    "complex": "k"
+  },
+  {
+    "simple": "f",
+    "complex": "f"
+  },
+  {
+    "simple": "s",
+    "complex": "s"
+  },
+  {
+    "simple": "x",
+    "complex": "x"
+  },
+  {
+    "simple": "CH",
+    "complex": "CH"
+  },
+  {
+    "simple": "l",
+    "complex": "l"
+  },
+  {
+    "simple": "b",
+    "complex": "b"
+  },
+  {
+    "simple": "d",
+    "complex": "d"
+  },
+  {
+    "simple": "g",
+    "complex": "g"
+  },
+  {
+    "simple": "m",
+    "complex": "m"
+  },
+  {
+    "simple": "n",
+    "complex": "n"
+  },
+  {
+    "simple": "NY",
+    "complex": "NY"
+  },
+  {
+    "simple": "y",
+    "complex": "y"
+  },
+  {
+    "simple": "R",
+    "complex": "R"
+  },
+  {
+    "simple": "r",
+    "complex": "r"
+  },
+  {
+    "simple": "sil",
+    "complex": "sil"
+  },
+  {
+    "simple": "lg",
+    "complex": "lg"
+  },
+  {
+    "simple": "cg",
+    "complex": "cg"
+  },
+  {
+    "simple": "ns",
+    "complex": "ns"
+  },
+  {
+    "simple": "br",
+    "complex": "br"
+  },
+  {
+    "simple": "sp",
+    "complex": "sp"
+  }
+]

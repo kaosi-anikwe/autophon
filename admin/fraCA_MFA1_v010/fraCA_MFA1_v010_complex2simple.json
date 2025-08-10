@@ -1,0 +1,150 @@
+[
+  {
+    "simple": "@",
+    "complex": "@"
+  },
+  {
+    "simple": "^",
+    "complex": "\u00b0"
+  },
+  {
+    "simple": "a",
+    "complex": "a"
+  },
+  {
+    "simple": "b",
+    "complex": "b"
+  },
+  {
+    "simple": "cinq",
+    "complex": "5"
+  },
+  {
+    "simple": "d",
+    "complex": "d"
+  },
+  {
+    "simple": "deux",
+    "complex": "2"
+  },
+  {
+    "simple": "e",
+    "complex": "e"
+  },
+  {
+    "simple": "E",
+    "complex": "E"
+  },
+  {
+    "simple": "f",
+    "complex": "f"
+  },
+  {
+    "simple": "g",
+    "complex": "g"
+  },
+  {
+    "simple": "n",
+    "complex": "G"
+  },
+  {
+    "simple": "huit",
+    "complex": "8"
+  },
+  {
+    "simple": "i",
+    "complex": "i"
+  },
+  {
+    "simple": "j",
+    "complex": "j"
+  },
+  {
+    "simple": "k",
+    "complex": "k"
+  },
+  {
+    "simple": "l",
+    "complex": "l"
+  },
+  {
+    "simple": "m",
+    "complex": "m"
+  },
+  {
+    "simple": "N",
+    "complex": "\u00a7"
+  },
+  {
+    "simple": "n",
+    "complex": "n"
+  },
+  {
+    "simple": "n",
+    "complex": "N"
+  },
+  {
+    "simple": "neuf",
+    "complex": "9"
+  },
+  {
+    "simple": "o",
+    "complex": "o"
+  },
+  {
+    "simple": "O",
+    "complex": "O"
+  },
+  {
+    "simple": "p",
+    "complex": "p"
+  },
+  {
+    "simple": "R",
+    "complex": "R"
+  },
+  {
+    "simple": "R",
+    "complex": "x"
+  },
+  {
+    "simple": "s",
+    "complex": "s"
+  },
+  {
+    "simple": "S",
+    "complex": "S"
+  },
+  {
+    "simple": "t",
+    "complex": "t"
+  },
+  {
+    "simple": "u",
+    "complex": "u"
+  },
+  {
+    "simple": "un",
+    "complex": "1"
+  },
+  {
+    "simple": "v",
+    "complex": "v"
+  },
+  {
+    "simple": "w",
+    "complex": "w"
+  },
+  {
+    "simple": "y",
+    "complex": "y"
+  },
+  {
+    "simple": "z",
+    "complex": "z"
+  },
+  {
+    "simple": "Z",
+    "complex": "Z"
+  }
+]

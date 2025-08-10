@@ -1,0 +1,386 @@
+[
+  {
+    "simple": "AA0",
+    "complex": "AA0"
+  },
+  {
+    "simple": "AA1",
+    "complex": "AA1"
+  },
+  {
+    "simple": "AA2",
+    "complex": "AA2"
+  },
+  {
+    "simple": "AE0",
+    "complex": "AE0"
+  },
+  {
+    "simple": "AE1",
+    "complex": "AE1"
+  },
+  {
+    "simple": "AE2",
+    "complex": "AE2"
+  },
+  {
+    "simple": "AH0",
+    "complex": "AH0"
+  },
+  {
+    "simple": "AH0",
+    "complex": "AX0"
+  },
+  {
+    "simple": "AH1",
+    "complex": "AH1"
+  },
+  {
+    "simple": "AH1",
+    "complex": "AX1"
+  },
+  {
+    "simple": "AH2",
+    "complex": "AH2"
+  },
+  {
+    "simple": "AH2",
+    "complex": "AX2"
+  },
+  {
+    "simple": "AO0",
+    "complex": "AO0"
+  },
+  {
+    "simple": "AO1",
+    "complex": "AO1"
+  },
+  {
+    "simple": "AO2",
+    "complex": "AO2"
+  },
+  {
+    "simple": "AW0",
+    "complex": "AW0"
+  },
+  {
+    "simple": "AW1",
+    "complex": "AW1"
+  },
+  {
+    "simple": "AW2",
+    "complex": "AW2"
+  },
+  {
+    "simple": "AY0",
+    "complex": "AY0"
+  },
+  {
+    "simple": "AY1",
+    "complex": "AY1"
+  },
+  {
+    "simple": "AY2",
+    "complex": "AY2"
+  },
+  {
+    "simple": "B",
+    "complex": "B"
+  },
+  {
+    "simple": "br",
+    "complex": "br"
+  },
+  {
+    "simple": "cg",
+    "complex": "cg"
+  },
+  {
+    "simple": "CH",
+    "complex": "CH"
+  },
+  {
+    "simple": "D",
+    "complex": "D"
+  },
+  {
+    "simple": "DH",
+    "complex": "DH"
+  },
+  {
+    "simple": "EH0",
+    "complex": "EH0"
+  },
+  {
+    "simple": "EH1",
+    "complex": "EH1"
+  },
+  {
+    "simple": "EH2",
+    "complex": "EH2"
+  },
+  {
+    "simple": "ER0",
+    "complex": "AXR0"
+  },
+  {
+    "simple": "ER0",
+    "complex": "ER0"
+  },
+  {
+    "simple": "ER1",
+    "complex": "AXR1"
+  },
+  {
+    "simple": "ER1",
+    "complex": "ER1"
+  },
+  {
+    "simple": "ER2",
+    "complex": "AXR2"
+  },
+  {
+    "simple": "ER2",
+    "complex": "ER2"
+  },
+  {
+    "simple": "EY0",
+    "complex": "EY0"
+  },
+  {
+    "simple": "EY1",
+    "complex": "EY1"
+  },
+  {
+    "simple": "EY2",
+    "complex": "EY2"
+  },
+  {
+    "simple": "F",
+    "complex": "F"
+  },
+  {
+    "simple": "G",
+    "complex": "G"
+  },
+  {
+    "simple": "HH",
+    "complex": "H"
+  },
+  {
+    "simple": "HH",
+    "complex": "HH"
+  },
+  {
+    "simple": "HH",
+    "complex": "Q"
+  },
+  {
+    "simple": "IH0",
+    "complex": "IH0"
+  },
+  {
+    "simple": "IH0",
+    "complex": "IX0"
+  },
+  {
+    "simple": "IH1",
+    "complex": "IH1"
+  },
+  {
+    "simple": "IH1",
+    "complex": "IX1"
+  },
+  {
+    "simple": "IH2",
+    "complex": "IH2"
+  },
+  {
+    "simple": "IH2",
+    "complex": "IX2"
+  },
+  {
+    "simple": "IY0",
+    "complex": "IY0"
+  },
+  {
+    "simple": "IY1",
+    "complex": "IY1"
+  },
+  {
+    "simple": "IY2",
+    "complex": "IY2"
+  },
+  {
+    "simple": "JH",
+    "complex": "JH"
+  },
+  {
+    "simple": "K",
+    "complex": "K"
+  },
+  {
+    "simple": "L",
+    "complex": "EL"
+  },
+  {
+    "simple": "L",
+    "complex": "L"
+  },
+  {
+    "simple": "lg",
+    "complex": "lg"
+  },
+  {
+    "simple": "ls",
+    "complex": "ls"
+  },
+  {
+    "simple": "M",
+    "complex": "EM"
+  },
+  {
+    "simple": "M",
+    "complex": "M"
+  },
+  {
+    "simple": "N",
+    "complex": "EN"
+  },
+  {
+    "simple": "N",
+    "complex": "N"
+  },
+  {
+    "simple": "NG",
+    "complex": "NG"
+  },
+  {
+    "simple": "ns",
+    "complex": "ns"
+  },
+  {
+    "simple": "OW0",
+    "complex": "OW0"
+  },
+  {
+    "simple": "OW1",
+    "complex": "OW1"
+  },
+  {
+    "simple": "OW2",
+    "complex": "OW2"
+  },
+  {
+    "simple": "OY0",
+    "complex": "OY0"
+  },
+  {
+    "simple": "OY1",
+    "complex": "OY1"
+  },
+  {
+    "simple": "OY2",
+    "complex": "OY2"
+  },
+  {
+    "simple": "P",
+    "complex": "P"
+  },
+  {
+    "simple": "R",
+    "complex": "DX"
+  },
+  {
+    "simple": "R",
+    "complex": "NX"
+  },
+  {
+    "simple": "R",
+    "complex": "R"
+  },
+  {
+    "simple": "S",
+    "complex": "S"
+  },
+  {
+    "simple": "SH",
+    "complex": "SH"
+  },
+  {
+    "simple": "sil",
+    "complex": "sil"
+  },
+  {
+    "simple": "sp",
+    "complex": "sp"
+  },
+  {
+    "simple": "T",
+    "complex": "T"
+  },
+  {
+    "simple": "TH",
+    "complex": "TH"
+  },
+  {
+    "simple": "UH0",
+    "complex": "UH0"
+  },
+  {
+    "simple": "UH0",
+    "complex": "UX0"
+  },
+  {
+    "simple": "UH1",
+    "complex": "UH1"
+  },
+  {
+    "simple": "UH1",
+    "complex": "UX1"
+  },
+  {
+    "simple": "UH2",
+    "complex": "UH2"
+  },
+  {
+    "simple": "UH2",
+    "complex": "UX2"
+  },
+  {
+    "simple": "UW0",
+    "complex": "UW0"
+  },
+  {
+    "simple": "UW1",
+    "complex": "UW1"
+  },
+  {
+    "simple": "UW2",
+    "complex": "UW2"
+  },
+  {
+    "simple": "V",
+    "complex": "V"
+  },
+  {
+    "simple": "W",
+    "complex": "W"
+  },
+  {
+    "simple": "W",
+    "complex": "WH"
+  },
+  {
+    "simple": "Y",
+    "complex": "Y"
+  },
+  {
+    "simple": "Z",
+    "complex": "Z"
+  },
+  {
+    "simple": "ZH",
+    "complex": "ZH"
+  }
+]

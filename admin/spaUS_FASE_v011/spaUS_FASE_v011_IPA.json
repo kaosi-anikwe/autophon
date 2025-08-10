@@ -1,0 +1,142 @@
+[
+  {
+    "dummy": "a",
+    "ipa": "a",
+    "example": ""
+  },
+  {
+    "dummy": "b",
+    "ipa": "b",
+    "example": ""
+  },
+  {
+    "dummy": "br",
+    "ipa": "breath",
+    "example": ""
+  },
+  {
+    "dummy": "cg",
+    "ipa": "cough",
+    "example": ""
+  },
+  {
+    "dummy": "CH",
+    "ipa": "t͡ʃ",
+    "example": ""
+  },
+  {
+    "dummy": "d",
+    "ipa": "d",
+    "example": ""
+  },
+  {
+    "dummy": "e",
+    "ipa": "e",
+    "example": ""
+  },
+  {
+    "dummy": "f",
+    "ipa": "f",
+    "example": ""
+  },
+  {
+    "dummy": "g",
+    "ipa": "g",
+    "example": ""
+  },
+  {
+    "dummy": "i",
+    "ipa": "i",
+    "example": ""
+  },
+  {
+    "dummy": "k",
+    "ipa": "k",
+    "example": ""
+  },
+  {
+    "dummy": "l",
+    "ipa": "l",
+    "example": ""
+  },
+  {
+    "dummy": "lg",
+    "ipa": "laugh",
+    "example": ""
+  },
+  {
+    "dummy": "m",
+    "ipa": "m",
+    "example": ""
+  },
+  {
+    "dummy": "n",
+    "ipa": "n",
+    "example": ""
+  },
+  {
+    "dummy": "ns",
+    "ipa": "noise",
+    "example": ""
+  },
+  {
+    "dummy": "NY",
+    "ipa": "ɲ",
+    "example": ""
+  },
+  {
+    "dummy": "o",
+    "ipa": "o",
+    "example": ""
+  },
+  {
+    "dummy": "p",
+    "ipa": "p",
+    "example": ""
+  },
+  {
+    "dummy": "R",
+    "ipa": "r",
+    "example": ""
+  },
+  {
+    "dummy": "r",
+    "ipa": "ɾ",
+    "example": ""
+  },
+  {
+    "dummy": "s",
+    "ipa": "s",
+    "example": ""
+  },
+  {
+    "dummy": "sil",
+    "ipa": "silence",
+    "example": ""
+  },
+  {
+    "dummy": "sp",
+    "ipa": "space",
+    "example": ""
+  },
+  {
+    "dummy": "t",
+    "ipa": "t",
+    "example": ""
+  },
+  {
+    "dummy": "u",
+    "ipa": "u",
+    "example": ""
+  },
+  {
+    "dummy": "x",
+    "ipa": "x",
+    "example": ""
+  },
+  {
+    "dummy": "y",
+    "ipa": "j",
+    "example": ""
+  }
+]

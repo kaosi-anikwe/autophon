@@ -1,0 +1,9 @@
+*How to cite*
+
+1. Boersma, P. & Weenink, D. (2017). Praat: doing phonetics by computer [softw. ], ver.6.0.36. www.praat.org
+
+2. McAuliffe, M., Socolof, M., Mihuc, S., Wagner, M., & Sonderegger, M. (2017). Montreal Forced Aligner: Trainable text-speech alignment using Kaldi
+
+3. Young, N. J. (2020). NoFA 1.0 – norsk modell for forced alignment, ver. 1.0. https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-59/
+
+4. Young, N. J. & Anikwe, K. H. (2025). Autophon -- Automatic phonetic annotation and online forced aligner. www.autophon.org

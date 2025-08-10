@@ -1,0 +1,702 @@
+[
+    {
+        "id": "x4Y3",
+        "category": "Consonants",
+        "orth": "b",
+        "dummy": "b",
+        "ipa": "b",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "boCX",
+        "category": "Consonants",
+        "orth": "ɓ",
+        "dummy": "ɓ",
+        "ipa": "ɓ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "OMFk",
+        "category": "Consonants",
+        "orth": "d",
+        "dummy": "d",
+        "ipa": "d",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "sYHL",
+        "category": "Consonants",
+        "orth": "f",
+        "dummy": "f",
+        "ipa": "f",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "EigJ",
+        "category": "Consonants",
+        "orth": "g",
+        "dummy": "g",
+        "ipa": "g",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "Z8eH",
+        "category": "Consonants",
+        "orth": "gb",
+        "dummy": "gb",
+        "ipa": "g͡b",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "HNeo",
+        "category": "Consonants",
+        "orth": "gw",
+        "dummy": "gw",
+        "ipa": "gʷ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "4HKh",
+        "category": "Consonants",
+        "orth": "ɣ",
+        "dummy": "ɣ",
+        "ipa": "ɣ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "gFQ3",
+        "category": "Consonants",
+        "orth": "h",
+        "dummy": "h",
+        "ipa": "h",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "8jAt",
+        "category": "Consonants",
+        "orth": "j",
+        "dummy": "j",
+        "ipa": "d͡ʒ",
+        "lexical_example": "ex((a))mple",
+        "comments": "j for dʒ is known as African IPA",
+        "override": false
+    },
+    {
+        "id": "9qyL",
+        "category": "Consonants",
+        "orth": "k",
+        "dummy": "k",
+        "ipa": "k",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "9bvu",
+        "category": "Consonants",
+        "orth": "kp",
+        "dummy": "kp",
+        "ipa": "k͡p",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "AA4I",
+        "category": "Consonants",
+        "orth": "kw",
+        "dummy": "kw",
+        "ipa": "kʷ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "HfeV",
+        "category": "Consonants",
+        "orth": "l",
+        "dummy": "l",
+        "ipa": "l",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "ja5w",
+        "category": "Consonants",
+        "orth": "m",
+        "dummy": "m",
+        "ipa": "m",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "f5Ue",
+        "category": "Consonants",
+        "orth": "n",
+        "dummy": "n",
+        "ipa": "n",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "tRyU",
+        "category": "Consonants",
+        "orth": "ɲ",
+        "dummy": "ɲ",
+        "ipa": "ɲ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "7de4",
+        "category": "Consonants",
+        "orth": "ŋ",
+        "dummy": "ŋ",
+        "ipa": "ŋ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "xyDb",
+        "category": "Consonants",
+        "orth": "ŋw",
+        "dummy": "ŋw",
+        "ipa": "ŋʷ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "mclm",
+        "category": "Consonants",
+        "orth": "p",
+        "dummy": "p",
+        "ipa": "p",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "bydv",
+        "category": "Consonants",
+        "orth": "s",
+        "dummy": "s",
+        "ipa": "s",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "53sP",
+        "category": "Consonants",
+        "orth": "t",
+        "dummy": "t",
+        "ipa": "t",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "XSyn",
+        "category": "Consonants",
+        "orth": "v",
+        "dummy": "v",
+        "ipa": "v",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "kjL0",
+        "category": "Consonants",
+        "orth": "w",
+        "dummy": "w",
+        "ipa": "w",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "Z8nk",
+        "category": "Consonants",
+        "orth": "z",
+        "dummy": "z",
+        "ipa": "z",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "6IXW",
+        "category": "Consonants",
+        "orth": "y",
+        "dummy": "y",
+        "ipa": "j",
+        "lexical_example": "ex((a))mple",
+        "comments": "y for j is known as African IPA",
+        "override": false
+    },
+    {
+        "id": "RAmJ",
+        "category": "Consonants",
+        "orth": "hw",
+        "dummy": "hw",
+        "ipa": "hʷ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "HkpM",
+        "category": "Consonants",
+        "orth": "ž",
+        "dummy": "ʒ",
+        "ipa": "ʒ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "alaA",
+        "category": "Consonants",
+        "orth": "q",
+        "dummy": "k",
+        "ipa": "k",
+        "lexical_example": "ex((a))mple",
+        "comments": "loan from French",
+        "override": false
+    },
+    {
+        "id": "3bes",
+        "category": "Consonants",
+        "orth": "r",
+        "dummy": "r",
+        "ipa": "r",
+        "lexical_example": "ex((a))mple",
+        "comments": "missing in alphabet list",
+        "override": false
+    },
+    {
+        "id": "Fonf",
+        "category": "Vowels",
+        "orth": "a",
+        "dummy": "a",
+        "ipa": "a",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "v6iz",
+        "category": "Vowels",
+        "orth": "e",
+        "dummy": "e",
+        "ipa": "e",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "w2Y2",
+        "category": "Vowels",
+        "orth": "ɛ",
+        "dummy": "ɛ",
+        "ipa": "ɛ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "BLgv",
+        "category": "Vowels",
+        "orth": "i",
+        "dummy": "i",
+        "ipa": "i",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "7V4T",
+        "category": "Vowels",
+        "orth": "o",
+        "dummy": "o",
+        "ipa": "o",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "Ayiz",
+        "category": "Vowels",
+        "orth": "ɔ",
+        "dummy": "ɔ",
+        "ipa": "ɔ",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "J15Z",
+        "category": "Vowels",
+        "orth": "u",
+        "dummy": "u",
+        "ipa": "u",
+        "lexical_example": "ex((a))mple",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "c51v",
+        "category": "Vowels",
+        "orth": "ə",
+        "dummy": "ə",
+        "ipa": "ə",
+        "lexical_example": "ex((a))mple",
+        "comments": "technically an allophone",
+        "override": false
+    },
+    {
+        "id": "6mmn",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "á",
+        "dummy": "á",
+        "ipa": "á",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "KhDg",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "à",
+        "dummy": "à",
+        "ipa": "à",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "BW7p",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "â",
+        "dummy": "â",
+        "ipa": "â",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "usH0",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ǎ",
+        "dummy": "ǎ",
+        "ipa": "ǎ",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "azGz",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "é",
+        "dummy": "é",
+        "ipa": "é",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "xUL2",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "è",
+        "dummy": "è",
+        "ipa": "è",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "ArjT",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ê",
+        "dummy": "ê",
+        "ipa": "ê",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "dsIH",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ě",
+        "dummy": "ě",
+        "ipa": "ě",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "EPwR",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɛ́",
+        "dummy": "ɛ́",
+        "ipa": "ɛ́",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "qasK",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɛ̀",
+        "dummy": "ɛ̀",
+        "ipa": "ɛ̀",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "ew54",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɛ̂",
+        "dummy": "ɛ̂",
+        "ipa": "ɛ̂",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "GoHU",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɛ̌",
+        "dummy": "ɛ̌",
+        "ipa": "ɛ̌",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "99Od",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "í",
+        "dummy": "í",
+        "ipa": "í",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "qrBu",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ì",
+        "dummy": "ì",
+        "ipa": "ì",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "GSlu",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "î",
+        "dummy": "î",
+        "ipa": "î",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "s8Gt",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ǐ",
+        "dummy": "ǐ",
+        "ipa": "ǐ",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "f2ho",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ó",
+        "dummy": "ó",
+        "ipa": "ó",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "WO9E",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ò",
+        "dummy": "ò",
+        "ipa": "ò",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "We1M",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ô",
+        "dummy": "ô",
+        "ipa": "ô",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "NPIC",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ǒ",
+        "dummy": "ǒ",
+        "ipa": "ǒ",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "3pFT",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɔ́",
+        "dummy": "ɔ́",
+        "ipa": "ɔ́",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "35JT",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɔ̀",
+        "dummy": "ɔ̀",
+        "ipa": "ɔ̀",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "bUmv",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɔ̂",
+        "dummy": "ɔ̂",
+        "ipa": "ɔ̂",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "uPXi",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ɔ̌",
+        "dummy": "ɔ̌",
+        "ipa": "ɔ̌",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "fAyX",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ú",
+        "dummy": "ú",
+        "ipa": "ú",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "1RjR",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ù",
+        "dummy": "ù",
+        "ipa": "ù",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "N31Z",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "û",
+        "dummy": "û",
+        "ipa": "û",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "U1jf",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ǔ",
+        "dummy": "ǔ",
+        "ipa": "ǔ",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "Rkrd",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ə́",
+        "dummy": "ə́",
+        "ipa": "ə́",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "sMWH",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ə̀",
+        "dummy": "ə̀",
+        "ipa": "ə̀",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "oqmp",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ə̂",
+        "dummy": "ə̂",
+        "ipa": "ə̂",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    },
+    {
+        "id": "3n64",
+        "category": "Vowels with Stress/Accent/Tone",
+        "orth": "ə̌",
+        "dummy": "ə̌",
+        "ipa": "ə̌",
+        "lexical_example": "",
+        "comments": "",
+        "override": false
+    }
+]

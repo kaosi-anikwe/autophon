@@ -1,0 +1,3 @@
+Michael McGarrah
+Industry Advisor & Mentor
+<a href="https://www.linkedin.com/in/michaelmcgarrah/" target="_blank" style="color: currentColor; text-decoration: none; border-bottom: 0.3px dotted #949494;">Michael McGarrah</a> is a Senior Platform Engineer (cloud focus) at Envestnet. He has been an invaluable industry mentor to the Autophon project, offering expert guidance on the ins and outs of application development. With over thirty years of experience in IT, his background includes work in data science & analytics, cloud computing, development, database & multi-platform platform management, security and compliance, networking, and R&D.

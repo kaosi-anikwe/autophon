@@ -1,0 +1,11 @@
+*How to cite*
+
+Any study that makes use of Autophon Danish 3.0 should cite the following sources:
+
+Boersma, P., & Weenink, D. (2017). Praat: Doing phonetics by computer [Computer software], Version 6.0.36. http://www.praat.org/
+
+McAuliffe, M., Socolof, M., Mihuc, S., Wagner, M., & Sonderegger, M. (2017). Montreal Forced Aligner: Trainable text-speech alignment using Kaldi. Proceedings of Interspeech, 498–502.
+
+Young, N. J. (2023). DanFA 3.0 – Forced Alignment of Danish, version 3.0. www.autophon.se
+
+Young, N. J., & Anikwe, K. (2024). Autophon – Automatic phonetic annotation of Nordic languages (web application). www.autophon.se
