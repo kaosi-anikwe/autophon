@@ -3,38 +3,54 @@ from flask import current_app
 from flask_restful import Resource
 
 
-class UserLimitsResource(Resource):
+class ConfigResource(Resource):
     def get(self):
-        """Get user limits configuration from admin/user_limits.txt"""
+        """Get application configuration including user limits and audio extensions"""
         try:
-            # Access the user_limits from the Flask app's global property
+            config_data = {}
+            
+            # Get user limits
             if hasattr(current_app, "user_limits"):
-                return {"status": "success", "data": current_app.user_limits}
+                config_data["user_limits"] = current_app.user_limits
+            else:
+                # Fallback: read directly from file
+                user_limits_path = os.path.join(os.getenv("ADMIN"), "user_limits.txt")
+                user_limits = {}
+                if os.path.exists(user_limits_path):
+                    with open(user_limits_path, "r") as file:
+                        for line in file:
+                            line = line.strip()
+                            if line and ":" in line:
+                                key, value = line.split(":", 1)
+                                key = key.strip()
+                                value = value.strip()
+                                try:
+                                    value = int(value)
+                                except ValueError:
+                                    pass
+                                user_limits[key] = value
+                config_data["user_limits"] = user_limits
+            
+            # Get audio extensions
+            if hasattr(current_app, "audio_extensions"):
+                config_data["audio_extensions"] = current_app.audio_extensions
+            else:
+                # Fallback: read directly from file
+                audio_extensions_path = os.path.join(os.getenv("ADMIN"), "audio_extensions.txt")
+                audio_extensions = []
+                if os.path.exists(audio_extensions_path):
+                    with open(audio_extensions_path, "r") as file:
+                        for line in file:
+                            extension = line.strip()
+                            if extension:
+                                audio_extensions.append(extension)
+                config_data["audio_extensions"] = audio_extensions
 
-            # Fallback: read directly from file if not loaded in app
-            user_limits_path = os.path.join(os.getenv("ADMIN"), "user_limits.txt")
-
-            user_limits = {}
-            if os.path.exists(user_limits_path):
-                with open(user_limits_path, "r") as file:
-                    for line in file:
-                        line = line.strip()
-                        if line and ":" in line:
-                            key, value = line.split(":", 1)
-                            key = key.strip()
-                            value = value.strip()
-                            # Try to convert to int if it's a number
-                            try:
-                                value = int(value)
-                            except ValueError:
-                                pass
-                            user_limits[key] = value
-
-            return {"status": "success", "data": user_limits}
+            return {"status": "success", "data": config_data}
 
         except Exception as e:
-            current_app.logger.error(f"Error reading user limits: {str(e)}")
+            current_app.logger.error(f"Error reading configuration: {str(e)}")
             return {
                 "status": "error",
-                "message": "Failed to load user limits configuration",
+                "message": "Failed to load application configuration",
             }, 500

@@ -40,7 +40,7 @@ from app.resources import (
     UserDictionariesResource,
     DictionaryByLanguageResource,
     # Configuration
-    UserLimitsResource,
+    ConfigResource,
 )
 
 api_bp = Blueprint("api", __name__)
@@ -93,4 +93,4 @@ api.add_resource(
 )
 
 # Configuration routes
-api.add_resource(UserLimitsResource, "/config/user-limits")
+api.add_resource(ConfigResource, "/config")

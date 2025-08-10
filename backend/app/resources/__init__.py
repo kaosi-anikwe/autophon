@@ -56,6 +56,7 @@ from .dictionaries import (
 
 # Configuration resources
 from .config import (
+    ConfigResource,
     UserLimitsResource,
 )
 
@@ -99,5 +100,5 @@ __all__ = [
     "UserDictionariesResource",
     "DictionaryByLanguageResource",
     # Configuration resources
-    "UserLimitsResource",
+    "ConfigResource",
 ]

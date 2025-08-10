@@ -40,6 +40,29 @@ def load_user_limits(app):
         app.user_limits = {}
 
 
+def load_audio_extensions(app):
+    """Load audio extensions configuration from admin/audio_extensions.txt into app global property"""
+    try:
+        # Construct path to audio_extensions.txt
+        audio_extensions_path = os.path.join(os.getenv("ADMIN"), "audio_extensions.txt")
+
+        audio_extensions = []
+        if os.path.exists(audio_extensions_path):
+            with open(audio_extensions_path, "r") as file:
+                for line in file:
+                    extension = line.strip()
+                    if extension:
+                        audio_extensions.append(extension)
+
+        # Store as a global property on the Flask app
+        app.audio_extensions = audio_extensions
+        app.logger.info(f"Audio extensions configuration loaded: {audio_extensions}")
+
+    except Exception as e:
+        app.logger.error(f"Failed to load audio extensions configuration: {str(e)}")
+        app.audio_extensions = []
+
+
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv("FLASK_CONFIG", "default")
@@ -47,8 +70,9 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
-    # Load user limits configuration as a global app property
+    # Load configuration files as global app properties
     load_user_limits(app)
+    load_audio_extensions(app)
 
     # Setup logging
     logger = setup_logging(app)
