@@ -12,6 +12,9 @@ from app.resources import (
     LogoutAllDevices,
     TokenCleanup,
     RevokeUserTokens,
+    # Captcha
+    CaptchaResource,
+    CaptchaCleanupResource,
     # Users
     UserListResource,
     UserResource,
@@ -87,6 +90,10 @@ api.add_resource(VerifyToken, "/auth/verify")
 api.add_resource(LogoutAllDevices, "/auth/logout-all")
 api.add_resource(TokenCleanup, "/auth/cleanup-tokens")
 api.add_resource(RevokeUserTokens, "/auth/revoke-user-tokens")
+
+# Captcha routes
+api.add_resource(CaptchaResource, "/auth/register-captcha")
+api.add_resource(CaptchaCleanupResource, "/auth/captcha-cleanup")
 
 # User routes
 api.add_resource(UserListResource, "/users")

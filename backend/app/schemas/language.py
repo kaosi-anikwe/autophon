@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from marshmallow_sqlalchemy.fields import Nested
 
 from app.models.language import Language, LanguageType
 

@@ -1,19 +1,18 @@
 import os
 import shutil
-import subprocess
-import traceback
-from datetime import datetime
-from flask import current_app, request
-from flask_restful import Resource
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from dotenv import load_dotenv
-import charset_normalizer
 import textgrid
+import traceback
+import subprocess
+import charset_normalizer
+from datetime import datetime
+from dotenv import load_dotenv
+from flask_restful import Resource
+from flask import current_app, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from app.models.task import Task, TaskStatus
-from app.models.user import User
-from app.models.language import Language
 from app.extensions import db
+from app.models.task import Task
+from app.models.language import Language
 from app.utils.uploads import processTextGridNew
 
 load_dotenv()

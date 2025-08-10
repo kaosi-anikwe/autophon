@@ -1,5 +1,5 @@
-from marshmallow import Schema, fields, validate, ValidationError, validates
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields, validate, ValidationError, validates
 
 from app.models.dictionary import UserDictionary
 

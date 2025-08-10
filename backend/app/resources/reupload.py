@@ -2,15 +2,13 @@ import os
 import shutil
 import traceback
 from datetime import datetime
-from flask import current_app, request
-from flask_restful import Resource
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+from flask_restful import Resource
+from flask import current_app, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from app.models.task import Task, TaskStatus, FileType
-from app.models.user import User
 from app.extensions import db
+from app.models.task import Task, TaskStatus, FileType
 from app.utils.uploads import isAudioFile, fileOps
 
 load_dotenv()

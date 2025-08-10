@@ -1,4 +1,3 @@
-from decimal import Decimal
 from marshmallow import Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 

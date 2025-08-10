@@ -1,9 +1,8 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from app.extensions import db
 from app.models.dictionary import UserDictionary
 from app.models.user import User
 from app.schemas import (

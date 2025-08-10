@@ -1,62 +1,118 @@
+# ==============================================================================
+# IMPORTS
+# ==============================================================================
+
+# Standard library imports
 import os
 import codecs
+import shutil
+import string
+import random
 import subprocess
 import unicodedata
+from datetime import datetime, timedelta, timezone
+
+# Third-party imports
 import charset_normalizer
-from datetime import datetime
 from praatio import textgrid
-from openpyxl import load_workbook
+from dotenv import load_dotenv
 from PIL import Image, ImageDraw, ImageFont
+from openpyxl import load_workbook, Workbook
 from openpyxl.utils import get_column_letter
 from praatio.utilities.constants import Interval
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
+# Local imports
+from app.extensions import db
 from app.utils.logger import get_logger
+
+# ==============================================================================
+# CONFIGURATION
+# ==============================================================================
+
+load_dotenv()
 
 UPLOADS = os.getenv("UPLOADS")
 ADMIN = os.getenv("ADMIN")
 
 logger = get_logger(__name__)
 
+# ==============================================================================
+# USER PROFILE & AUTH & ICON FUNCTIONS
+# ==============================================================================
+
 
 def generate_user_icon(name, user_id, force=False):
+    """Generate user profile icon with initials"""
     image_path = os.path.join(UPLOADS, user_id, "profile.png")
     os.makedirs(os.path.dirname(image_path), exist_ok=True)
+
     if not os.path.exists(image_path) or force:
         # Load the template image
         template_path = os.path.join(ADMIN, "profile_template.png")
         image = Image.open(template_path).convert("RGBA")
+
         # Create a drawing context
         draw = ImageDraw.Draw(image)
+
         # Get the user's initials
-        initials = f"{name.split()[0][:2]}{name.split()[1][:2]}"
+        name_parts = name.split()
+        if len(name_parts) >= 2:
+            initials = f"{name_parts[0][:2]}{name_parts[1][:2]}"
+        else:
+            initials = name[:4] if len(name) >= 4 else name
+
         # Define the font size and type
         font_size = 100
         font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
         font = ImageFont.truetype(font_path, font_size)
+
         # Get the size of the image and the text
         image_width, image_height = image.size
+
         # Use textbbox instead of deprecated textsize
         bbox = draw.textbbox((0, 0), initials, font=font)
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
+
         # Calculate the position to center the text on the image
         x = (image_width - text_width) / 2 + 5
         y = (image_height - text_height) / 2 - 10
+
         # Draw the initials on the image
         draw.text((x, y), initials, font=font, fill="black")
+
         # Save to user folder
-        image_path = os.path.join(UPLOADS, user_id, "profile.png")
-        os.makedirs(os.path.dirname(image_path), exist_ok=True)
         image.save(image_path)
+
     return os.path.relpath(image_path)
 
 
+# get captcha for register page
+def generate_captcha() -> tuple:
+    """
+    Generates and returns a CAPTCHA image as well as the text for validation.
+    """
+    from captcha.image import ImageCaptcha
+
+    image = ImageCaptcha()
+    captcha_text = "".join(random.choices(string.digits, k=4))
+    data = image.generate(captcha_text)
+
+    return data, captcha_text
+
+
+# ==============================================================================
+# TEXT PROCESSING & ENCODING FUNCTIONS
+# ==============================================================================
+
+
 def missing_word_html(word_list) -> str:
+    """Generate HTML for missing word display"""
     logger.debug("Generating missing word html")
     html_code = ""
     for i, word in enumerate(word_list, start=1):
-        word_parts = word.split("\t")
+        word_parts = word.split("\\t")
         if len(word_parts) == 2:
             word_text = word_parts[0]
             phonemes = word_parts[1].split()
@@ -72,13 +128,14 @@ def missing_word_html(word_list) -> str:
             n_digits = len(str(len(word_list))) - len(str(i))
             spaces = "".join(["&nbsp;"] * n_digits)
             word_text = f"<span class='text-white'>{spaces}{i} {word_text}</span>"
-            html_code += f"{word_text}\t{colored_phoneme_str}<br>\n"
+            html_code += f"{word_text}\\t{colored_phoneme_str}<br>\\n"
         else:
             logger.info(f"Invalid entry: {word}")
     return html_code
 
 
 def replace_decomposed(text):
+    """Replace decomposed Unicode characters with precomposed equivalents"""
     # Normalize to NFD (decomposed form)
     nfd = unicodedata.normalize("NFD", text)
 
@@ -109,6 +166,7 @@ def replace_decomposed(text):
 
 
 def detect_encoding(file_path):
+    """Detect file encoding using charset_normalizer"""
     with open(file_path, "rb") as file:
         raw_data = file.read()
         result = charset_normalizer.detect(raw_data)
@@ -118,17 +176,19 @@ def detect_encoding(file_path):
 
 
 def change_codec(file, codec="utf-8"):
+    """Convert file encoding to specified codec"""
     # convert to input codec
     with codecs.open(file, "r", encoding=detect_encoding(file)) as file_in:
         text = file_in.read()
         decoded_text = text.encode(codec, errors="ignore")
-    # write the utf-e encoded text to the output file
+    # write the utf-8 encoded text to the output file
     with open(file, "wb") as output_file:
         output_file.write(decoded_text)
 
 
 def character_resolve(tg_path: str):
-    logger.info(f"Removing compsing decomposed characters in file.")
+    """Remove composing decomposed characters from TextGrid file"""
+    logger.info(f"Removing composing decomposed characters in file.")
     tg = textgrid.openTextgrid(tg_path, includeEmptyIntervals=True)
     for tier in tg.tiers:
         for start, stop, text in tier.entries:
@@ -137,11 +197,17 @@ def character_resolve(tg_path: str):
             tier.insertEntry(
                 entry, collisionMode="replace", collisionReportingMode="silence"
             )
-    logger.info(f"Done compsing decomposed characters in file.")
+    logger.info(f"Done composing decomposed characters in file.")
     tg.save(tg_path, format="long_textgrid", includeBlankSpaces=True)
 
 
+# ==============================================================================
+# EXCEL & PDF FUNCTIONS
+# ==============================================================================
+
+
 def get_font(font_size: int = 8, bold=None, gray=None) -> Font:
+    """Get standardized font for Excel files"""
     if gray:
         font = Font(name="Josefin Sans", size=font_size, bold=bold, color="C0C0C0")
         return font
@@ -149,8 +215,8 @@ def get_font(font_size: int = 8, bold=None, gray=None) -> Font:
     return font
 
 
-# convert to pdf
 def excel_to_pdf(input_file, output_file) -> bool:
+    """Convert Excel file to PDF using LibreOffice"""
     # run these 2 commands first
     # make sure libreoffice and unconv are installed
 
@@ -167,6 +233,7 @@ def excel_to_pdf(input_file, output_file) -> bool:
 
 
 def get_monthly_download(user_id, date, task_list: list, totals: dict):
+    """Generate monthly download report as PDF"""
     # Load the Excel file
     workbook = load_workbook(f"{ADMIN}/monthly_download.xlsx")
 
@@ -342,3 +409,257 @@ def get_monthly_download(user_id, date, task_list: list, totals: dict):
         raise Exception("There was a problem converting xlsx to pdf.")
 
     return output_file
+
+
+# ==============================================================================
+# SQLALCHEMY DATABASE FUNCTIONS
+# ==============================================================================
+
+
+def purge_unverified_accounts(timeframe: int = 48):
+    """Delete unverified accounts from SQLAlchemy database after `timeframe` in hours"""
+    from app.models.user import User
+
+    cutoff_time = datetime.now(timezone.utc) - timedelta(hours=timeframe)
+
+    # Find unverified users older than timeframe
+    unverified_users = User.query.filter(
+        User.verified == False, User.created_at < cutoff_time
+    ).all()
+
+    deleted_count = 0
+    for user in unverified_users:
+        try:
+            logger.info(f"Deleting unverified account: {user.email} (ID: {user.id})")
+            delete_user_account(user.id)
+            deleted_count += 1
+        except Exception as e:
+            logger.error(f"Failed to delete user {user.id}: {e}")
+
+    logger.info(f"Purged {deleted_count} unverified accounts")
+    return deleted_count
+
+
+def delete_user_account(user_id: int):
+    """Delete user account and associated data using SQLAlchemy"""
+    from app.models.user import User
+    from app.models.task import Task
+
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            logger.warning(f"User {user_id} not found")
+            return False
+
+        # Mark user as deleted instead of hard delete for data integrity
+        user.title = "deleted"
+        user.first_name = "deleted"
+        user.last_name = "deleted"
+        user.email = f"deleted_{user_id}@deleted.com"
+        user.deleted = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        user.update()
+
+        # Delete associated tasks (cascade should handle this, but explicit is better)
+        Task.query.filter_by(user_id=user_id).delete()
+
+        # Delete user folders
+        delete_folders(UPLOADS, str(user.uuid))
+
+        db.session.commit()
+        logger.info(f"Successfully deleted user account {user_id}")
+        return True
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error deleting user account {user_id}: {e}")
+        return False
+
+
+def populate_users(
+    limit: datetime, include_deleted: bool = False, filename: str = None
+):
+    """Export users to Excel file using SQLAlchemy - matches original populate_users function signature"""
+    from app.models.user import User
+
+    new_filename = (
+        os.path.join(ADMIN, "users", f"new_users_{limit.strftime('%y%m%d')}.xlsx")
+        if not filename
+        else filename
+    )
+
+    # Create Excel file
+    new_workbook_path = create_users_excel_template(new_filename)
+    new_workbook = load_workbook(new_workbook_path)
+    new_sheet = new_workbook.active
+
+    # Query users with date limit (registered/created_at <= limit)
+    query = User.query.filter(User.created_at <= limit)
+
+    # Apply deleted filter based on include_deleted parameter
+    if not include_deleted:
+        query = query.filter((User.deleted == None) | (User.deleted == ""))
+
+    # Sort by registration date (created_at) ascending to match original
+    users = query.order_by(User.created_at).all()
+
+    # Add user data to Excel - maintaining original data structure
+    for user in users:
+        deleted_date = None
+        if user.deleted and user.deleted != "":
+            try:
+                # Try to parse as datetime string and format for Excel
+                deleted_date = datetime.strptime(
+                    user.deleted, "%Y-%m-%d %H:%M:%S"
+                ).strftime("%m/%d/%Y %H:%M:%S")
+            except:
+                # Fallback to original string if parsing fails
+                deleted_date = user.deleted
+
+        new_sheet.append(
+            (
+                user.uuid,  # Use UUID instead of old MongoDB id
+                user.title or "",
+                user.first_name or "",
+                user.last_name or "",
+                user.email or "",
+                user.created_at.strftime(
+                    "%m/%d/%Y %H:%M:%S"
+                ),  # registered -> created_at
+                user.verified,
+                deleted_date,
+                user.org or user.industry or "Non-Affiliated",
+            )
+        )
+
+    new_workbook.save(new_workbook_path)
+    logger.info(f"Exported {len(users)} users to {new_workbook_path}")
+    return new_workbook_path
+
+
+def populate_history(filename: str = None):
+    """Export task history to Excel file using SQLAlchemy"""
+    from app.models.task import Task
+    from app.models.user import User
+
+    new_filename = (
+        os.path.join(
+            ADMIN, "history", f"history_{datetime.now().strftime('%y%m%d')}.xlsx"
+        )
+        if not filename
+        else filename
+    )
+
+    # Create Excel file
+    new_workbook_path = create_history_excel_template(new_filename)
+    new_workbook = load_workbook(new_workbook_path)
+    new_sheet = new_workbook.active
+
+    # Query all tasks with user information
+    tasks = Task.query.join(User).order_by(Task.task_id).all()
+
+    for task in tasks:
+        new_sheet.append(
+            (
+                task.user_id,
+                f"{task.owner.uuid}_{task.task_id}",
+                task.task_id,
+                task.download_date or task.created_at.strftime("%Y/%m/%d"),
+                int((task.no_of_files or 0) / 2) or "",
+                task.lang or (task.language.display_name if task.language else ""),
+                task.size or 0,
+                task.words or 0,
+                task.task_status.value if task.task_status else "",
+                task.deleted or "",
+            )
+        )
+
+    new_workbook.save(new_workbook_path)
+    logger.info(f"Exported {len(tasks)} tasks to {new_workbook_path}")
+    return new_workbook_path
+
+
+# ==============================================================================
+# EXCEL TEMPLATE CREATION FUNCTIONS
+# ==============================================================================
+
+
+def create_users_excel_template(filename: str = None):
+    """Create Excel template for user data export"""
+    file_path = os.path.join(ADMIN, "users.xlsx") if not filename else filename
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Users"
+
+    column_names = [
+        "User ID",
+        "Title",
+        "First Name",
+        "Last Name",
+        "Email",
+        "Date Created",
+        "Verified",
+        "Date Deleted",
+        "Affiliation",
+    ]
+
+    # Add column headers
+    for col_num, column_name in enumerate(column_names, start=1):
+        sheet.cell(row=1, column=col_num, value=column_name)
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    workbook.save(file_path)
+    return str(file_path)
+
+
+def create_history_excel_template(filename: str = None):
+    """Create Excel template for task history export"""
+    file_path = os.path.join(ADMIN, "history.xlsx") if not filename else filename
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Task History"
+
+    column_names = [
+        "user_id",
+        "upload_id",
+        "task_id",
+        "date",
+        "file_pairs",
+        "language",
+        "size",
+        "words",
+        "status",
+        "deleted",
+    ]
+
+    # Add column headers
+    for col_num, column_name in enumerate(column_names, start=1):
+        sheet.cell(row=1, column=col_num, value=column_name)
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    workbook.save(file_path)
+    return str(file_path)
+
+
+# ==============================================================================
+# FILE SYSTEM UTILITIES
+# ==============================================================================
+
+
+def copy_file(src: str, dst: str):
+    """Copy file from source to destination, creating directories as needed"""
+    if os.path.exists(src):
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy(src, dst)
+
+
+def delete_folders(folder_path: str, search_str: str) -> None:
+    """Recursively delete all folders containing search string"""
+    if os.path.exists(folder_path):
+        for entry in os.scandir(folder_path):
+            if entry.is_dir():
+                if search_str in entry.path:
+                    if os.path.exists(entry.path):
+                        shutil.rmtree(entry.path)
+                delete_folders(entry.path, search_str)

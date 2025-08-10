@@ -7,7 +7,9 @@ from tempfile import NamedTemporaryFile
 from praatio.utilities.constants import Interval
 
 # local imports
-from app.config import logger
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def log_skipped_files(

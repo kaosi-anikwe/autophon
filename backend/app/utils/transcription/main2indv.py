@@ -1,4 +1,3 @@
-import re
 import os
 import math
 import shutil
@@ -6,7 +5,9 @@ import pandas as pd
 from flask import current_app
 
 # local imports
-from app.config import logger
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def find_transcription_file(folder_path, log_file):

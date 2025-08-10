@@ -11,7 +11,6 @@ class TaskStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
     CANCELLED = "cancelled"
-    PRE_ERROR = "pre-error"
     ALIGNED = "aligned"
     EXPIRED = "expired"
 

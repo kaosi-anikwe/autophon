@@ -1,12 +1,12 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.extensions import db
-from app.models.language import Language, LanguageType
 from app.models.user import User
+from app.models.language import Language, LanguageType
 from app.utils.logger import get_logger, log_exception
 
 logger = get_logger(__name__)

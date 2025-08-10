@@ -4,8 +4,9 @@ from flask import current_app
 
 # local imports
 from .conv2functions import *
-from app.config import logger
+from app.utils.logger import get_logger
 
+logger = get_logger(__name__)
 
 ext_to_function = {
     ".eaf": convert_eaf_to_tsv,

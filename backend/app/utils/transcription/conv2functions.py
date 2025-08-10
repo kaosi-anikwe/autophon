@@ -1,14 +1,14 @@
 import os
-import re
 import csv
 import pympi
-import openpyxl
 import pandas as pd
 from pandas import DataFrame
 from praatio import textgrid
 
 # local imports
-from app.config import logger
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def convert_eaf_to_tsv(input_path, output_path):

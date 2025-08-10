@@ -110,6 +110,12 @@ from .team import (
     ContactEmailResource,
 )
 
+# Captcha resources
+from .captcha import (
+    CaptchaResource,
+    CaptchaCleanupResource,
+)
+
 __all__ = [
     # Authentication resources
     "Register",
@@ -181,4 +187,7 @@ __all__ = [
     "TeamResource",
     "TeamImageResource",
     "ContactEmailResource",
+    # Captcha resources
+    "CaptchaResource",
+    "CaptchaCleanupResource",
 ]

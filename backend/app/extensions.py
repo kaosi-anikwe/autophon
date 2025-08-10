@@ -1,7 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 
 db = SQLAlchemy()
@@ -26,9 +26,9 @@ def init_logger():
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
     """Check if token is blacklisted or user tokens are revoked"""
-    from app.models.token_blacklist import TokenBlacklist
     from app.models.user import User
     from datetime import datetime, timezone
+    from app.models.token_blacklist import TokenBlacklist
 
     jti = jwt_payload["jti"]
     user_id = jwt_payload["sub"]

@@ -1,19 +1,19 @@
 import os
 import json
+import yaml
 import traceback
 import subprocess
 import charset_normalizer
-import yaml
-from flask import current_app, request
+from dotenv import load_dotenv
 from flask_restful import Resource
-from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request, jwt_required
+from flask import current_app, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
+from app.extensions import db
 from app.models.user import User
 from app.models.language import Language
-from app.utils.uploads import check_phones, formatUserDict
 from app.utils.helpers import missing_word_html
-from app.extensions import db
-from dotenv import load_dotenv
+from app.utils.uploads import check_phones, formatUserDict
 
 load_dotenv()
 ADMIN = os.getenv("ADMIN")
