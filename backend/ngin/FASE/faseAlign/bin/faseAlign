@@ -1,0 +1,1348 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
+import os
+import re
+import wave
+import codecs
+import subprocess
+import argparse
+import shutil
+import site
+import audiolabel
+import sox
+import pkg_resources as pr
+
+# manually add faseAlign module parent path
+sys.path.append("/home/nordalign/autophon/ngin/FASE/faseAlign")
+
+from faseAlign.utils import spanish_word
+
+def correction(x):
+    """
+    Correct the rounding error for the 11025hz sampling rate.
+    See Yuan and Liberman (2008) or P2FA.readme for details.
+    """
+    x = float(x)
+    x = x - (x % 10)  # Round down to deal with strangeness
+    x = x / 10000000
+    if x > 0:
+        x = (x + 0.0125) * (11000.0 / 11025.0)  # correction
+
+    return x
+
+
+def process_arguments(
+    args_wav,
+    args_stereo,
+    args_left,
+    args_right,
+    args_transcript,
+    args_outpath,
+    args_missing,
+    args_tags,
+    args_version,
+    args_tier,
+):
+
+    # Print version information
+    if args_version is True:
+        version = pr.require("faseAlign")[0].version
+        print("faseAlign Version = " + str(version))
+        sys.exit()
+
+    # Check to see if wav and transcript arguments are provided
+    if (args_wav is None) or (args_transcript is None):
+        parser.error("Must include wav and transcript arguments.")
+
+    # Establish repository location for data files
+    repos = pr.resource_filename("faseAlign", "model/")
+
+    # Check stereo options
+    if (args_stereo is True and args_left is None) or (
+        args_stereo is True and args_right is None
+    ):
+        parser.error("Stereo option requires --left and --right speaker arguments.")
+
+    # Check transcript type
+    file_ext = os.path.splitext(args_transcript)[1]
+
+    if file_ext in [".txt", ".TXT", ".Txt", ".txT"]:
+        transcript_type = "txt"
+    elif file_ext in [".TextGrid", ".Textgrid", ".textgrid", ".textGrid"]:
+        transcript_type = "tg"
+    else:
+        parser.error("Transcript file must be .txt or .TextGrid.")
+
+    # Check specific tier options
+    if args_tier is not None:
+        if transcript_type != "tg":
+            parser.error(
+                "When using the --tier / -i option, the transcript must be a .TextGrid file"
+            )
+
+    # Check missing
+    if args_missing is not None:
+        dict_include = True
+    else:
+        dict_include = False
+
+    # Establish basename and directories
+    basename = os.path.basename(args_wav).replace(".wav", "")
+    if args_outpath is not None:
+        outpath = args_outpath
+    else:
+        outpath = os.getcwd()
+
+    tmppath = os.path.join(outpath, "tmp")
+
+    # Channel options
+    if args_stereo is True:
+        channel_type = "stereo"
+        if (args_left is not None) and (args_right is not None):
+            chan_1 = "{" + args_left + "}"
+            chan_2 = "{" + args_right + "}"
+        else:
+            chan_1 = None
+            chan_2 = None
+    else:
+        channel_type = "mono"
+        chan_1 = None
+        chan_2 = None
+
+    # Remove possible braces from tag array
+    if args_tags is not None:
+        for c in ["{", "}"]:
+            args_tags[:] = [t.replace(c, "").upper() for t in args_tags]
+        if transcript_type == "tg":
+            print(
+                "Warning: Ignoring -g/--tags argument since your transcript is a TextGrid."
+            )
+            print("Did you mean to use a txt transcript?")
+        for tag in args_tags:
+            if tag in ["LG", "BR", "NS", "LS", "CG", "SIL"]:
+                parser.error(
+                    str(tag)
+                    + " is reserved for internal use. Please choose a different speaker tag."
+                )
+
+    return (
+        tmppath,
+        basename,
+        repos,
+        outpath,
+        transcript_type,
+        channel_type,
+        chan_1,
+        chan_2,
+        dict_include,
+        args_tags,
+    )
+
+
+def makeSections(
+    f,
+):  # TO-DO: check that this still functions for batch scp alignments; pay special attention to speaker determination/ and min/max etc.
+    """This is a generator function. It will return successive sections
+    of f until EOF.
+
+    Sections are every line from a 'Name:' line to the first blank line.
+    Sections are returned as a list of lines with line endings stripped.
+
+    Original makeSections() function from Kent Johnson (https://mail.python.org/pipermail/tutor/2004-December/033767.html)
+    """
+    currSection = []
+    for line in f:
+        line = line.strip()
+        if re.match('"(.*?)"', line) is not None:
+            # Start of a new section
+            if currSection:
+                yield currSection
+                currSection = []
+            currSection.append(line)
+        elif not line:
+            # Blank line ends a section
+            # if currSection:
+            if line == ".":
+                yield currSection
+                currSection = []
+        else:
+            # Accumulate into a section
+            currSection.append(line)
+    # Yield the last section
+    if currSection:
+        yield currSection
+
+
+def sectionizeMLF(mlf):
+
+    currSection = []
+    for line in mlf:
+        line = line.strip().split()
+        if len(line) == 5:
+            if currSection:
+                yield currSection
+                currSection = []
+            currSection.append(line)
+        elif not line:
+            if line == ".":
+                yield currSection
+                currSection = []
+        else:
+            currSection.append(line)
+    if currSection:
+        yield currSection
+
+
+def prep_dir(my_dict, tmppath, repos, dict_include, args_phonemicize):
+
+    if os.path.exists(tmppath):
+        shutil.rmtree(tmppath)
+    os.mkdir(tmppath)
+    os.mkdir(os.path.join(tmppath, "chunks"))
+
+    # initialize null custom_words variable
+    custom_words = None
+
+    if dict_include == True:
+
+        # Check to see if any illegal characters are in dictionary
+        unwanted = [
+            "\?",
+            "¿",
+            "¡",
+            "!",
+            "%",
+            '"',
+            "/",
+            "#",
+            "&",
+            "\(",
+            "\)",
+            "'",
+            "\+",
+            "@",
+            "\^",
+            ",",
+            "\-",
+            "\.",
+            "\\\\",
+            ":",
+            ";",
+            "_",
+            "á",
+            "í",
+            "ú",
+            "é",
+            "ó",
+        ]
+        matches = []
+
+        with codecs.open(args.missing, "r", "utf-8") as custom_dict:
+            custom_lines = custom_dict.readlines()
+            for line in custom_lines:
+                for character in unwanted:
+                    try:
+                        if re.search(character, line.encode("utf-8")) is not None:
+                            matches.append(character)
+                    except TypeError:
+                        if re.search(character, line) is not None:
+                            matches.append(character)
+
+            if len(matches) > 0:
+                matches = list(set(matches))
+                print(
+                    "ERROR! Illegal characters in custom dictionary. Please remove them and resubmit. : "
+                )
+                for char in matches:
+                    print('"' + char + '", ')
+                sys.exit()
+
+        dict_path = os.path.join(tmppath, "new_dict.txt")
+        with codecs.open(my_dict or os.path.join(repos, "dict_sort"), "r", "utf-8") as full_dict:
+            full_lines = full_dict.readlines()
+
+        custom_lines = set(custom_lines)
+        # create list of custom words to pass to later function checks
+        custom_words = [e.split()[0] for e in list(custom_lines)]
+        full_lines = set(full_lines)
+
+        full = list(full_lines | custom_lines)
+        full.sort()
+        full = [line.strip() for line in full]
+
+        with codecs.open(dict_path, "w", "utf-8") as new_dict:
+            for line in full:
+                new_dict.write(line + "\n")
+
+    # allow for appending with phonemicization when no custom dict used by copying repos dict_sort to tmppath
+    elif args_phonemicize == True:
+        dict_path = os.path.join(tmppath, "new_dict.txt")
+
+        with codecs.open(my_dict or os.path.join(repos, "dict_sort"), "r", "utf-8") as full_dict:
+            full_lines = full_dict.readlines()
+
+        full = list(full_lines)
+        full.sort()
+        full = [line.strip() for line in full]
+
+        with codecs.open(dict_path, "w", "utf-8") as new_dict:
+            for line in full:
+                new_dict.write(line + "\n")
+    else:
+        dict_path = my_dict or os.path.join(repos, "dict_sort")
+
+    return dict_path, custom_words
+
+
+def process_wav(audio, tmppath, basename, channel_type):
+
+    wav_file = wave.open(audio, "r")
+    sr = wav_file.getframerate()
+    wav_file.close()
+
+    audio_align = os.path.join(tmppath, os.path.basename(audio))
+
+    subprocess.check_call(["cp", audio, audio_align])
+
+    if sr < 11025:
+        print(
+            "WARNING - Sampling rate is lower than necessary 11025hz. Alignment will suffer!"
+        )
+
+    elif sr == 11025:
+        pass
+
+    else:  # sr > 11025
+        subprocess.check_call(
+            [
+                "sox",
+                audio_align,
+                "-r",
+                "11025",
+                os.path.join(tmppath, basename + "_ds.wav"),
+            ]
+        )
+        subprocess.check_call(
+            ["mv", os.path.join(tmppath, basename + "_ds.wav"), audio_align]
+        )
+
+    if channel_type == "stereo":
+        subprocess.check_call(
+            ["sox", audio, os.path.join(tmppath, basename + "_c1.wav"), "remix", "1"]
+        )
+        subprocess.check_call(
+            ["sox", audio, os.path.join(tmppath, basename + "_c2.wav"), "remix", "2"]
+        )
+
+    return audio_align
+
+
+def clean_words_str(content):
+
+    l = []
+    unwanted = [
+        "\*",
+        "?",
+        "¿",
+        "¡",
+        "!",
+        "%",
+        '"',
+        "/",
+        "#",
+        "&",
+        "(",
+        ")",
+        "'",
+        "+",
+        "@",
+        "^",
+        ",",
+        "-",
+        ".",
+        "\\",
+        ":",
+        ";",
+        "_",
+        "\n",
+        "\t",
+    ]
+    rx = "[" + re.escape("".join(unwanted)) + "]"
+    unwanted_ext = [
+        "\u2026",
+        "\u2010",
+        "\u2011",
+        "\u2012",
+        "\u2013",
+        "\u2014",
+        "\u2015",
+        "\u2018",
+        "\u2019",
+        "\u201C",
+        "\u201D",
+    ]
+
+    # Process string type content from textgrids
+    new_content = re.sub(rx, " ", content)
+
+    # Remove other unwanted characters. For some reason this doesn't work if you copy and paste the character into 'unwanted' above, likely an encoding thing.
+    # new_line = new_line.replace(u'\u2026', ' ')
+    # new_line = new_line.replace(u'\u201C', ' ')
+    for char in unwanted_ext:
+        new_content = new_content.replace(char, " ")
+
+    # Add padding around tabs
+    new_content = re.sub("\{", " {", new_content)
+    new_content = re.sub("\}", "} ", new_content)
+
+    # Clear out multiple spaces
+    new_content = re.sub("  ", " ", new_content)
+    new_content = re.sub("  ", " ", new_content)
+    new_content = re.sub("  ", " ", new_content)
+
+    for word in new_content.split():
+        l.append(word.upper())
+
+    return l
+
+
+def clean_words_list(l, content):
+    unwanted = [
+        "\*",
+        "?",
+        "¿",
+        "¡",
+        "!",
+        "%",
+        '"',
+        "/",
+        "#",
+        "&",
+        "(",
+        ")",
+        "'",
+        "+",
+        "@",
+        "^",
+        ",",
+        "-",
+        ".",
+        "\\",
+        ":",
+        ";",
+        "_",
+        "\n",
+        "\t",
+    ]
+    rx = "[" + re.escape("".join(unwanted)) + "]"
+
+    for line in content:
+        new_line = re.sub(rx, " ", line)
+        # Remove other unwanted characters. For some reason this doesn't work if you copy and paste the character into 'unwanted' above, likely an encoding thing.
+        unwanted_ext = [
+            "\u2026",
+            "\u2010",
+            "\u2011",
+            "\u2012",
+            "\u2013",
+            "\u2014",
+            "\u2015",
+            "\u2018",
+            "\u2019",
+            "\u201C",
+            "\u201D",
+        ]
+        for char in unwanted_ext:
+            new_line = new_line.replace(char, " ")
+
+        content_split = new_line.split()
+
+        for elem in content_split:
+            l.append(elem.upper().strip())
+
+    return l
+
+
+def identify_speakers(l, tags):
+
+    speaker_list = []
+    speaker_words = {}
+    speaker_indices = {}
+
+    current_speaker = ""
+    first_speaker = ""
+    index_edit = 0
+
+    for index, word in enumerate(l):
+        speaker_match = None
+        if tags is not None:
+            for tag in tags:
+                pattern = "\{" + tag + "\}"
+                if speaker_match is None:
+                    speaker_match = re.search(pattern, word)
+
+            # Populate speaker list
+            if speaker_match != None:
+                speaker = word[speaker_match.start() + 1 : speaker_match.end() - 1]
+
+                # If a speaker hasn't yet been assigned, assign one and record which speaker was first
+                if current_speaker == "":
+                    current_speaker = speaker
+                    first_speaker = speaker
+
+                # Note speaker changes
+                if current_speaker != speaker:
+                    current_speaker = speaker
+
+                # Add speakers to list of speakers
+                speaker_list.append(current_speaker)
+
+                # Ensure that the speaker labels aren't appended
+                continue
+
+            # Populate speaker keys
+            if current_speaker not in speaker_words.keys():
+                speaker_words[current_speaker] = []
+
+            # Add line to speaker dictionary
+            speaker_words[current_speaker].append(word)
+
+            # Construct dictionary which links word indices to speakers
+            speaker_indices[index_edit] = current_speaker
+            index_edit += 1
+
+        else:
+            speaker = "speaker"
+            first_speaker = "speaker"
+            speaker_list = ["speaker"]
+
+            if index_edit == 0:
+                print(
+                    "Warning: no speaker labels were included as arguments. If you have more than one speaker, make sure you use the -g/--tags argument."
+                )
+                print("Processing entire file as individual speaker")
+
+            try:
+                speaker_words[speaker].append(word)
+            except KeyError:
+                speaker_words[speaker] = []
+                speaker_words[speaker].append(word)
+
+            speaker_indices[index_edit] = speaker
+            index_edit += 1
+
+    return speaker_list, speaker_indices, speaker_words, first_speaker
+
+
+def make_mlf_from_txt(
+    audio,
+    words,
+    mfc,
+    wav_mfc,
+    actual_transcript,
+    dict_all,
+    tmppath,
+    basename,
+    args_phonemicize,
+    dict_path,
+    args_tags,
+):
+
+    content = actual_transcript.readlines()
+    actual = []
+    actual = clean_words_list(actual, content)
+    dict_split = []
+    all_words = []
+    missing = []
+    i = 0
+
+    speaker_list, speaker_indices, speaker_words, first_speaker = identify_speakers(
+        actual, args_tags
+    )
+
+    if args_tags is None:
+        args_tags = [""]  # empty list to test against
+
+    all_words.append('#!MLF!#\n"*/' + basename + '.lab"\n{SIL}\n')
+
+    for elem in dict_all:
+        if len(elem.split()) > 0:
+            dict_split.append(elem.split()[0])
+
+    for iter, value in enumerate(actual):
+        if re.search("\{[SI][0-9]*?\}", value) is None:
+            if value not in [
+                "{" + t + "}" for t in args_tags
+            ]:  # don't include custom tags in words to align
+                current = spanish_word(value)
+                if i == 0:
+                    all_words.append(current.orth.upper() + "\n")
+                else:
+                    all_words.append("sp\n" + current.orth.upper() + "\n")
+
+                if value not in dict_split:
+                    if args_phonemicize == True:
+                        with codecs.open(dict_path, "a", "utf-8") as d:
+                            print(
+                                "Automatic Phonemicization: "
+                                + current.orth.upper()
+                                + ": "
+                                + " ".join(current.phones)
+                            )
+                            d.write(
+                                current.orth.upper()
+                                + " "
+                                + " ".join(current.phones)
+                                + "\n"
+                            )  # add automatic phonemicization results to dictionary
+                    else:
+                        missing.append(current.orth.upper())
+                i += 1
+
+    all_words.append("{SIL}\n.")
+
+    for iter2 in all_words:
+        words.write(iter2)
+
+    words.write("\n")
+    mfc.write(os.path.join(tmppath, basename + ".mfc"))
+    wav_mfc.write(audio + " " + os.path.join(tmppath, basename + ".mfc"))
+
+    if len(missing) > 0:
+        with codecs.open(basename + ".missing", "w", "utf-8") as words_to_add:
+            for word in sorted(set(missing)):
+                words_to_add.write(word + "\n")
+
+        sys.exit(
+            "There were missing words in your transcript! Saved to- "
+            + basename
+            + ".missing"
+        )
+
+    return speaker_words, speaker_indices, speaker_list, first_speaker
+
+
+def make_mlf_from_tg(
+    dict_all,
+    audio,
+    tmppath,
+    basename,
+    textgrid,
+    channel_type,
+    chan_1,
+    chan_2,
+    args_phonemicize,
+    dict_path,
+    args_tier,
+):
+
+    # Prep files to filter missing items
+    missing = []
+    dict_split = []
+    all_words = {}
+    chunk_index = {}
+
+    for elem in dict_all:
+        if len(elem.split()) > 0:
+            dict_split.append(elem.split()[0])
+    total_chunks = 0
+
+    # TO-DO: add explicit testing against empty input textgrid arguments
+    # TO-DO: convert to modern audiolabel format; utilize read_label() df approach over for loops when possible
+
+    # Read in TextGrid
+    lm = audiolabel.LabelManager(from_file=textgrid, from_type="praat", codec="utf-8")
+
+    if args_tier is not None:  # Align a single tier if args_tier option is specified.
+        if args_tier in lm.names:
+            for name in lm.names:
+                if name != args_tier:
+                    lm.discard(name)
+        else:
+            tier_str = "\t".join(lm.names)
+            print(
+                "\nYour custom tier (-i/--tier) argument was not found in the TextGrid tiers.\nPlease double-check the spelling of your desired tier name.\n"
+            )
+            print("Your current possible TextGrid tiers are: " + tier_str)
+            sys.exit()
+
+    for speaker in lm.names:
+        chunk_index[speaker] = {}
+        all_words[speaker] = []
+        all_words[speaker].append("#!MLF!#\n")
+
+        # Determine proper speakers and channels
+        if channel_type == "mono":
+            current_wav = audio
+        else:
+            if speaker == chan_1:
+                current_wav = os.path.join(tmppath, basename + "_c1.wav")
+            elif speaker == chan_2:
+                current_wav = os.path.join(tmppath, basename + "_c2.wav")
+            else:
+                print(
+                    "Couldn't find a matching speaker for "
+                    + speaker
+                    + ". Reverting to mono."
+                )
+                current_wav = audio
+
+        for interval in lm.tier(speaker):
+
+            # Counter for start of list
+            i = 0
+
+            # Process chunk text
+            chunk_name = "chunk_" + str(total_chunks)
+            chunk_start = interval.t1
+            chunk_end = interval.t2
+            chunk_txt = clean_words_str(interval.text)
+
+            # Ignore empty turns
+            if len(chunk_txt) > 0:
+                # Exclude turns including {CS},{OP},XXX,HHH,and hhh
+                if (
+                    re.search("\{CS\}", " ".join(chunk_txt)) is None
+                    and re.search("\{OP\}", " ".join(chunk_txt)) is None
+                    and re.search("XXX", " ".join(chunk_txt)) is None
+                    and re.search("HHH", " ".join(chunk_txt)) is None
+                    and re.search(" hhh", " ".join(chunk_txt)) is None
+                ):
+
+                    # Recover chunk start and end time for after aligning
+                    chunk_index[speaker][chunk_name] = (chunk_start, chunk_end)
+
+                    all_words[speaker].append('"*/' + chunk_name + '.lab"\n{SIL}\n')
+
+                    for iter, value in enumerate(chunk_txt):
+                        current = spanish_word(value)
+                        if i == 0:
+                            all_words[speaker].append(current.orth.upper() + "\n")
+                        else:
+                            all_words[speaker].append(
+                                "sp\n" + current.orth.upper() + "\n"
+                            )
+
+                        if value not in dict_split:
+                            if args_phonemicize == True:
+                                with codecs.open(dict_path, "a", "utf-8") as d:
+                                    print(
+                                        "Automatic Phonemicization: "
+                                        + current.orth.upper()
+                                        + "- "
+                                        + " ".join(current.phones)
+                                    )
+                                    d.write(
+                                        current.orth.upper()
+                                        + " "
+                                        + " ".join(current.phones)
+                                        + "\n"
+                                    )  # add automatic phonemicization results to dictionary
+                            else:
+                                missing.append(current.orth.upper())
+
+                        i += 1
+
+                    all_words[speaker].append("{SIL}\n.\n")
+
+                    # Extract Chunk Audio
+                    tfm = sox.Transformer()
+                    tfm.trim(chunk_start, chunk_end)
+                    tfm.build(
+                        current_wav,
+                        os.path.join(tmppath, "chunks", chunk_name + ".wav"),
+                    )
+
+                    # Write files
+                    with open(
+                        os.path.join(tmppath, "speaker_" + speaker + "_mfc.scp"), "a"
+                    ) as mfc:
+                        with open(
+                            os.path.join(
+                                tmppath, "speaker_" + speaker + "_wav_mfc.scp"
+                            ),
+                            "a",
+                        ) as wav_mfc:
+                            mfc.write(
+                                os.path.join(tmppath, "chunks", chunk_name + ".mfc\n")
+                            )
+                            wav_mfc.write(
+                                os.path.join(tmppath, "chunks", chunk_name + ".wav\n")
+                                + " "
+                                + os.path.join(tmppath, "chunks", chunk_name + ".mfc\n")
+                            )
+
+                    total_chunks += 1
+
+        # Append a speaker's turns
+        with open(
+            os.path.join(tmppath, "speaker_" + speaker + "_words.mlf"), "a"
+        ) as words:
+            for iter2 in all_words[speaker]:
+                words.write(iter2)
+
+    return missing, chunk_index, total_chunks
+
+
+def call_htk(tmppath, repos, name, dict_path):
+
+    # Assuming HTK executables are mapped properly during installation
+    devnull = open(os.devnull, "w")
+    HCopy_call = [
+        "HCopy",
+        "-T",
+        "1",
+        "-C",
+        os.path.join(repos, "config_HCopy"),
+        "-S",
+        os.path.join(tmppath, name + "_wav_mfc.scp"),
+    ]
+    subprocess.call(HCopy_call, stdout=devnull)
+    HVite_call = [
+        "HVite",
+        "-A",
+        "-D",
+        "-T",
+        "1",
+        "-l",
+        "'*'",
+        "-a",
+        "-m",
+        "-C",
+        os.path.join(repos, "config"),
+        "-H",
+        os.path.join(repos, "globals"),
+        "-H",
+        os.path.join(repos, "hmmdefs"),
+        "-m",
+        "-t",
+        "250.0",
+        "150.0",
+        "1000.0",
+        "-I",
+        os.path.join(tmppath, name + "_words.mlf"),
+        "-i",
+        os.path.join(tmppath, name + "_aligned.mlf"),
+        "-S",
+        os.path.join(tmppath, name + "_mfc.scp"),
+        dict_path,
+        os.path.join(repos, "monophones1"),
+    ]
+    subprocess.call(HVite_call, stdout=devnull)
+
+
+def process_mlf_output(
+    section, speak, output_intervals, offset, speaker_indices
+):  # TO-DO: reincorporate triphone stripping
+
+    curr = speak
+    word_index = 0
+
+    for sec in sectionizeMLF(section):
+        # Get word information
+        word_begin = correction(sec[0][0])
+
+        # Ignore erroneous '.'
+        if len(sec[-1]) > 3:
+            # testing for HTK output issues by checking last digits:
+            # I've only observed issues where the last digit is off by 1 in either direction
+            # unclear if that holds for all cases, or what the underlying issue is.
+            if sec[-1][1][-1] == "9":
+                word_end = correction(float(sec[-1][1]) + 1)
+            elif sec[-1][1][-1] == "1":
+                word_end = correction(float(sec[-1][1]) - 1)
+            else:
+                word_end = correction(sec[-1][1])
+        else:
+            word_end = correction(sec[-2][1])
+
+        if word_begin != word_end:
+            word = bytes(sec[0][4], encoding="latin-1").decode(
+                "unicode-escape"
+            )  # Escape and convert hex decimals output from HVite
+            word = word.encode("latin-1").decode(
+                "utf-8"
+            )  # Convert these strings back to correct utf-8
+            if word != "sp" and word != "{SIL}":
+                # If we're processing a txt file input and using speaker_indices
+                try:
+                    curr = speaker_indices[
+                        word_index
+                    ]  # Compare to word indices mapped to speakers.
+                    word_index += 1
+                except TypeError:  # speaker_indices is None (meaning we're processing a TextGrid)
+                    pass
+            output_intervals[curr]["words"].append(
+                (word_begin + offset, word_end + offset, word)
+            )
+
+        # Get phone information
+        for phone_block in sec:
+            current = phone_block
+
+            if len(current) > 3:
+                # Test for no-duration sp
+                intset = current[0:2]
+                # testing for HTK output issues by checking last digits:
+                # I've only observed issues where the last digit is off by 1 in either direction
+                # unclear if that holds for all cases, or what the underlying issue is.
+                if intset[1][-1] == "9":
+                    intset[1] = float(intset[1]) + 1
+                elif intset[1][-1] == "1":
+                    intset[1] = float(intset[1]) - 1
+                # continuing on with processing
+                integers = list(map(int, intset))
+                test_begin = float(integers[0]) / 10000000
+                test_end = float(integers[1]) / 10000000
+
+                if test_begin != test_end:
+
+                    # Correct 11025 rounding error
+                    begin = correction(integers[0])
+                    end = correction(integers[1])
+
+                    # Get current phone
+                    phone = current[2]
+                    # Extract true phone from context triphones
+                    # if re.match('(.+)\-(.+)\+', phone) is not None:
+                    # 	true_phone = re.findall('\-(.+?)\+', phone, re.DOTALL)[0]
+                    # elif re.match('(.+)\-(.+)', phone) is not None:
+                    # 	true_phone = re.findall('\-(.+)', phone, re.DOTALL)[0]
+                    # elif re.match('(.+)\+(.+)', phone) is not None:
+                    # 	true_phone = re.findall('(.+)\+', phone, re.DOTALL)[0]
+                    # else:
+                    # 	true_phone = phone
+
+                    output_intervals[curr]["phones"].append(
+                        tuple([begin + offset, end + offset, phone])
+                    )
+
+    return output_intervals
+
+
+def align_from_tg(chunk_index, total_chunks, tmppath, repos, dict_path):
+
+    output_intervals = {}
+    speaker_indices = None  # empty argument to process_mlf_output()
+
+    for speaker in chunk_index:
+
+        output_intervals[speaker] = {}
+        output_intervals[speaker]["phones"] = []
+        output_intervals[speaker]["words"] = []
+
+        curr = "speaker_" + speaker
+
+        call_htk(tmppath, repos, curr, dict_path)
+
+        with codecs.open(
+            os.path.join(tmppath, curr + "_aligned.mlf"), "r", "utf-8"
+        ) as input:
+            f = input.readlines()[1:]
+            for section in makeSections(f):
+                # Get chunk name from .rec header
+                result = re.search('chunk_(.*)\.rec"', section[0])
+                chunk_name = "chunk_" + str(result.group(1))
+
+                # Calculate each chunk's offset from original time
+                offset = chunk_index[speaker][chunk_name][0]
+
+                # Ignore chunk headers
+                section = [x for x in section if "rec" not in x]
+
+                # Process aligned mlf and add intervals to output_intervals dictionary
+                output_intervals = process_mlf_output(
+                    section, speaker, output_intervals, offset, speaker_indices
+                )
+
+    return output_intervals
+
+
+def align_from_txt(
+    speaker_indices, speaker_list, first_speaker, tmppath, repos, basename, dict_path
+):
+
+    call_htk(tmppath, repos, basename, dict_path)
+
+    with codecs.open(
+        os.path.join(tmppath, basename + "_aligned.mlf"), "r", "utf-8"
+    ) as input:
+        f = input.readlines()[2:]
+
+        for section in makeSections(f):
+
+            output_intervals = {}
+
+            # Populate dictionaries with speaker keys
+            for speaker in speaker_list:
+                output_intervals[speaker] = {}
+                output_intervals[speaker]["phones"] = []
+                output_intervals[speaker]["words"] = []
+
+            output_intervals = process_mlf_output(
+                section, first_speaker, output_intervals, 0, speaker_indices
+            )  # 0 offset
+
+    return output_intervals
+
+
+def process_tg_intervals(tmppath, output_intervals, args_syllables, custom_words):
+
+    # Compute global min and max time
+    for speaker in output_intervals:
+        for tier in output_intervals[speaker]:
+            local_min = min([l[0] for l in output_intervals[speaker][tier]])
+            local_max = max([l[1] for l in output_intervals[speaker][tier]])
+            try:
+                if local_min < global_min:
+                    global_min = local_min
+            except NameError:
+                global_min = local_min
+
+            try:
+                if local_max > global_max:
+                    global_max = local_max
+            except NameError:
+                global_max = local_max
+
+    if args_syllables == True:
+
+        for speaker in output_intervals:
+            output_intervals[speaker]["syllables"] = []
+            for entry in output_intervals[speaker]["words"]:
+                if entry[2] not in ["sp", "{SIL}", "{LG}", "{BR}", "{CG}", "{NS}"]:
+                    word_s = entry[0]
+                    word_e = entry[1]
+                    phones = [
+                        p
+                        for p in output_intervals[speaker]["phones"]
+                        if ((p[0] >= word_s) and (p[1] <= word_e))
+                    ]  # all phones which fall within word times
+
+                    # override phones generated from spanish_word() for words defined in dictionaries
+                    current = spanish_word(
+                        entry[2], override=True, custom_phones=[e[2] for e in phones]
+                    )
+
+                    # sanity check that custom phone override process was successful
+                    if len(phones) != len(current.phones):
+                        print(
+                            "WARNING! - unequal phone numbers: "
+                            + str(phones)
+                            + " - "
+                            + str(current.phones)
+                        )
+
+                    for syll in current.syllables:
+                        curr_syll = current.syllables[syll]
+                        syll_s = phones[0][0]  # start time of first phone in syllable
+                        syll_e = phones[len(curr_syll) - 1][
+                            1
+                        ]  # end time of last phone in syllable
+                        phones[:] = phones[
+                            len(curr_syll) :
+                        ]  # remove syllable's phones from list
+                        if syll == current.stressed:
+                            text = "stressed"
+                        else:
+                            text = "unstressed"
+                        output_intervals[speaker]["syllables"].append(
+                            (syll_s, syll_e, text)
+                        )
+
+    # Add buffers
+    for speaker in output_intervals:
+        for tier in output_intervals[speaker]:
+            buff = []
+            prev_end = global_min
+            # Calculate buffer intervals
+            for interval in output_intervals[speaker][tier]:
+                start = interval[0]
+                end = interval[1]
+                if prev_end < start:
+                    buff.append((prev_end, start, ""))
+                prev_end = end
+            # Check for final buffer
+            if prev_end < global_max:
+                buff.append((prev_end, global_max, ""))
+            # Add new intervals to output_intervals
+            output_intervals[speaker][tier].extend(buff)
+
+    # Write output to textgrid object
+    out_tg = audiolabel.LabelManager(codec="utf-8")
+
+    c = 1
+    for speaker in sorted(output_intervals.keys()):
+        # reverse sorted : words --> (syllables -->) phones
+        for tier_type in sorted(output_intervals[speaker].keys(), reverse=True):
+            tier_name = speaker + " : " + tier_type
+            t = audiolabel.IntervalTier(name=tier_name)
+            for i in output_intervals[speaker][tier_type]:
+                t.add(audiolabel.Label(text=i[2], t1=i[0], t2=i[1]))
+            # audioLabel tier index governs order of tier appending; it's 1-index, not 0 index
+            out_tg.add(t, idx=c)
+            c += 1
+
+    return out_tg
+
+
+def main(
+    args_dict,
+    args_wav,
+    args_stereo,
+    args_left,
+    args_right,
+    args_transcript,
+    args_outpath,
+    args_name,
+    args_missing,
+    args_syllables,
+    args_phonemicize,
+    args_tags,
+    args_version,
+    args_tier,
+):
+
+    (
+        tmppath,
+        basename,
+        repos,
+        outpath,
+        transcript_type,
+        channel_type,
+        chan_1,
+        chan_2,
+        dict_include,
+        args_tags,
+    ) = process_arguments(
+        args_wav,
+        args_stereo,
+        args_left,
+        args_right,
+        args_transcript,
+        args_outpath,
+        args_missing,
+        args_tags,
+        args_version,
+        args_tier,
+    )
+
+    dict_path, custom_words = prep_dir(args_dict, tmppath, repos, dict_include, args_phonemicize)
+    audio_align = process_wav(args_wav, tmppath, basename, channel_type)
+
+    with codecs.open(dict_path, "r", "utf-8") as dict_sort:
+        dict_all = dict_sort.readlines()
+
+    ###########################
+    if transcript_type == "txt":
+
+        with codecs.open(
+            os.path.join(tmppath, basename + "_words.mlf"), "a", "utf-8"
+        ) as words:
+            with open(os.path.join(tmppath, basename + "_mfc.scp"), "a") as mfc:
+                with open(
+                    os.path.join(tmppath, basename + "_wav_mfc.scp"), "a"
+                ) as wav_mfc:
+                    try:
+                        with codecs.open(
+                            args_transcript, "r", "utf-8"
+                        ) as actual_transcript:
+                            (
+                                speaker_words,
+                                speaker_indices,
+                                speaker_list,
+                                first_speaker,
+                            ) = make_mlf_from_txt(
+                                audio_align,
+                                words,
+                                mfc,
+                                wav_mfc,
+                                actual_transcript,
+                                dict_all,
+                                tmppath,
+                                basename,
+                                args_phonemicize,
+                                dict_path,
+                                args_tags,
+                            )
+
+                    except UnicodeError:
+                        try:
+                            with codecs.open(
+                                args_transcript, "r", "utf-16"
+                            ) as actual_transcript:
+                                (
+                                    speaker_words,
+                                    speaker_indices,
+                                    speaker_list,
+                                    first_speaker,
+                                ) = make_mlf_from_txt(
+                                    audio_align,
+                                    words,
+                                    mfc,
+                                    wav_mfc,
+                                    actual_transcript,
+                                    dict_all,
+                                    tmppath,
+                                    basename,
+                                    args_phonemicize,
+                                    dict_path,
+                                )
+
+                        except UnicodeError:
+                            with codecs.open(
+                                args_transcript, "r", "iso-8859-1"
+                            ) as actual_transcript:
+                                (
+                                    speaker_words,
+                                    speaker_indices,
+                                    speaker_list,
+                                    first_speaker,
+                                ) = make_mlf_from_txt(
+                                    audio_align,
+                                    words,
+                                    mfc,
+                                    wav_mfc,
+                                    actual_transcript,
+                                    dict_all,
+                                    tmppath,
+                                    basename,
+                                    args_phonemicize,
+                                    dict_path,
+                                )
+
+    ###########################
+
+    else:
+        missing, chunk_index, total_chunks = make_mlf_from_tg(
+            dict_all,
+            audio_align,
+            tmppath,
+            basename,
+            args_transcript,
+            channel_type,
+            chan_1,
+            chan_2,
+            args_phonemicize,
+            dict_path,
+            args_tier,
+        )
+        # Exit if missing words!
+        if len(missing) > 0:
+            with codecs.open(basename + ".missing", "w", "utf-8") as words_to_add:
+                for word in sorted(set(missing)):
+                    words_to_add.write(word + "\n")
+            sys.exit(
+                "There were missing words in your transcript! Saved to- "
+                + basename
+                + ".missing"
+            )
+
+    ###########################
+
+    if transcript_type == "txt":
+        output_intervals = align_from_txt(
+            speaker_indices,
+            speaker_list,
+            first_speaker,
+            tmppath,
+            repos,
+            basename,
+            dict_path,
+        )
+    else:
+        output_intervals = align_from_tg(
+            chunk_index, total_chunks, tmppath, repos, dict_path
+        )
+
+    out_tg = process_tg_intervals(
+        tmppath, output_intervals, args_syllables, custom_words
+    )
+
+    # override default output name
+    if args_name is not None:
+        outname = args_name.replace(".TextGrid", "") + ".TextGrid"
+    else:
+        outname = basename + "_aligned.TextGrid"
+
+    with codecs.open(os.path.join(outpath, outname), "w", "utf-8") as o:
+        o.write(out_tg.as_string("praat_short"))
+
+    shutil.rmtree(tmppath)
+
+
+############################################
+############################################
+
+
+if __name__ == "__main__":
+
+    # Parse arguments
+    parser = argparse.ArgumentParser(description="Command Line arguments for faseAlign")
+    parser.add_argument("-d", "--dict", help="path to dictionary to be used. Defaults to ./model/dict_sort")
+    parser.add_argument("-w", "--wav", help="path to wav file")
+    parser.add_argument(
+        "-s", "--stereo", action="store_true", help="stereo input, mono is default"
+    )
+    parser.add_argument("-l", "--left", help="left channel speaker")
+    parser.add_argument("-r", "--right", help="right channel speaker")
+    parser.add_argument("-t", "--transcript", help="path to transcript")
+    parser.add_argument(
+        "-o",
+        "--outpath",
+        help="directory to store output textgrid(s), default is current directory",
+    )
+    parser.add_argument(
+        "-n",
+        "--name",
+        help='specify an output name, default is the basename + "_aligned.TextGrid"',
+    )
+    parser.add_argument(
+        "-m", "--missing", help="custom dictionary containing missing words"
+    )
+    parser.add_argument(
+        "-y",
+        "--syllables",
+        action="store_true",
+        help="add syllable information tier to output textgrids",
+    )
+    parser.add_argument(
+        "-p",
+        "--phonemicize",
+        action="store_true",
+        help="automatic phonemicization for unknown words",
+    )
+    parser.add_argument(
+        "-g",
+        "--tags",
+        nargs="+",
+        help="include all speaker tags used in the transcription (without curly braces)",
+    )
+    parser.add_argument(
+        "-v", "--version", action="store_true", help="print version information"
+    )
+    parser.add_argument(
+        "-i",
+        "--tier",
+        help="specify a particular TextGrid tier to align; other tiers will be ignored. Default is to align all tiers.",
+    )
+    args = parser.parse_args()
+
+    main(
+        args.dict,
+        args.wav,
+        args.stereo,
+        args.left,
+        args.right,
+        args.transcript,
+        args.outpath,
+        args.name,
+        args.missing,
+        args.syllables,
+        args.phonemicize,
+        args.tags,
+        args.version,
+        args.tier,
+    )

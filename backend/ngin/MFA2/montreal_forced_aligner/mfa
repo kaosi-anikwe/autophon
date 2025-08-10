@@ -1,0 +1,13 @@
+#!/home/nordalign/anaconda3/envs/nordalign/bin/python
+# -*- coding: utf-8 -*-
+import re
+import os
+import sys
+
+# manually add montreal_forced_aligner module parent path
+sys.path.append(os.path.join(os.getenv("CURRENT_DIR"), "ngin", "MFA2"))
+from montreal_forced_aligner.command_line.mfa import mfa_cli
+
+if __name__ == "__main__":
+    sys.argv[0] = re.sub(r"(-script\.pyw|\.exe)?$", "", sys.argv[0])
+    sys.exit(mfa_cli())
