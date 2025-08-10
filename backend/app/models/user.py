@@ -15,6 +15,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     last_name = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True, nullable=False)
     verified = db.Column(db.Boolean, default=False)
+    trans_default = db.Column(db.String(10))
     edited = db.Column(db.Boolean, default=False)
     org = db.Column(db.String(500))
     industry = db.Column(db.String(255))

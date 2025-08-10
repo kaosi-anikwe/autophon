@@ -20,10 +20,10 @@
     { "spaUS_FASE_v011": "Spanish, US – faseAlign", "type": "other", "alphabet": "ARPAbet", "language": "Spanish, US", "priority": 8, "homepage": true }
   ],
   "ngins": [
-    { "code": "MFA1", "name": "Montreal Forced Aligner 1.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/v1.0/" },
-    { "code": "MFA2", "name": "Montreal Forced Aligner 2.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/latest/changelog/news_2.0.html" },
-    { "code": "FAVE", "name": "FAVE-Align", "link": "https://github.com/JoFrhwld/FAVE/wiki/Installing-FAVE-align" },
-    { "code": "FASE", "name": "faseAlign", "link": "https://fasealign.readthedocs.io/en/latest/" }
+    { "code": "MFA1", "path": "/home/nordalign/autophon/ngin/MFA1/mfa1.1/bin/mfa_align", "name": "Montreal Forced Aligner 1.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/v1.0/" },
+    { "code": "MFA2", "path": "/home/nordalign/autophon/ngin/MFA2/montreal_forced_aligner/mfa", "name": "Montreal Forced Aligner 2.0", "link": "https://montreal-forced-aligner.readthedocs.io/en/latest/changelog/news_2.0.html" },
+    { "code": "FAVE", "path": "/home/nordalign/autophon/ngin/FASE/faseAlign/bin/faseAlign", "name": "FAVE-Align", "link": "https://github.com/JoFrhwld/FAVE/wiki/Installing-FAVE-align" },
+    { "code": "FASE", "path": "/home/nordalign/autophon/ngin/FAVE/FAVE-align", "name": "faseAlign", "link": "https://fasealign.readthedocs.io/en/latest/" }
   ]
 }
 

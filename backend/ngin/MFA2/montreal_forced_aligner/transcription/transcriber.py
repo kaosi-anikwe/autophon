@@ -88,7 +88,6 @@ from montreal_forced_aligner.utils import (
 )
 
 if TYPE_CHECKING:
-
     from montreal_forced_aligner.abc import MetaDict
 
 __all__ = ["Transcriber", "TranscriberMixin"]
@@ -399,7 +398,6 @@ class TranscriberMixin(CorpusAligner):
         with self.session() as session, tqdm(
             total=self.num_current_utterances, disable=GLOBAL_CONFIG.quiet
         ) as pbar:
-
             with mfa_open(self.phones_dir.joinpath("phone_boundaries.int"), "w") as f:
                 for p in session.query(Phone):
                     f.write(f"{p.mapping_id} singleton\n")
@@ -619,7 +617,6 @@ class TranscriberMixin(CorpusAligner):
             self.setup_phone_lm()
             for a in self.calc_fmllr_arguments():
                 for p in a.trans_paths.values():
-
                     shutil.copyfile(previous_working_directory.joinpath(p.name), p)
         elif workflow_type is WorkflowType.per_speaker_transcription:
             for a in self.calc_fmllr_arguments():

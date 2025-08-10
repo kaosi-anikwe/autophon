@@ -43,7 +43,10 @@ from .tasks import (
     TaskStatusResource,
     TaskFilesResource,
     TaskFileNamesResource,
+    TaskCancelResource,
     TaskBulkDeleteResource,
+    TaskHistoryResource,
+    TaskMonthlyReportResource,
 )
 
 # Dictionary resources
@@ -57,7 +60,54 @@ from .dictionaries import (
 # Configuration resources
 from .config import (
     ConfigResource,
-    UserLimitsResource,
+)
+
+# Upload Status and Download resources
+from .upload_status import (
+    UploadStatusResource,
+    TaskDownloadResource,
+    StaticDownloadResource,
+    TaskMissingWordsResource,
+)
+
+# User Dictionary resources
+from .user_dictionary import (
+    UserDictionaryUploadResource,
+    UserDictionaryResource,
+    UserDictionaryListResource,
+    UserDictionaryDeleteResource,
+)
+
+# Aligner resources
+from .aligner import (
+    AlignerDashboardResource,
+    AlignTaskResource,
+    TaskExpirationResource,
+    AlignmentQueueResource,
+)
+
+# Language Change resources
+from .language_change import (
+    LanguageChangeResource,
+    TaskLanguageListResource,
+)
+
+# Reupload resources
+from .reupload import (
+    TaskReuploadResource,
+    TaskReuploadInfoResource,
+)
+
+# Upload resources
+from .upload import (
+    FileUploadResource,
+)
+
+# Team resources
+from .team import (
+    TeamResource,
+    TeamImageResource,
+    ContactEmailResource,
 )
 
 __all__ = [
@@ -93,7 +143,10 @@ __all__ = [
     "TaskStatusResource",
     "TaskFilesResource",
     "TaskFileNamesResource",
+    "TaskCancelResource",
     "TaskBulkDeleteResource",
+    "TaskHistoryResource",
+    "TaskMonthlyReportResource",
     # Dictionary resources
     "DictionaryListResource",
     "DictionaryResource",
@@ -101,4 +154,31 @@ __all__ = [
     "DictionaryByLanguageResource",
     # Configuration resources
     "ConfigResource",
+    # Upload Status and Download resources
+    "UploadStatusResource",
+    "TaskDownloadResource",
+    "StaticDownloadResource",
+    "TaskMissingWordsResource",
+    # User Dictionary resources
+    "UserDictionaryUploadResource",
+    "UserDictionaryResource",
+    "UserDictionaryListResource",
+    "UserDictionaryDeleteResource",
+    # Aligner resources
+    "AlignerDashboardResource",
+    "AlignTaskResource",
+    "TaskExpirationResource",
+    "AlignmentQueueResource",
+    # Language Change resources
+    "LanguageChangeResource",
+    "TaskLanguageListResource",
+    # Reupload resources
+    "TaskReuploadResource",
+    "TaskReuploadInfoResource",
+    # Upload resources
+    "FileUploadResource",
+    # Team resources
+    "TeamResource",
+    "TeamImageResource",
+    "ContactEmailResource",
 ]

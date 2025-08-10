@@ -1580,7 +1580,6 @@ class PerSpeakerDecodeFunction(KaldiFunction):
         with mfa_open(self.log_path, "w") as log_file, Session(
             self.db_engine()
         ) as session:
-
             job: Job = (
                 session.query(Job)
                 .options(
@@ -1591,7 +1590,6 @@ class PerSpeakerDecodeFunction(KaldiFunction):
                 .first()
             )
             for d in job.dictionaries:
-
                 self.oov_word = d.oov_word
                 self.word_symbols_paths[d.id] = d.words_symbol_path
                 feature_string = self.feature_strings[d.id]

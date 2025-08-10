@@ -173,7 +173,7 @@ class Aligner:
             self.logger.info(f"No temporary directory, creating one at {tmpdir}")
             os.mkdir(tmpdir)
         # start alignment of breathgroups
-        for (text, line) in zip(trans_lines, all_input):
+        for text, line in zip(trans_lines, all_input):
             entries = line.strip().split("\t")
             # start counting chunks (as part of the output file names) at 1
             count_chunks += 1
@@ -656,12 +656,12 @@ class Aligner:
         # forced alignment may or may not insert "sp" intervals between words
         # -> make an index of "real" words and their index on the word tier of the TextGrid first
         tgwords = []
-        for (n, interval) in enumerate(tg[1]):  # word tier
+        for n, interval in enumerate(tg[1]):  # word tier
             if interval.mark() not in ["sp", "SP"]:
                 tgwords.append((interval.mark(), n))
 
         # for all "real" (non-"sp") words in transcription:
-        for (n, entry) in enumerate(tgwords):
+        for n, entry in enumerate(tgwords):
             # interval entry on word tier of FA output TextGrid
             tgword = entry[0]
             # corresponding position of that word in the TextGrid tier

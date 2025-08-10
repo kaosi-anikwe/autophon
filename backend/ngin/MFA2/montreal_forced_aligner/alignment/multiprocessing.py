@@ -623,7 +623,6 @@ class CompileTrainGraphsFunction(KaldiFunction):
             text_int_paths = job.per_dictionary_text_int_scp_paths
             batch_size = 1000
             if self.use_g2p:
-
                 from montreal_forced_aligner.g2p.generator import (
                     threshold_lattice_to_dfa,
                 )
@@ -2537,7 +2536,6 @@ class AlignmentExtractionFunction(KaldiFunction):
                                     float(np.mean(loglikes[begin_frame:end_frame])), 6
                                 )
                         if not d.use_g2p:
-
                             (
                                 word_intervals,
                                 phone_intervals,

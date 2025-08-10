@@ -7,6 +7,7 @@ class Engine(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(20), unique=True, nullable=False)
+    path = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(200), nullable=False)
     documentation_link = db.Column(db.String(500))
     is_active = db.Column(db.Boolean, default=True)

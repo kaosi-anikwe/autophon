@@ -6,7 +6,6 @@ import re
 
 
 class spanish_word(object):
-
     # class level attributes
     phones = [
         "a",
@@ -162,7 +161,6 @@ class spanish_word(object):
         )
 
     def to_phones(self):
-
         current = self.orth
 
         if current not in spanish_word.x_exception:
@@ -178,7 +176,6 @@ class spanish_word(object):
         return list(current)
 
     def syllabify(self):
-
         # convert to cv skeleton
         cv = "".join(
             ["c" if p in spanish_word.consonants else "v" for p in self.phones]
@@ -338,7 +335,6 @@ class spanish_word(object):
         return syllables
 
     def process_syllables(self):
-
         syllables = self.syllabify()
 
         stressed = 0

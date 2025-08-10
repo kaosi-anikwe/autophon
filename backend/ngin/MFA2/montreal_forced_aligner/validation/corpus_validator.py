@@ -227,7 +227,6 @@ class ValidationMixin:
                 path = os.path.join(output_dir, "missing_features.csv")
                 with mfa_open(path, "w") as f:
                     for file_name, relative_path, begin, end in utterances:
-
                         f.write(f"{relative_path.joinpath(file_name)},{begin},{end}\n")
 
                 logger.error(
@@ -498,7 +497,6 @@ class TrainingValidator(TrainableAligner, ValidationMixin):
         args: Optional[Dict[str, Any]] = None,
         unknown_args: Optional[typing.Iterable[str]] = None,
     ) -> MetaDict:
-
         """
         Parse parameters for validation from a config path or command-line arguments
 

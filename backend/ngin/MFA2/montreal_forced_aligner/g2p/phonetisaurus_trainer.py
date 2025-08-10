@@ -1742,7 +1742,7 @@ class PhonetisaurusTrainer(
         )
         output = gen.generate_pronunciations()
         with mfa_open(temp_dir.joinpath("validation_output.txt"), "w") as f:
-            for (orthography, pronunciations) in output.items():
+            for orthography, pronunciations in output.items():
                 if not pronunciations:
                     continue
                 for p in pronunciations:

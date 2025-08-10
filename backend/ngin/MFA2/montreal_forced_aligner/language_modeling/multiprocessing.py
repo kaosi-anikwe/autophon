@@ -161,7 +161,7 @@ class TrainLmFunction(KaldiFunction):
                 stdin=farcompile_proc.stdout,
                 env=os.environ,
             )
-            for (normalized_text, text) in utterance_query:
+            for normalized_text, text in utterance_query:
                 if not normalized_text:
                     normalized_text = text
                 text = " ".join(
@@ -288,7 +288,6 @@ class TrainSpeakerLmFunction(KaldiFunction):
         with Session(self.db_engine()) as session, mfa_open(
             self.log_path, "w"
         ) as log_file:
-
             job: Job = (
                 session.query(Job)
                 .options(
@@ -310,7 +309,6 @@ class TrainSpeakerLmFunction(KaldiFunction):
                     .distinct()
                 )
                 for (speaker_id,) in speakers:
-
                     hclg_path = d.temp_directory.joinpath(f"{speaker_id}.fst")
                     if os.path.exists(hclg_path):
                         continue

@@ -12,6 +12,8 @@ class UserSchema(SQLAlchemyAutoSchema):
         load_instance = True
         exclude = ("password_hash",)
 
+    trans_default = fields.Str()
+
     # Override sensitive fields
     password_hash = fields.Str(load_only=True)
 

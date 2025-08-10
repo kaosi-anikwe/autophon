@@ -312,7 +312,6 @@ class SatTrainer(TriphoneTrainer):
         if self.iteration in self.realignment_iterations:
             self.align_iteration()
         if self.iteration in self.fmllr_iterations:
-
             self.calc_fmllr()
 
         self.acc_stats()
@@ -393,7 +392,6 @@ class SatTrainer(TriphoneTrainer):
 
         log_path = self.working_log_directory.joinpath("align_model_est.log")
         with mfa_open(log_path, "w") as log_file:
-
             acc_files = []
             for x in arguments:
                 acc_files.extend(x.acc_paths.values())

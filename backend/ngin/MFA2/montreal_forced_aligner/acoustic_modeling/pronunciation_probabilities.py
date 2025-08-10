@@ -352,7 +352,6 @@ class PronunciationProbabilityTrainer(AcousticModelTrainingMixin, PyniniTrainerM
             final_non_silence_correction_sum = 0
 
             with self.worker.session() as session:
-
                 dictionaries = session.query(Dictionary).all()
                 for d in dictionaries:
                     pronunciations = (

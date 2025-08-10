@@ -328,7 +328,7 @@ class LmCorpusTrainerMixin(LmTrainerMixin, TextCorpusMixin):
                     stdout=f,
                     env=os.environ,
                 )
-                for (normalized_text, text) in utterance_query:
+                for normalized_text, text in utterance_query:
                     if not normalized_text:
                         normalized_text = text
                     text = " ".join(

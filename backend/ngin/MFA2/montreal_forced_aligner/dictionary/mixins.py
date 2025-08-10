@@ -849,7 +849,6 @@ class TemporaryDictionaryMixin(DictionaryMixin, DatabaseMixin, metaclass=abc.ABC
     """
 
     def __init__(self, **kwargs):
-
         super().__init__(**kwargs)
         self._disambiguation_symbols_int_path = None
         self._phones_dir = None
@@ -1062,7 +1061,6 @@ class TemporaryDictionaryMixin(DictionaryMixin, DatabaseMixin, metaclass=abc.ABC
         ) as rootf, mfa_open(sets_int_file, "w") as setintf, mfa_open(
             roots_int_file, "w"
         ) as rootintf:
-
             # process silence phones
             if self.shared_silence_phones:
                 phone_string = " ".join(self.kaldi_silence_phones)

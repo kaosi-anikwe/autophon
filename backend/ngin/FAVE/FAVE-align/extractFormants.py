@@ -1268,7 +1268,6 @@ def getWordsAndPhones(tg, phoneset, speaker, vowelSystem, mfa):
         right = bisect_left(phone_midpoints, word.xmax)
 
         for p in tg[phone_tier(int(speaker.tiernum / 2))][left:right]:
-
             phone = Phone()
             phone.label = p.mark().upper()
             phone.xmin = p.xmin()
@@ -3003,7 +3002,7 @@ def extractFormants(wavInput, tgInput, output, opts, SPATH="", PPATH=""):
         outputFiles = [output]
 
     # process each tuple of input/output files
-    for (wavFile, tgFile, outputFile) in zip(wavFiles, tgFiles, outputFiles):
+    for wavFile, tgFile, outputFile in zip(wavFiles, tgFiles, outputFiles):
         # make sure that we can find the input files, and that the TextGrid file is formatted properly
         # (functions will exit if files not formatted properly)
         checkWavFile(wavFile)
@@ -3061,7 +3060,6 @@ def extractFormants(wavInput, tgInput, output, opts, SPATH="", PPATH=""):
 
         pbar = tqdm(range(len(words)))
         for pre_w, w, fol_w in window(words, window_len=3):
-
             # if not opts.verbose:
             #     word_iter = word_iter + 1
             #     new_percent = math.floor((float(word_iter) / n_words) * 100)

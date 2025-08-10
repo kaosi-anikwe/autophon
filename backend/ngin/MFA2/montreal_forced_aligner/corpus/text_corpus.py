@@ -169,7 +169,6 @@ class TextCorpusMixin(CorpusMixin):
                     else:
                         break
         finally:
-
             finished_adding.stop()
             for p in procs:
                 p.join()
@@ -204,7 +203,6 @@ class TextCorpusMixin(CorpusMixin):
                 if self.stopped:
                     return
                 for file_name in exts.identifiers:
-
                     wav_path = None
                     if file_name in exts.lab_files:
                         lab_name = exts.lab_files[file_name]

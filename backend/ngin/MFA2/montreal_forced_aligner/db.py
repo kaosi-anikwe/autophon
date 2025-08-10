@@ -822,7 +822,6 @@ class PhonologicalRule(MfaSqlBase):
             final = True
             following = following.replace("$", "").strip()
         if preceding:
-
             components.append(rf"(?P<preceding>{preceding})")
         if self.segment:
             components.append(rf"(?P<segment>{self.segment})")

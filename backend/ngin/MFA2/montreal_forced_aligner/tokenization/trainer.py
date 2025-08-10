@@ -269,7 +269,7 @@ class TokenizerMixin(
         )
         output = gen.tokenize_utterances()
         with mfa_open(temp_dir.joinpath("validation_output.txt"), "w") as f:
-            for (orthography, pronunciations) in output.items():
+            for orthography, pronunciations in output.items():
                 if not pronunciations:
                     continue
                 for p in pronunciations:
@@ -282,7 +282,6 @@ class TokenizerMixin(
 
 
 class PhonetisaurusTokenizerTrainer(PhonetisaurusTrainerMixin, TokenizerMixin):
-
     alignment_init_function = TokenizerAlignmentInitWorker
 
     def __init__(

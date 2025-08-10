@@ -72,7 +72,6 @@ def train_ivector_cli(context, **kwargs) -> None:
     )
 
     try:
-
         trainer.train()
         trainer.export_model(output_model_path)
 

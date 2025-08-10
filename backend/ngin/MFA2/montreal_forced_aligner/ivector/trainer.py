@@ -748,7 +748,6 @@ class PldaTrainer(IvectorTrainer):
         pass
 
     def compute_lda(self):
-
         lda_path = self.working_directory.joinpath("ivector_lda.mat")
         log_path = self.working_log_directory.joinpath("lda.log")
         utt2spk_path = os.path.join(self.corpus_output_directory, "utt2spk.scp")

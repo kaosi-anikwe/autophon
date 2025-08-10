@@ -18,6 +18,7 @@ def seed_from_json(json_file):
             engine = Engine(
                 code=engine_data["code"],
                 name=engine_data["name"],
+                path=engine_data["path"],
                 documentation_link=engine_data["link"],
             )
             db.session.add(engine)

@@ -269,7 +269,6 @@ class WordType(enum.Enum):
 
 
 class DistanceMetric(enum.Enum):
-
     cosine = "cosine"
     plda = "plda"
     euclidean = "euclidean"

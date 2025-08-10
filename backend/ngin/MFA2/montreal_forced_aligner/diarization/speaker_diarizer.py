@@ -428,7 +428,6 @@ class SpeakerDiarizer(IvectorCorpusMixin, TopLevelMfaWorker, FileExporterMixin):
 
     def map_speakers_to_ground_truth(self):
         with self.session() as session:
-
             utterances = session.query(Utterance.id, Utterance.speaker_id)
             labels = []
             utterance_ids = []
@@ -465,7 +464,6 @@ class SpeakerDiarizer(IvectorCorpusMixin, TopLevelMfaWorker, FileExporterMixin):
         with self.session() as session, mfa_open(
             self.working_directory.joinpath("diarization_evaluation_results.csv"), "w"
         ) as f:
-
             writer = csv.DictWriter(
                 f,
                 fieldnames=[
@@ -890,7 +888,6 @@ class SpeakerDiarizer(IvectorCorpusMixin, TopLevelMfaWorker, FileExporterMixin):
         with self.session() as session, tqdm(
             total=self.num_utterances, disable=GLOBAL_CONFIG.quiet
         ) as pbar:
-
             unknown_speaker_id = (
                 session.query(Speaker.id)
                 .filter(Speaker.name == "MFA_UNKNOWN")
@@ -1631,7 +1628,6 @@ class SpeakerDiarizer(IvectorCorpusMixin, TopLevelMfaWorker, FileExporterMixin):
                 Dumper=yaml.Dumper,
             )
         with self.session() as session:
-
             logger.info("Writing output files...")
             files = session.query(File).options(
                 selectinload(File.utterances),

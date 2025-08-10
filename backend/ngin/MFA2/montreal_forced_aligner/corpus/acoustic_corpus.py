@@ -935,7 +935,6 @@ class AcousticCorpusMixin(CorpusMixin, FeatureConfigMixin, metaclass=ABCMeta):
                 .order_by(Utterance.kaldi_id)
             )
             for u_id, features in utterances:
-
                 f.write(f"{u_id} {features}\n")
 
     def get_feat_dim(self) -> int:
@@ -1175,7 +1174,6 @@ class AcousticCorpusMixin(CorpusMixin, FeatureConfigMixin, metaclass=ABCMeta):
                     all_sound_files.update(other_audio_files)
                     all_sound_files.update(wav_files)
                 for file_name in exts.identifiers:
-
                     wav_path = None
                     transcription_path = None
                     if file_name in all_sound_files:

@@ -211,7 +211,6 @@ def repredictF1F2(measurements, vowelMeans, vowelCovs, vowels):
     # print "\nREMEASURING..."
     remeasurements = []
     for vm in measurements:
-
         valuesList = []
         distanceList = []
         nFormantsList = []

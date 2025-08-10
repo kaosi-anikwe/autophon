@@ -95,7 +95,7 @@ class G2PTopLevelMixin(MfaWorker, DictionaryMixin, G2PMixin):
         output_file_path.parent.mkdir(parents=True, exist_ok=True)
         results = self.generate_pronunciations()
         with mfa_open(output_file_path, "w") as f:
-            for (orthography, pronunciations) in results.items():
+            for orthography, pronunciations in results.items():
                 if not pronunciations:
                     continue
                 for p in pronunciations:

@@ -8,7 +8,7 @@ class ConfigResource(Resource):
         """Get application configuration including user limits and audio extensions"""
         try:
             config_data = {}
-            
+
             # Get user limits
             if hasattr(current_app, "user_limits"):
                 config_data["user_limits"] = current_app.user_limits
@@ -30,13 +30,15 @@ class ConfigResource(Resource):
                                     pass
                                 user_limits[key] = value
                 config_data["user_limits"] = user_limits
-            
+
             # Get audio extensions
             if hasattr(current_app, "audio_extensions"):
                 config_data["audio_extensions"] = current_app.audio_extensions
             else:
                 # Fallback: read directly from file
-                audio_extensions_path = os.path.join(os.getenv("ADMIN"), "audio_extensions.txt")
+                audio_extensions_path = os.path.join(
+                    os.getenv("ADMIN"), "audio_extensions.txt"
+                )
                 audio_extensions = []
                 if os.path.exists(audio_extensions_path):
                     with open(audio_extensions_path, "r") as file:

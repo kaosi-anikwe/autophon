@@ -33,7 +33,10 @@ from app.resources import (
     TaskStatusResource,
     TaskFilesResource,
     TaskFileNamesResource,
+    TaskCancelResource,
     TaskBulkDeleteResource,
+    TaskHistoryResource,
+    TaskMonthlyReportResource,
     # Dictionaries
     DictionaryListResource,
     DictionaryResource,
@@ -41,6 +44,33 @@ from app.resources import (
     DictionaryByLanguageResource,
     # Configuration
     ConfigResource,
+    # Upload Status and Download resources
+    UploadStatusResource,
+    TaskDownloadResource,
+    StaticDownloadResource,
+    TaskMissingWordsResource,
+    # User Dictionary resources
+    UserDictionaryUploadResource,
+    UserDictionaryResource,
+    UserDictionaryListResource,
+    UserDictionaryDeleteResource,
+    # Aligner resources
+    AlignerDashboardResource,
+    AlignTaskResource,
+    TaskExpirationResource,
+    AlignmentQueueResource,
+    # Language Change resources
+    LanguageChangeResource,
+    TaskLanguageListResource,
+    # Reupload resources
+    TaskReuploadResource,
+    TaskReuploadInfoResource,
+    # Upload resources
+    FileUploadResource,
+    # Team resources
+    TeamResource,
+    TeamImageResource,
+    ContactEmailResource,
 )
 
 api_bp = Blueprint("api", __name__)
@@ -82,7 +112,10 @@ api.add_resource(TaskResource, "/tasks/<string:task_id>")
 api.add_resource(TaskStatusResource, "/tasks/<string:task_id>/status")
 api.add_resource(TaskFilesResource, "/tasks/<string:task_id>/files")
 api.add_resource(TaskFileNamesResource, "/tasks/<string:task_id>/file-names")
+api.add_resource(TaskCancelResource, "/tasks/<string:task_id>/cancel")
 api.add_resource(TaskBulkDeleteResource, "/tasks/bulk-delete")
+api.add_resource(TaskHistoryResource, "/tasks/history")
+api.add_resource(TaskMonthlyReportResource, "/monthly-download")
 
 # Dictionary routes
 api.add_resource(DictionaryListResource, "/dictionaries")
@@ -94,3 +127,48 @@ api.add_resource(
 
 # Configuration routes
 api.add_resource(ConfigResource, "/config")
+
+# Upload Status and Download routes
+api.add_resource(UploadStatusResource, "/upload/status")
+api.add_resource(
+    UploadStatusResource,
+    "/tasks/<string:task_id>/status",
+    endpoint="task_status_single",
+)
+api.add_resource(
+    TaskDownloadResource, "/tasks/<string:task_id>/download/<string:download_type>"
+)
+api.add_resource(StaticDownloadResource, "/static/<string:file_type>/<string:filename>")
+api.add_resource(TaskMissingWordsResource, "/tasks/<string:task_id>/missing-words")
+
+# User Dictionary routes
+api.add_resource(UserDictionaryUploadResource, "/dictionaries/upload")
+api.add_resource(UserDictionaryResource, "/dictionaries/get")
+api.add_resource(UserDictionaryListResource, "/dictionaries/user")
+api.add_resource(UserDictionaryDeleteResource, "/dictionaries/user/<string:lang_code>")
+
+# Aligner routes
+api.add_resource(AlignerDashboardResource, "/aligner/dashboard")
+api.add_resource(AlignTaskResource, "/aligner/align")
+api.add_resource(TaskExpirationResource, "/aligner/expire")
+api.add_resource(AlignmentQueueResource, "/aligner/queue")
+
+# Language Change routes
+api.add_resource(LanguageChangeResource, "/tasks/change-language")
+api.add_resource(
+    TaskLanguageListResource, "/tasks/<string:task_id>/available-languages"
+)
+
+# Reupload routes
+api.add_resource(TaskReuploadResource, "/tasks/<string:task_id>/reupload")
+api.add_resource(TaskReuploadInfoResource, "/tasks/<string:task_id>/reupload-info")
+
+# Upload routes
+api.add_resource(FileUploadResource, "/upload")
+
+# Team routes
+api.add_resource(TeamResource, "/team")
+api.add_resource(TeamImageResource, "/team-images")
+
+# Contact routes
+api.add_resource(ContactEmailResource, "/contact/send-email")

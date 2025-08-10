@@ -60,6 +60,10 @@ class Language(db.Model, TimestampMixin):
             .all()
         )
 
+    @classmethod
+    def active(cls):
+        return cls.query.filter_by(is_active=True).all()
+
 
 # Association table for language alternatives
 language_alternatives = db.Table(

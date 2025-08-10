@@ -1,5 +1,15 @@
 import os
+import codecs
+import subprocess
+import unicodedata
+import charset_normalizer
+from datetime import datetime
+from praatio import textgrid
+from openpyxl import load_workbook
 from PIL import Image, ImageDraw, ImageFont
+from openpyxl.utils import get_column_letter
+from praatio.utilities.constants import Interval
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
 from app.utils.logger import get_logger
 
@@ -40,3 +50,295 @@ def generate_user_icon(name, user_id, force=False):
         os.makedirs(os.path.dirname(image_path), exist_ok=True)
         image.save(image_path)
     return os.path.relpath(image_path)
+
+
+def missing_word_html(word_list) -> str:
+    logger.debug("Generating missing word html")
+    html_code = ""
+    for i, word in enumerate(word_list, start=1):
+        word_parts = word.split("\t")
+        if len(word_parts) == 2:
+            word_text = word_parts[0]
+            phonemes = word_parts[1].split()
+            colored_phonemes = []
+            for phoneme in phonemes:
+                if len(phoneme) > 1 and phoneme[-1].isdigit():
+                    colored_phonemes.append(
+                        f"<span class='vowel-phoneme'>{phoneme}</span>"
+                    )
+                else:
+                    colored_phonemes.append(f"<span class='word-text'>{phoneme}</span>")
+            colored_phoneme_str = " ".join(colored_phonemes)
+            n_digits = len(str(len(word_list))) - len(str(i))
+            spaces = "".join(["&nbsp;"] * n_digits)
+            word_text = f"<span class='text-white'>{spaces}{i} {word_text}</span>"
+            html_code += f"{word_text}\t{colored_phoneme_str}<br>\n"
+        else:
+            logger.info(f"Invalid entry: {word}")
+    return html_code
+
+
+def replace_decomposed(text):
+    # Normalize to NFD (decomposed form)
+    nfd = unicodedata.normalize("NFD", text)
+
+    result = []
+    i = 0
+    while i < len(nfd):
+        if i + 1 < len(nfd) and unicodedata.combining(nfd[i + 1]):
+            # Found a potentially decomposed character
+            j = i + 1
+            while j < len(nfd) and unicodedata.combining(nfd[j]):
+                j += 1
+            decomposed = nfd[i:j]
+            precomposed = unicodedata.normalize("NFC", decomposed)
+
+            if len(precomposed) == 1:
+                # A precomposed version exists
+                result.append(precomposed)
+            else:
+                # No precomposed version, keep decomposed form
+                result.append(decomposed)
+            i = j
+        else:
+            # Regular character
+            result.append(nfd[i])
+            i += 1
+
+    return "".join(result)
+
+
+def detect_encoding(file_path):
+    with open(file_path, "rb") as file:
+        raw_data = file.read()
+        result = charset_normalizer.detect(raw_data)
+        encoding = result["encoding"]
+        logger.info(f"{file_path} encoding is: {encoding}")
+        return encoding
+
+
+def change_codec(file, codec="utf-8"):
+    # convert to input codec
+    with codecs.open(file, "r", encoding=detect_encoding(file)) as file_in:
+        text = file_in.read()
+        decoded_text = text.encode(codec, errors="ignore")
+    # write the utf-e encoded text to the output file
+    with open(file, "wb") as output_file:
+        output_file.write(decoded_text)
+
+
+def character_resolve(tg_path: str):
+    logger.info(f"Removing compsing decomposed characters in file.")
+    tg = textgrid.openTextgrid(tg_path, includeEmptyIntervals=True)
+    for tier in tg.tiers:
+        for start, stop, text in tier.entries:
+            text = replace_decomposed(text)
+            entry = Interval(start, stop, text)
+            tier.insertEntry(
+                entry, collisionMode="replace", collisionReportingMode="silence"
+            )
+    logger.info(f"Done compsing decomposed characters in file.")
+    tg.save(tg_path, format="long_textgrid", includeBlankSpaces=True)
+
+
+def get_font(font_size: int = 8, bold=None, gray=None) -> Font:
+    if gray:
+        font = Font(name="Josefin Sans", size=font_size, bold=bold, color="C0C0C0")
+        return font
+    font = Font(name="Josefin Sans", size=font_size, bold=bold)
+    return font
+
+
+# convert to pdf
+def excel_to_pdf(input_file, output_file) -> bool:
+    # run these 2 commands first
+    # make sure libreoffice and unconv are installed
+
+    # ln -s /usr/lib/python3/dist-packages/uno.py /path/to/your/virtualenv/lib/python3.8/site-packages/uno.py
+    # ln -s /usr/lib/python3/dist-packages/unohelper.py /path/to/your/virtualenv/lib/python3.8/site-packages/unohelper.py
+
+    command = f"PYTHON=$(eval 'which python') UNOPATH=$(eval 'which libreoffice') unoconv -f pdf -o {output_file} {input_file}"
+    process = subprocess.run(command, shell=True, executable="/bin/bash")
+
+    if process.returncode == 0:
+        return True
+    else:
+        return False
+
+
+def get_monthly_download(user_id, date, task_list: list, totals: dict):
+    # Load the Excel file
+    workbook = load_workbook(f"{ADMIN}/monthly_download.xlsx")
+
+    sheet = workbook.active
+
+    # color fill
+    gray_fill = PatternFill(start_color="C0C0C0", end_color="C0C0C0", fill_type="solid")
+
+    alignment = Alignment(horizontal="center", vertical="center")
+    vertical_alignment = Alignment(vertical="center")
+
+    # write date
+    sheet["G5"].font = get_font()
+    sheet["G5"] = date
+
+    # write user_id
+    sheet["A7"].font = get_font(9)
+    sheet["A7"] = user_id
+
+    # insert new rows for tasks
+    num_of_rows = len(task_list)
+    sheet.insert_rows(10, amount=num_of_rows)
+
+    # write rows/tasks
+    for i in range(num_of_rows):
+        row = 10 + i
+        if row % 2 == 1:  # change color of odd rows
+            sheet[f"B{row}"].fill = gray_fill
+            sheet[f"C{row}"].fill = gray_fill
+            sheet[f"D{row}"].fill = gray_fill
+            sheet[f"E{row}"].fill = gray_fill
+            sheet[f"F{row}"].fill = gray_fill
+            sheet[f"G{row}"].fill = gray_fill
+
+        sheet[f"B{row}"].font = get_font()
+        sheet[f"B{row}"] = task_list[i]["download_date"]
+        sheet[f"B{row}"].alignment = vertical_alignment
+
+        sheet[f"C{row}"].font = get_font()
+        sheet[f"C{row}"] = task_list[i]["no_of_files"] or "N/A"
+        sheet[f"C{row}"].alignment = alignment
+
+        sheet[f"D{row}"].font = get_font()
+        sheet[f"D{row}"] = task_list[i]["size"] or "N/A"
+        sheet[f"D{row}"].alignment = alignment
+
+        sheet[f"E{row}"].font = get_font()
+        sheet[f"E{row}"] = (
+            task_list[i]["lang"].replace("(suggested)", "").strip() or "N/A"
+        )
+        sheet[f"E{row}"].alignment = alignment
+
+        sheet[f"F{row}"].font = get_font()
+        sheet[f"F{row}"] = task_list[i]["words"] or "N/A"
+        sheet[f"F{row}"].alignment = alignment
+
+        sheet[f"G{row}"].font = get_font()
+        sheet[f"G{row}"] = task_list[i]["task_status"]
+        sheet[f"G{row}"].alignment = alignment
+
+    # write total row
+    total_row = 10 + num_of_rows + 1
+    sheet[f"B{total_row}"].font = get_font(bold=True)
+    sheet[f"B{total_row}"] = "Total usage"
+    sheet[f"B{total_row}"].alignment = vertical_alignment
+
+    sheet[f"C{total_row}"].font = get_font(bold=True)
+    sheet[f"C{total_row}"] = totals["file_count"]
+    sheet[f"C{total_row}"].alignment = alignment
+
+    sheet[f"D{total_row}"].font = get_font(bold=True)
+    sheet[f"D{total_row}"] = totals["total_size"]
+    sheet[f"D{total_row}"].alignment = alignment
+
+    sheet[f"E{total_row}"] = ""
+
+    sheet[f"F{total_row}"].font = get_font(bold=True)
+    sheet[f"F{total_row}"].alignment = alignment
+
+    # write in totals box
+    totals_box = total_row + 3
+    # box dimensions
+    min_col = sheet[f"C{totals_box}"].column
+    min_row = sheet[f"C{totals_box}"].row
+    max_col = sheet[f"F{totals_box + len(totals['lang_count'].keys()) -1}"].column
+    max_row = sheet[f"F{totals_box + len(totals['lang_count'].keys()) -1}"].row
+
+    for i, item in enumerate(sorted(totals["lang_count"].keys())):
+        cur_index = totals_box + i
+        # language
+        sheet[f"E{cur_index}"].value = item
+        sheet[f"E{cur_index}"].alignment = alignment
+        # count
+        sheet[f"F{cur_index}"].value = totals["lang_count"][item]
+        sheet[f"F{cur_index}"].alignment = alignment
+        if i != len(totals["lang_count"].keys()) + 1:
+            sheet.insert_rows(cur_index + 1, amount=1)
+
+    # draw border around totals box
+    thin_border = Side(style="thin")
+    for row in sheet.iter_rows(
+        min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col
+    ):
+        for cell in row:
+            cell.border = Border()
+            # Apply top border to cells in the first row
+            if cell.row == min_row:
+                cell.border += Border(top=thin_border)
+            # Apply bottom border to cells in the last row
+            if cell.row == max_row:
+                cell.border += Border(bottom=thin_border)
+            # Apply left border to cells in the first column
+            if cell.column == min_col:
+                cell.border += Border(left=thin_border)
+            # Apply right border to cells in the last column
+            if cell.column == max_col:
+                cell.border += Border(right=thin_border)
+
+    # write footer
+    footer_row = total_row + 2 + len(totals["lang_count"].keys()) + 2
+
+    sheet[
+        f"A{footer_row}"
+    ] = "If you have any questions about this statement, please contact"
+    sheet[f"A{footer_row}"].alignment = alignment
+    sheet[f"A{footer_row}"].font = get_font()
+
+    sheet[f"A{footer_row + 1}"] = "support@autophon.se"
+    sheet[f"A{footer_row + 1}"].alignment = alignment
+    sheet[f"A{footer_row + 1}"].font = get_font()
+
+    # change font
+    # get last row
+    last_row = None
+    for row in reversed(list(sheet.iter_rows())):
+        for cell in row:
+            if cell.value:
+                last_row = cell.row
+                break
+        if last_row:
+            break
+
+    for row in sheet.iter_rows(
+        min_row=10, max_row=last_row, min_col=3, max_col=sheet.max_column
+    ):
+        for cell in row:
+            cell.font = get_font()
+
+    # auto align
+    for column in sheet.iter_cols(
+        min_row=10, max_row=last_row, min_col=3, max_col=sheet.max_column
+    ):
+        sheet.column_dimensions[
+            f"{get_column_letter(column[0].column)}"
+        ].auto_size = True
+
+    sheet.merge_cells(f"A{footer_row}:G{footer_row}")
+    sheet.merge_cells(f"A{footer_row + 1}:G{footer_row + 1}")
+
+    # set new logger.info area
+    sheet.print_area = f"'{sheet.title}'!${get_column_letter(sheet.min_column)}${sheet.min_row}:${get_column_letter(sheet.max_column)}${sheet.max_row}"
+
+    # Save the modified workbook
+    output_path = f"{UPLOADS}/{user_id}/history"
+    os.makedirs(output_path, exist_ok=True)
+    file_name = (
+        f"{str(datetime.strptime(f'{date}', '%b %Y').strftime('%y%m'))}_{user_id}"
+    )
+    output_file = f"{output_path}/{file_name}"
+    workbook.save(f"{output_file}.xlsx")
+
+    if not excel_to_pdf(f"{output_file}.xlsx", f"{output_file}.pdf"):
+        raise Exception("There was a problem converting xlsx to pdf.")
+
+    return output_file

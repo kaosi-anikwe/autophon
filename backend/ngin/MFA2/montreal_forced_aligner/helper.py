@@ -156,7 +156,6 @@ def parse_old_features(config: MetaDict) -> MetaDict:
                 del config["features"][key]
         for key, new_key in feature_key_remapping.items():
             if key in config["features"]:
-
                 config["features"][new_key] = config["features"][key]
                 del config["features"][key]
     else:
@@ -452,7 +451,7 @@ def score_g2p(gold: List[str], hypo: List[str]) -> Tuple[int, int]:
             return 0, len(h)
     edits = 100000
     best_length = 100000
-    for (g, h) in itertools.product(gold, hypo):
+    for g, h in itertools.product(gold, hypo):
         e = edit_distance(g.split(), h.split())
         if e < edits:
             edits = e

@@ -573,7 +573,6 @@ class CorpusMixin(MfaWorker, DatabaseMixin, metaclass=ABCMeta):
                 bulk_update(session, Utterance, update_mappings, id_field="speaker_id")
             session.commit()
             if session.query(Dictionary2Job).count() == 0:
-
                 dict_job_mappings = []
                 for job_id, dict_id in (
                     session.query(Utterance.job_id, Dictionary.id)
@@ -720,7 +719,6 @@ class CorpusMixin(MfaWorker, DatabaseMixin, metaclass=ABCMeta):
                 Word.id, Word.mapping_id, Word.dictionary_id, Word.word
             ).order_by(Word.mapping_id)
             if not has_words or getattr(self, "use_g2p", False):
-
                 word_insert_mappings["<eps>"] = {
                     "id": word_key,
                     "word": "<eps>",
@@ -1121,7 +1119,6 @@ class CorpusMixin(MfaWorker, DatabaseMixin, metaclass=ABCMeta):
                     )
                     larger_subset_num = int(subset_per_dictionary * 10)
                     if num_utts > larger_subset_num:
-
                         larger_subset_query = (
                             session.query(Utterance.id)
                             .join(Utterance.speaker)
@@ -1154,7 +1151,6 @@ class CorpusMixin(MfaWorker, DatabaseMixin, metaclass=ABCMeta):
                             f"For {dict_id}, subset is {subset_per_dictionary}"
                         )
                     elif num_utts > subset_per_dictionary:
-
                         larger_subset_query = (
                             session.query(Utterance.id)
                             .join(Utterance.speaker)

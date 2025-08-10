@@ -586,7 +586,6 @@ class PyniniTrainerMixin:
                     try:
                         result = return_queue.get(timeout=1)
                         if isinstance(result, Exception):
-
                             error_dict[getattr(result, "job_name", 0)] = result
                             continue
                         if stopped.stop_check():

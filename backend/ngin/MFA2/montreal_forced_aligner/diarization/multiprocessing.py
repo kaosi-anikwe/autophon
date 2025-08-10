@@ -572,7 +572,6 @@ class PldaClassificationFunction(KaldiFunction):
             lines.append(line)
         input_proc.wait()
         with Session(self.db_engine()) as session:
-
             job: Job = (
                 session.query(Job)
                 .options(joinedload(Job.corpus, innerjoin=True))
@@ -720,7 +719,6 @@ class SpeechbrainClassificationFunction(KaldiFunction):
         )
         device = torch.device("cuda" if self.cuda else "cpu")
         with Session(self.db_engine()) as session:
-
             job: Job = (
                 session.query(Job)
                 .options(joinedload(Job.corpus, innerjoin=True))

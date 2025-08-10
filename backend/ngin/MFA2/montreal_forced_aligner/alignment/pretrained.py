@@ -41,7 +41,6 @@ from montreal_forced_aligner.transcription.transcriber import TranscriberMixin
 from montreal_forced_aligner.utils import log_kaldi_errors
 
 if TYPE_CHECKING:
-
     from montreal_forced_aligner.abc import MetaDict
 
 __all__ = ["PretrainedAligner", "DictionaryTrainer"]

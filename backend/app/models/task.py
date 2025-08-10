@@ -6,9 +6,14 @@ from .base import TimestampMixin, DatabaseHelperMixin
 class TaskStatus(Enum):
     PENDING = "pending"
     PROCESSING = "processing"
+    UPLOADED = "uploaded"
+    UPLOADING = "uploading"
     COMPLETED = "completed"
     FAILED = "failed"
     CANCELLED = "cancelled"
+    PRE_ERROR = "pre-error"
+    ALIGNED = "aligned"
+    EXPIRED = "expired"
 
 
 class FileType(Enum):

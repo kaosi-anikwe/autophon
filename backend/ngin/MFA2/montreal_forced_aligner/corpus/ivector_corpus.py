@@ -136,7 +136,6 @@ class IvectorCorpusMixin(AcousticCorpusMixin, IvectorConfigMixin):
             logger.debug("Speaker ivector computation stopped early.")
             return
         with mfa_open(log_path, "w") as log_file:
-
             normalize_proc = subprocess.Popen(
                 [
                     thirdparty_binary("ivector-normalize-length"),
@@ -194,7 +193,6 @@ class IvectorCorpusMixin(AcousticCorpusMixin, IvectorConfigMixin):
         with tqdm(
             total=self.num_utterances, disable=GLOBAL_CONFIG.quiet
         ) as pbar, mfa_open(log_path, "w") as log_file:
-
             normalize_proc = subprocess.Popen(
                 [
                     thirdparty_binary("ivector-normalize-length"),

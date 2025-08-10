@@ -468,7 +468,6 @@ def stop_server(mode: str = "smart") -> None:
         f"pg_mfa_{GLOBAL_CONFIG.current_profile_name}"
     )
     if not db_directory.exists():
-
         logger.error(f"There was no database found at {db_directory}.")
         sys.exit(1)
     logger.info(

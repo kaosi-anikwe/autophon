@@ -614,7 +614,6 @@ class MultispeakerDictionaryMixin(TemporaryDictionaryMixin, metaclass=abc.ABCMet
                 )
                 for w in words:
                     for p in w.pronunciations:
-
                         pron = p.pronunciation.split()
                         while pron:
                             subsequences.add(tuple(pron))

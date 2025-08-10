@@ -739,7 +739,6 @@ class ExportKaldiFilesFunction(KaldiFunction):
             spk2utt_paths = job.per_dictionary_spk2utt_scp_paths
             text_ints_paths = job.per_dictionary_text_int_scp_paths
             for d in job.dictionaries:
-
                 words_mapping = d.word_mapping
                 spk2utt = {}
                 feats = {}

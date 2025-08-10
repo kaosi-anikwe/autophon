@@ -540,7 +540,6 @@ class MfccFunction(KaldiFunction):
                 .order_by(Utterance.kaldi_id)
             )
             for u, sf in utterances:
-
                 wave, _ = librosa.load(
                     sf.sound_file_path,
                     sr=16000,
@@ -1063,7 +1062,6 @@ class CalcFmllrFunction(KaldiFunction):
                         )
 
                     else:
-
                         if not initial:
                             temp_composed_trans_path = trans_path.with_suffix(
                                 ".cmp.tmp"
@@ -2266,7 +2264,6 @@ class ExportIvectorsFunction(KaldiFunction):
         with sqlalchemy.orm.Session(engine) as session, mfa_open(
             self.log_path, "w"
         ) as log_file:
-
             job: Job = (
                 session.query(Job)
                 .options(joinedload(Job.corpus, innerjoin=True))

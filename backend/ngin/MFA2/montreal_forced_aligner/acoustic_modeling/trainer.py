@@ -659,7 +659,6 @@ class TrainableAligner(TranscriberMixin, TopLevelMfaWorker, ModelExporterMixin):
         Calculate the counts of pdfs corresponding to phones
         """
         try:
-
             logger.info("Accumulating transition stats...")
 
             begin = time.time()
@@ -852,7 +851,6 @@ class TrainableAligner(TranscriberMixin, TopLevelMfaWorker, ModelExporterMixin):
             self.compile_train_graphs()
             self.align_utterances()
             if self.current_acoustic_model.meta["features"]["uses_speaker_adaptation"]:
-
                 arguments = self.calc_fmllr_arguments()
                 missing_transforms = False
                 for arg in arguments:

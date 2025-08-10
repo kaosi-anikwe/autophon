@@ -388,7 +388,6 @@ def segment_utterance(
         utterance_fst.set_output_symbols(word_symbol_table)
         f.write(str(utterance_fst))
     with mfa_open(log_path, "w") as log_file:
-
         proc = subprocess.Popen(
             [
                 thirdparty_binary("compile-graph"),

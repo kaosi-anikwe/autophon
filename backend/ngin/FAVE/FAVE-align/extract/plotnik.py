@@ -873,7 +873,6 @@ def phila_system(i, phones, trans, fm, fp, fv, ps, fs, pc, phoneset):
         and trans.upper() not in ["AND", "AN'", "AM", "AN", "THAN"]
         and fm != "0"
     ):
-
         # /aeh/:  tense short-a
 
         # following front nasals, voiceless fricatives

@@ -172,7 +172,6 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
         ]
 
     def analyze_alignments(self):
-
         if not GLOBAL_CONFIG.current_profile.use_postgres:
             logger.warning("Alignment analysis not available without using postgresql")
             return
@@ -858,7 +857,6 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
         with tqdm(
             total=self.num_current_utterances, disable=GLOBAL_CONFIG.quiet
         ) as pbar:
-
             arguments = self.alignment_extraction_arguments()
             has_words = False
             phone_interval_count = 0

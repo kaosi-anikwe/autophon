@@ -3,10 +3,13 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func, extract
+from datetime import datetime
 
 from app.extensions import db
 from app.models.task import Task, TaskFile, TaskFileName
 from app.models.user import User
+from app.models.language import Language
 from app.utils.logger import get_logger, log_exception
 
 logger = get_logger(__name__)
@@ -360,6 +363,57 @@ class TaskFileNamesResource(Resource):
             return {"message": f"Error adding file name to task: {str(e)}"}, 500
 
 
+class TaskCancelResource(Resource):
+    """Handle task cancellation"""
+
+    @jwt_required()
+    def put(self, task_id):
+        """Cancel a task"""
+        try:
+            import os
+
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            task = Task.query.filter_by(task_id=task_id).first()
+            if not task:
+                return {"message": "Task not found"}, 404
+
+            # Users can only cancel their own tasks or admin can cancel any
+            if not current_user.admin and task.user_id != current_user_id:
+                return {"message": "Permission denied"}, 403
+
+            if task.pid:
+                # Task is currently being processed - kill the process
+                try:
+                    logger.info(f"Stopping align process with PID: {task.pid}")
+                    os.kill(task.pid, 15)  # send SIGTERM
+                    task.task_status = TaskStatus.CANCELLED
+                    task.cancelled = True
+                except (ProcessLookupError, OSError) as e:
+                    # Process might already be dead
+                    logger.warning(f"Could not kill process {task.pid}: {e}")
+                    task.task_status = TaskStatus.CANCELLED
+                    task.cancelled = True
+            else:
+                # Alignment hasn't begun - reset to uploaded
+                task.aligned = None
+                task.task_status = TaskStatus.UPLOADED
+                task.cancelled = False
+
+            task.update()
+
+            schema = TaskSchema()
+            return {
+                "message": "Task cancelled successfully",
+                "task": schema.dump(task),
+            }, 200
+
+        except Exception as e:
+            log_exception(logger, "Error cancelling task")
+            return {"message": f"Error cancelling task: {str(e)}"}, 500
+
+
 class TaskBulkDeleteResource(Resource):
     """Handle bulk deletion of tasks"""
 
@@ -442,3 +496,205 @@ class TaskBulkDeleteResource(Resource):
         except Exception as e:
             log_exception(logger, "Error during bulk delete")
             return {"message": f"Error during bulk delete: {str(e)}"}, 500
+
+
+class TaskHistoryResource(Resource):
+    """Handle user task history with filtering and aggregation"""
+
+    @jwt_required()
+    def get(self):
+        """Get user's task history with optional date filtering"""
+        try:
+            current_user_id = get_jwt_identity()
+
+            # Get query parameters
+            year = request.args.get("year", type=int)
+            month = request.args.get("month")
+
+            if not year or not month:
+                return {"message": "Year and month parameters are required"}, 400
+
+            try:
+                # Parse month and year into date filter
+                filter_date = datetime.strptime(f"{month}, {year}", "%b, %Y")
+                year_num = filter_date.year
+                month_num = filter_date.month
+            except ValueError:
+                return {
+                    "message": "Invalid month format. Use format like 'Jan, 2024'"
+                }, 400
+
+            # Query tasks for the specified month/year using SQLAlchemy
+            query = Task.query.filter_by(user_id=current_user_id)
+
+            # Filter by month/year using SQL date functions for better performance
+            query = query.filter(
+                extract("year", Task.created_at) == year_num,
+                extract("month", Task.created_at) == month_num,
+            )
+
+            # Order by creation date (newest first)
+            tasks = query.order_by(Task.created_at.desc()).all()
+
+            # Calculate aggregated statistics using SQL for better performance
+            totals_query = query.with_entities(
+                func.count(Task.id).label("task_count"),
+                func.sum(Task.no_of_files).label("file_count"),
+                func.sum(Task.size).label("total_size"),
+                func.sum(Task.words).label("total_words"),
+            ).first()
+
+            # Language count aggregation
+            lang_counts = (
+                db.session.query(
+                    Language.display_name, func.count(Task.id).label("count")
+                )
+                .join(Task, Task.lang_id == Language.id)
+                .filter(
+                    Task.user_id == current_user_id,
+                    extract("year", Task.created_at) == year_num,
+                    extract("month", Task.created_at) == month_num,
+                )
+                .group_by(Language.display_name)
+                .all()
+            )
+
+            # Format results
+            schema = TaskSchema(many=True)
+            task_data = schema.dump(tasks)
+
+            # Calculate totals
+            totals = {
+                "task_count": totals_query.task_count or 0,
+                "file_count": int(totals_query.file_count or 0),
+                "total_size": float(totals_query.total_size or 0),
+                "total_words": totals_query.total_words or 0,
+                "language_counts": {
+                    lang_name: count for lang_name, count in lang_counts
+                },
+            }
+
+            return {
+                "success": True,
+                "results": task_data,
+                "totals": totals,
+                "period": f"{month} {year}",
+                "count": len(tasks),
+            }, 200
+
+        except Exception as e:
+            log_exception(logger, "Error retrieving task history")
+            return {"message": f"Error retrieving task history: {str(e)}"}, 500
+
+
+class TaskMonthlyReportResource(Resource):
+    """Handle monthly PDF report generation for users"""
+
+    @jwt_required()
+    def get(self):
+        """Generate and download monthly usage report as PDF"""
+        try:
+            from flask import send_file
+            from app.utils.helpers import get_monthly_download
+            from app.utils.uploads import convert_size
+            import os
+
+            current_user_id = get_jwt_identity()
+
+            # Get query parameters
+            year = request.args.get("year")
+            month = request.args.get("month")
+
+            if not year or not month:
+                return {"message": "Year and month parameters are required"}, 400
+
+            try:
+                # Parse month and year into date filter
+                filter_date = datetime.strptime(f"{month}, {year}", "%b, %Y")
+                filter_date_str = filter_date.strftime("%Y/%m")
+            except ValueError:
+                return {
+                    "message": "Invalid month format. Use format like 'Jan, 2024'"
+                }, 400
+
+            # Query tasks for the specified month/year with download_date filter
+            query = Task.query.filter_by(user_id=current_user_id)
+
+            # Filter by download_date containing the year/month pattern
+            query = query.filter(Task.download_date.contains(filter_date_str))
+
+            # Order by creation date (newest first)
+            tasks = query.order_by(Task.created_at.desc()).all()
+
+            if not tasks:
+                return {"message": f"No tasks found for {month} {year}"}, 404
+
+            # Format task data for the PDF generator
+            task_list = []
+            file_count = 0
+            total_size = 0
+            total_words = 0
+            lang_count = {}
+
+            for task in tasks:
+                # Map language code to display name
+                lang_display = (
+                    task.language.display_name
+                    if task.language
+                    else task.lang or "Unknown"
+                )
+                lang_display = lang_display.replace("(suggested)", "").strip()
+
+                task_data = {
+                    "download_date": task.download_date
+                    or task.created_at.strftime("%Y/%m/%d"),
+                    "no_of_files": task.no_of_files or 0,
+                    "size": convert_size(int(task.size or 0)),
+                    "lang": lang_display,
+                    "words": task.words or 0,
+                    "task_status": task.task_status.value
+                    if task.task_status
+                    else "unknown",
+                }
+                task_list.append(task_data)
+
+                # Aggregate totals
+                file_count += int(task.no_of_files or 0)
+                total_size += float(task.size or 0)
+                total_words += int(task.words or 0)
+
+                # Count languages
+                if lang_display:
+                    lang_count[lang_display] = lang_count.get(lang_display, 0) + 1
+
+            # Prepare totals for PDF generation
+            totals = {
+                "file_count": file_count,
+                "total_size": convert_size(int(total_size)),
+                "total_words": total_words,
+                "lang_count": lang_count,
+            }
+
+            # Generate PDF using the helper function
+            output_filename = get_monthly_download(
+                user_id=current_user_id,
+                date=f"{month} {year}",
+                task_list=task_list,
+                totals=totals,
+            )
+
+            # Clean up xlsx file and return PDF
+            try:
+                os.remove(f"{output_filename}.xlsx")
+            except FileNotFoundError:
+                pass  # xlsx file might already be deleted
+
+            pdf_path = f"{output_filename}.pdf"
+            if not os.path.exists(pdf_path):
+                return {"message": "Failed to generate PDF report"}, 500
+
+            return send_file(pdf_path, as_attachment=True)
+
+        except Exception as e:
+            log_exception(logger, "Error generating monthly report")
+            return {"message": f"Error generating monthly report: {str(e)}"}, 500
