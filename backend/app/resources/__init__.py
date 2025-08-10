@@ -54,6 +54,11 @@ from .dictionaries import (
     DictionaryByLanguageResource,
 )
 
+# Configuration resources
+from .config import (
+    UserLimitsResource,
+)
+
 __all__ = [
     # Authentication resources
     "Register",
@@ -93,4 +98,6 @@ __all__ = [
     "DictionaryResource",
     "UserDictionariesResource",
     "DictionaryByLanguageResource",
+    # Configuration resources
+    "UserLimitsResource",
 ]

@@ -13,10 +13,12 @@ ma = Marshmallow()
 # Import logger (will be initialized after app creation)
 logger = None
 
+
 def init_logger():
     """Initialize logger after app setup"""
     global logger
     from app.utils.logger import get_logger
+
     logger = get_logger(__name__)
 
 
@@ -43,7 +45,9 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     if user and user.tokens_revoked_at:
         if token_issued_at < user.tokens_revoked_at:
             if logger:
-                logger.warning(f"Blocked revoked token for user {user_id}: token issued at {token_issued_at}")
+                logger.warning(
+                    f"Blocked revoked token for user {user_id}: token issued at {token_issued_at}"
+                )
             return True
 
     return False

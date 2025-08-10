@@ -39,6 +39,8 @@ from app.resources import (
     DictionaryResource,
     UserDictionariesResource,
     DictionaryByLanguageResource,
+    # Configuration
+    UserLimitsResource,
 )
 
 api_bp = Blueprint("api", __name__)
@@ -89,3 +91,6 @@ api.add_resource(UserDictionariesResource, "/users/<int:user_id>/dictionaries")
 api.add_resource(
     DictionaryByLanguageResource, "/dictionaries/language/<string:language>"
 )
+
+# Configuration routes
+api.add_resource(UserLimitsResource, "/config/user-limits")

@@ -16,7 +16,12 @@ from app.extensions import db
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
 from app.schemas import UserCreateSchema, UserLoginSchema, UserSchema, UserUpdateSchema
-from app.utils.logger import get_logger, log_exception, log_request_info, log_response_info
+from app.utils.logger import (
+    get_logger,
+    log_exception,
+    log_request_info,
+    log_response_info,
+)
 
 logger = get_logger(__name__)
 
@@ -93,7 +98,9 @@ class Login(Resource):
             if not user or not check_password_hash(
                 user.password_hash, data["password"]
             ):
-                logger.warning(f"Failed login attempt for email: {data.get('email', 'unknown')}")
+                logger.warning(
+                    f"Failed login attempt for email: {data.get('email', 'unknown')}"
+                )
                 response = {"message": "Invalid email or password"}
                 log_response_info(logger, response, 401)
                 return response, 401

@@ -27,10 +27,8 @@ class UserDictionary(db.Model, TimestampMixin, DatabaseHelperMixin):
         user = User.query.get(self.user_id)
         if not user or not upload_dir:
             return None
-            
-        file_path = os.path.join(
-            upload_dir, user.uuid, "dicts", f"{self.lang}.dict"
-        )
+
+        file_path = os.path.join(upload_dir, user.uuid, "dicts", f"{self.lang}.dict")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
         # write content to file

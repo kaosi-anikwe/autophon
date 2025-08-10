@@ -17,7 +17,7 @@ __all__ = [
     "TimestampMixin",
     "User",
     "Language",
-    "LanguageType", 
+    "LanguageType",
     "language_alternatives",
     "language_engines",
     "Engine",
