@@ -1,5 +1,5 @@
 [Unit]
-Description=AutoPhon Real-time Upload Worker
+Description=Autophon Real-time Upload Worker
 Documentation=file:///home/nordalign/new-autophon/backend/scripts/README.md
 After=network.target postgresql.service
 Wants=network.target

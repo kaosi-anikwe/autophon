@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Real-time Upload Worker for AutoPhon
+Real-time Upload Worker for Autophon
 Processes upload tasks immediately for near-instant user experience:
 - Very frequent polling (0.1-2 seconds) for real-time processing
 - SQLAlchemy integration
@@ -550,7 +550,7 @@ def main():
         # Setup logging directory
         os.makedirs(LOGS, exist_ok=True)
 
-        logger.info("Starting AutoPhon Real-time Upload Worker")
+        logger.info("Starting Autophon Real-time Upload Worker")
         logger.info(f"Worker PID: {os.getpid()}")
         logger.info(f"Real-time polling: {MIN_POLL_INTERVAL}s - {MAX_POLL_INTERVAL}s")
 

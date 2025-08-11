@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AutoPhon Real-time Upload Worker Startup Script
+# Autophon Real-time Upload Worker Startup Script
 # Optimized for real-time upload processing
 
 set -e  # Exit on any error
@@ -105,7 +105,7 @@ check_running_worker() {
 }
 
 start_worker() {
-    log_info "Starting AutoPhon Real-time Upload Worker..."
+    log_info "Starting Autophon Real-time Upload Worker..."
     log_info "Worker script: $WORKER_SCRIPT"
     log_info "Working directory: $APP_DIR"
     log_info "Optimized for real-time upload processing (100ms-2s polling)"
@@ -131,7 +131,7 @@ show_usage() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Real-time Upload Worker for AutoPhon - processes uploads immediately
+Real-time Upload Worker for Autophon - processes uploads immediately
 
 Options:
     --daemon        Run worker in background (daemon mode)

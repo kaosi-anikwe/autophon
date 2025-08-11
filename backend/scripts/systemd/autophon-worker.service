@@ -1,5 +1,5 @@
 [Unit]
-Description=AutoPhon Alignment Worker
+Description=Autophon Alignment Worker
 Documentation=file:///path/to/your/app/backend/scripts/README.md
 After=network.target postgresql.service
 Wants=network.target

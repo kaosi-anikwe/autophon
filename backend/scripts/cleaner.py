@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Database and file cleanup script for AutoPhon.
+Database and file cleanup script for Autophon.
 This script is meant to be run as a cron job at 3AM everyday to:
 - Clean up expired tasks and their files
 - Remove orphaned directories

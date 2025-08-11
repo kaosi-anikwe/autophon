@@ -1,6 +1,6 @@
-# AutoPhon Backend API
+# Autophon Backend API
 
-A modern RESTful API backend for the AutoPhon forced aligner web application, built with Flask-RESTful and SQLAlchemy.
+A modern RESTful API backend for the Autophon forced aligner web application, built with Flask-RESTful and SQLAlchemy.
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ A modern RESTful API backend for the AutoPhon forced aligner web application, bu
 
 ## Overview
 
-The AutoPhon Backend API provides a comprehensive set of endpoints for managing forced alignment tasks, user authentication, file uploads, dictionary management, and administrative operations. The API follows RESTful principles and uses JWT for authentication.
+The Autophon Backend API provides a comprehensive set of endpoints for managing forced alignment tasks, user authentication, file uploads, dictionary management, and administrative operations. The API follows RESTful principles and uses JWT for authentication.
 
 ### Key Features
 

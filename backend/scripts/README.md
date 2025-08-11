@@ -1,4 +1,4 @@
-# AutoPhon Alignment Worker
+# Autophon Alignment Worker
 
 A modern, optimized replacement for the original `sniffer.py` with improved performance, reliability, and maintainability.
 
@@ -93,7 +93,7 @@ Create `/etc/systemd/system/autophon-worker.service`:
 
 ```ini
 [Unit]
-Description=AutoPhon Alignment Worker
+Description=Autophon Alignment Worker
 After=network.target
 Wants=network.target
 

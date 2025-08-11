@@ -1,4 +1,4 @@
-# AutoPhon Real-time Upload Worker
+# Autophon Real-time Upload Worker
 
 A modern, optimized upload processing worker designed for near-instant user experience, replacing the original MongoDB-based uploader.py with significant performance and reliability improvements.
 

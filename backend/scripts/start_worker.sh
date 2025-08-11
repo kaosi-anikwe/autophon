@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AutoPhon Alignment Worker Startup Script
+# Autophon Alignment Worker Startup Script
 # This script provides an easy way to start the alignment worker
 # with proper environment setup and error handling
 
@@ -106,7 +106,7 @@ check_running_worker() {
 }
 
 start_worker() {
-    log_info "Starting AutoPhon Alignment Worker..."
+    log_info "Starting Autophon Alignment Worker..."
     log_info "Worker script: $WORKER_SCRIPT"
     log_info "Working directory: $APP_DIR"
     

@@ -1,0 +1,126 @@
+{
+	"id": "autophon-backend-env",
+	"name": "Autophon Backend Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api/v1",
+			"description": "Base URL for the Autophon API",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "test_user_email",
+			"value": "testuser@example.com",
+			"description": "Test user email for authentication",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "test_user_password",
+			"value": "testpassword123",
+			"description": "Test user password",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "admin_email",
+			"value": "admin@example.com",
+			"description": "Admin user email",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "admin_password",
+			"value": "adminpassword123",
+			"description": "Admin user password",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"description": "JWT access token for regular user authentication",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"description": "JWT refresh token for token renewal",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "admin_access_token",
+			"value": "",
+			"description": "JWT access token for admin user authentication",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "admin_refresh_token",
+			"value": "",
+			"description": "JWT refresh token for admin user",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"description": "Current user ID (automatically set after login)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "admin_user_id",
+			"value": "",
+			"description": "Admin user ID (automatically set after admin login)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_email",
+			"value": "",
+			"description": "Current user email (automatically set after login)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "task_id",
+			"value": "",
+			"description": "Current task ID (automatically set after file upload)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "language_id",
+			"value": "",
+			"description": "Language ID (automatically set when fetching languages)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "language_code",
+			"value": "",
+			"description": "Language code (automatically set when fetching languages)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "engine_id",
+			"value": "",
+			"description": "Engine ID (automatically set when fetching engines)",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "engine_code",
+			"value": "",
+			"description": "Engine code (automatically set when fetching engines)",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment"
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Optimized Alignment Worker for AutoPhon
+Optimized Alignment Worker for Autophon
 Replaces the old sniffer.py with improved architecture:
 - Dynamic polling with exponential backoff
 - SQLAlchemy integration
@@ -1625,7 +1625,7 @@ def main():
         # Setup logging directory
         os.makedirs(LOGS, exist_ok=True)
 
-        logger.info("Starting AutoPhon Alignment Worker")
+        logger.info("Starting Autophon Alignment Worker")
         logger.info(f"Worker PID: {os.getpid()}")
         logger.info(f"Python version: {sys.version}")
 
