@@ -1,647 +1,980 @@
-# Autophon API Documentation
+# AutoPhon Backend API
 
-A Flask-RESTful API for the Autophon application, providing user management, task processing, language support, and dictionary management.
+A modern RESTful API backend for the AutoPhon forced aligner web application, built with Flask-RESTful and SQLAlchemy.
 
-## Base URL
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Setup & Installation](#setup--installation)
+- [Authentication](#authentication)
+- [API Endpoints](#api-endpoints)
+  - [Authentication](#authentication-endpoints)
+  - [User Management](#user-management)
+  - [Task Management](#task-management)
+  - [Language & Engine Management](#language--engine-management)
+  - [Dictionary Management](#dictionary-management)
+  - [File Upload & Download](#file-upload--download)
+  - [Aligner Operations](#aligner-operations)
+  - [Admin Operations](#admin-operations)
+  - [Configuration & Utilities](#configuration--utilities)
+- [Error Handling](#error-handling)
+- [Rate Limiting](#rate-limiting)
+- [Development](#development)
+
+## Overview
+
+The AutoPhon Backend API provides a comprehensive set of endpoints for managing forced alignment tasks, user authentication, file uploads, dictionary management, and administrative operations. The API follows RESTful principles and uses JWT for authentication.
+
+### Key Features
+
+- **JWT Authentication** with refresh tokens and token blacklisting
+- **File Upload & Processing** for audio alignment tasks
+- **User Dictionary Management** with multi-language support
+- **Task Management** with status tracking and cancellation
+- **Admin Panel** with user management and site control
+- **Anonymous User Support** with session-based limits
+- **Site Status Management** with automatic user logout
+- **Comprehensive Logging** and error handling
+
+## Architecture
+
+### Technology Stack
+
+- **Framework**: Flask with Flask-RESTful
+- **Database**: SQLAlchemy with SQL support
+- **Authentication**: Flask-JWT-Extended
+- **Validation**: Marshmallow schemas
+- **File Processing**: Custom upload handlers
+- **Logging**: Structured logging with request/response tracking
+
+### Project Structure
+
 ```
-http://localhost:5000/api/v1
+backend/
+├── app/
+│   ├── __init__.py              # Application factory
+│   ├── config.py                # Configuration settings
+│   ├── extensions.py            # Flask extensions
+│   ├── api/                     # API blueprints
+│   │   ├── v1/                  # Version 1 API
+│   │   └── admin/               # Admin API
+│   ├── models/                  # SQLAlchemy models
+│   ├── resources/               # Flask-RESTful resources
+│   ├── schemas/                 # Marshmallow schemas
+│   └── utils/                   # Utility functions
+├── migrations/                  # Database migrations
+└── run.py                      # Application entry point
 ```
+
+## Setup & Installation
+
+### Prerequisites
+
+- Python 3.8+
+- MySQL (or SQLite for development)
+- Flask (for API development)
+
+### Environment Variables
+
+Create a `.env` file in the backend root:
+
+```env
+# Flask Configuration
+FLASK_CONFIG=development
+SECRET_KEY=your-secret-key-here
+
+# Database
+DATABASE_URL=mysql://user:password@localhost/autophon
+
+# JWT Configuration
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_ACCESS_TOKEN_EXPIRES=3600
+JWT_REFRESH_TOKEN_EXPIRES=2592000
+
+# File Storage
+UPLOADS=/path/to/uploads
+CURRENT_DIR=/path/to/current
+ADMIN=/path/to/admin-resources
+```
+
+### Installation
+
+1. **Create virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Initialize database:**
+   ```bash
+   flask db init
+   flask db migrate -m "Initial migration"
+   flask db upgrade
+   ```
+
+4. **Run the application:**
+   ```bash
+   python run.py
+   ```
+
+The API will be available at `http://localhost:5000`
 
 ## Authentication
-The API uses JWT (JSON Web Token) authentication. Most endpoints require a valid access token in the Authorization header:
+
+The API uses JWT (JSON Web Tokens) for authentication with the following features:
+
+- **Access Tokens**: Short-lived (1 hour default) for API access
+- **Refresh Tokens**: Long-lived (30 days default) for token renewal
+- **Token Blacklisting**: Revoked tokens are tracked and blocked
+- **Global Token Revocation**: Users can logout from all devices
+
+### Authentication Flow
+
+1. **Register/Login** to get access and refresh tokens
+2. **Include access token** in all authenticated requests:
+   ```
+   Authorization: Bearer <access_token>
+   ```
+3. **Refresh tokens** when access token expires
+4. **Logout** to blacklist current tokens
+
+### Anonymous Users
+
+The API supports anonymous users with session-based tracking:
+- Daily task limits enforced via session cookies
+- No account registration required
+- Limited functionality compared to registered users
+
+## API Endpoints
+
+Base URL: `http://localhost:5000/api/v1`
+
+### Authentication Endpoints
+
+#### Register User
+```http
+POST /api/v1/auth/register
 ```
-Authorization: Bearer <access_token>
-```
-
-## Response Format
-All API responses follow a consistent JSON format:
-- Success responses include relevant data and status codes 200-201
-- Error responses include a `message` field and appropriate error status codes
-- List endpoints include both the data array and a `count` field
-
-## Authentication Endpoints
-
-### POST /auth/register
-Register a new user account.
 
 **Request Body:**
 ```json
 {
-  "username": "string",
-  "email": "string",
-  "password": "string",
-  "first_name": "string",
-  "last_name": "string"
+  "email": "user@example.com",
+  "password": "securepassword",
+  "first_name": "John",
+  "last_name": "Doe",
+  "title": "Dr.",
+  "org": "University",
+  "industry": "Education"
 }
 ```
 
-**Response:**
+**Response (201):**
 ```json
 {
   "message": "User registered successfully",
-  "user": { /* user object */ },
-  "access_token": "string",
-  "refresh_token": "string"
+  "user": {
+    "id": 1,
+    "uuid": "abc123",
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "verified": false,
+    "admin": false
+  },
+  "access_token": "eyJ...",
+  "refresh_token": "eyJ..."
 }
 ```
 
-### POST /auth/login
-Authenticate user and receive tokens.
+#### Login User
+```http
+POST /api/v1/auth/login
+```
 
 **Request Body:**
 ```json
 {
-  "email": "string",
-  "password": "string"
+  "email": "user@example.com",
+  "password": "securepassword"
 }
 ```
 
-**Response:**
+**Response (200):**
 ```json
 {
   "message": "Login successful",
-  "user": { /* user object */ },
-  "access_token": "string",
-  "refresh_token": "string"
+  "user": {
+    "id": 1,
+    "uuid": "abc123",
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe"
+  },
+  "access_token": "eyJ...",
+  "refresh_token": "eyJ..."
 }
 ```
 
-### POST /auth/logout
-Logout current user (blacklist current token).
+#### Refresh Token
+```http
+POST /api/v1/auth/refresh
+Authorization: Bearer <refresh_token>
+```
 
-**Headers:** `Authorization: Bearer <access_token>`
+**Response (200):**
+```json
+{
+  "access_token": "eyJ..."
+}
+```
 
-**Response:**
+#### Logout
+```http
+POST /api/v1/auth/logout
+Authorization: Bearer <access_token>
+```
+
+**Response (200):**
 ```json
 {
   "message": "Successfully logged out"
 }
 ```
 
-### POST /auth/refresh
-Refresh access token using refresh token.
-
-**Headers:** `Authorization: Bearer <refresh_token>`
-
-**Response:**
-```json
-{
-  "access_token": "string"
-}
+#### Change Password
+```http
+PUT /api/v1/auth/change-password
+Authorization: Bearer <access_token>
 ```
-
-### PUT /auth/change-password
-Change user password (requires current password).
-
-**Headers:** `Authorization: Bearer <access_token>`
 
 **Request Body:**
 ```json
 {
-  "current_password": "string",
-  "new_password": "string"
+  "current_password": "oldpassword",
+  "new_password": "newpassword"
 }
 ```
 
-**Response:**
-```json
-{
-  "message": "Password changed successfully. All sessions have been logged out for security.",
-  "tokens_revoked": true
-}
+#### Verify Token
+```http
+GET /api/v1/auth/verify
+Authorization: Bearer <access_token>
 ```
 
-### POST /auth/reset-password
-Request password reset (production implementation would send email).
-
-**Request Body:**
-```json
-{
-  "email": "string"
-}
-```
-
-### GET /auth/verify
-Verify token validity and get user info.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
+**Response (200):**
 ```json
 {
   "valid": true,
-  "user": { /* user object */ }
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe"
+  }
 }
 ```
 
-### POST /auth/logout-all
-Logout from all devices (revoke all user tokens).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
-```json
-{
-  "message": "Successfully logged out from all devices",
-  "revoked_at": "2024-01-01T12:00:00Z"
-}
+#### Logout All Devices
+```http
+POST /api/v1/auth/logout-all
+Authorization: Bearer <access_token>
 ```
 
-### POST /auth/cleanup-tokens
-Clean up expired tokens (Admin only).
+### User Management
 
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
-```json
-{
-  "message": "Cleaned up 25 expired tokens",
-  "cleaned_count": 25
-}
+#### Get User Profile
+```http
+GET /api/v1/profile
+Authorization: Bearer <access_token>
 ```
 
-### POST /auth/revoke-user-tokens
-Revoke all tokens for specific user (Admin only).
-
-**Headers:** `Authorization: Bearer <access_token>`
+#### Update User Profile
+```http
+PUT /api/v1/profile
+Authorization: Bearer <access_token>
+```
 
 **Request Body:**
 ```json
 {
-  "user_id": 123,
-  "reason": "admin_revoke"
+  "first_name": "Jane",
+  "last_name": "Smith",
+  "org": "New Organization"
 }
 ```
 
-## User Management Endpoints
+#### Get User Tasks
+```http
+GET /api/v1/users/{user_id}/tasks
+Authorization: Bearer <access_token>
+```
 
-### GET /users
-Get list of users (returns public info for non-admins).
+### Task Management
 
-**Response:**
+#### Create Task (File Upload)
+```http
+POST /api/v1/upload
+Authorization: Bearer <access_token> (optional for anonymous)
+Content-Type: multipart/form-data
+```
+
+**Form Data:**
+- `files`: Audio files for alignment
+- `transcription_mode`: `"batch"` or `"individual"`
+- `language`: Language code (e.g., `"eng"`)
+- `engine`: Engine code (e.g., `"mfa"`)
+
+**Response (201):**
 ```json
 {
-  "users": [{ /* user objects */ }],
-  "count": 25
+  "message": "Files uploaded successfully",
+  "task_id": "task_abc123",
+  "files_processed": 2,
+  "language": "English",
+  "engine": "Montreal Forced Alignment"
 }
 ```
 
-### POST /users
-Create new user.
-
-**Request Body:**
-```json
-{
-  "username": "string",
-  "email": "string",
-  "password": "string",
-  "first_name": "string",
-  "last_name": "string",
-  "admin": false
-}
+#### Get Tasks List
+```http
+GET /api/v1/tasks
+Authorization: Bearer <access_token>
 ```
-
-### GET /users/{user_id}
-Get user by ID. Users can view their own profile or admin can view any.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
-```json
-{
-  "user": { /* user object */ }
-}
-```
-
-### PUT /users/{user_id}
-Update user. Users can update their own profile or admin can update any.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "username": "string",
-  "email": "string",
-  "first_name": "string",
-  "last_name": "string",
-  "admin": false
-}
-```
-
-### DELETE /users/{user_id}
-Soft delete user. Users can delete their own account or admin can delete any.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### GET /profile
-Get current user's profile.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### PUT /profile
-Update current user's profile.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### GET /users/{user_id}/tasks
-Get tasks for specific user.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
-```json
-{
-  "tasks": [{ /* task objects */ }],
-  "count": 15
-}
-```
-
-## Language Management Endpoints
-
-### GET /languages
-Get list of languages with optional filtering.
 
 **Query Parameters:**
-- `type`: Filter by language type (enum value)
-- `homepage`: Filter homepage languages (true/false)
-- `active`: Filter active languages (default: true)
+- `page`: Page number (default: 1)
+- `per_page`: Items per page (default: 10)
+- `status`: Filter by status (`pending`, `running`, `completed`, `failed`)
 
-**Response:**
+**Response (200):**
 ```json
 {
-  "languages": [{ /* language objects */ }],
-  "count": 50
+  "tasks": [
+    {
+      "id": "task_abc123",
+      "status": "completed",
+      "language": "English",
+      "engine": "Montreal Forced Alignment",
+      "files_count": 2,
+      "created_at": "2024-01-01T10:00:00Z",
+      "updated_at": "2024-01-01T10:05:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 10,
+    "total": 5,
+    "pages": 1
+  }
 }
 ```
 
-### POST /languages
-Create new language (Admin only).
+#### Get Task Details
+```http
+GET /api/v1/tasks/{task_id}
+Authorization: Bearer <access_token>
+```
 
-**Headers:** `Authorization: Bearer <access_token>`
+#### Get Task Status
+```http
+GET /api/v1/tasks/{task_id}/status
+Authorization: Bearer <access_token>
+```
+
+**Response (200):**
+```json
+{
+  "task_id": "task_abc123",
+  "status": "running",
+  "progress": 75,
+  "message": "Processing file 3 of 4",
+  "estimated_completion": "2024-01-01T10:07:00Z"
+}
+```
+
+#### Cancel Task
+```http
+PUT /api/v1/tasks/{task_id}/cancel
+Authorization: Bearer <access_token>
+```
+
+#### Delete Tasks (Bulk)
+```http
+DELETE /api/v1/tasks/bulk-delete
+Authorization: Bearer <access_token>
+```
 
 **Request Body:**
 ```json
 {
-  "code": "en",
-  "display_name": "English",
-  "language_name": "English",
-  "type": "primary",
-  "alphabet": "latin",
-  "priority": 1,
-  "homepage": true,
-  "is_active": true
+  "task_ids": ["task_abc123", "task_def456"]
 }
 ```
 
-### GET /languages/{language_id}
-Get language by ID.
+#### Get Task Files
+```http
+GET /api/v1/tasks/{task_id}/files
+Authorization: Bearer <access_token>
+```
 
-**Response:**
+#### Download Task Results
+```http
+GET /api/v1/tasks/{task_id}/download/{download_type}
+Authorization: Bearer <access_token>
+```
+
+**Download Types:**
+- `results`: Alignment results
+- `audio`: Original audio files
+- `transcripts`: Text transcripts
+
+### Language & Engine Management
+
+#### Get Languages
+```http
+GET /api/v1/languages
+```
+
+**Response (200):**
 ```json
 {
-  "language": { /* language object with relationships */ }
+  "languages": [
+    {
+      "id": 1,
+      "name": "English",
+      "code": "eng",
+      "supported_engines": ["mfa", "gentle"]
+    }
+  ]
 }
 ```
 
-### PUT /languages/{language_id}
-Update language (Admin only).
+#### Get Language by Code
+```http
+GET /api/v1/languages/code/{code}
+```
 
-**Headers:** `Authorization: Bearer <access_token>`
+#### Get Engines
+```http
+GET /api/v1/engines
+```
 
-### DELETE /languages/{language_id}
-Delete language (Admin only, cannot delete if used in tasks).
+#### Get Engine by Code
+```http
+GET /api/v1/engines/code/{code}
+```
 
-**Headers:** `Authorization: Bearer <access_token>`
+### Dictionary Management
 
-### GET /languages/code/{code}
-Get language by code.
+#### Upload User Dictionary
+```http
+POST /api/v1/dictionaries/upload
+Authorization: Bearer <access_token>
+Content-Type: multipart/form-data
+```
 
-**Response:**
+**Form Data:**
+- `file`: Dictionary file
+- `language`: Language code
+
+#### Get User Dictionaries
+```http
+GET /api/v1/dictionaries/user
+Authorization: Bearer <access_token>
+```
+
+#### Delete User Dictionary
+```http
+DELETE /api/v1/dictionaries/user/{lang_code}
+Authorization: Bearer <access_token>
+```
+
+### File Upload & Download
+
+#### Upload Status (SSE)
+```http
+GET /api/v1/upload/status
+Authorization: Bearer <access_token>
+```
+
+Returns Server-Sent Events for real-time upload progress.
+
+#### Download Static Files
+```http
+GET /api/v1/static/{file_type}/{filename}
+```
+
+### Aligner Operations
+
+#### Get Aligner Dashboard
+```http
+GET /api/v1/aligner/dashboard
+Authorization: Bearer <access_token>
+```
+
+#### Start Alignment
+```http
+POST /api/v1/aligner/align
+Authorization: Bearer <access_token>
+```
+
+#### Check Alignment Queue
+```http
+GET /api/v1/aligner/queue
+Authorization: Bearer <access_token>
+```
+
+### Admin Operations
+
+**Base URL:** `/api/v1/admin`
+**Authentication:** All admin endpoints require JWT token with admin privileges.
+
+#### Get Site Status
+```http
+GET /api/v1/admin/site-status
+Authorization: Bearer <admin_access_token>
+```
+
+**Response (200):**
 ```json
 {
-  "language": { /* language object */ }
+  "active": true,
+  "start_date": "2024-01-01",
+  "end_date": "2024-12-31",
+  "inactive_message": "Site maintenance in progress"
 }
 ```
 
-### GET /languages/{language_id}/engines
-Get engines for a language.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### POST /languages/{language_id}/engines
-Add engine to language (Admin only).
-
-**Headers:** `Authorization: Bearer <access_token>`
+#### Update Site Status
+```http
+PUT /api/v1/admin/site-status
+Authorization: Bearer <admin_access_token>
+```
 
 **Request Body:**
 ```json
 {
-  "engine_id": 123
+  "active": false,
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-02",
+  "inactive_message": "Scheduled maintenance"
 }
 ```
 
-## Engine Management Endpoints
+**Response (200):**
+```json
+{
+  "message": "Site deactivated successfully. 15 users logged out.",
+  "active": false,
+  "users_logged_out": 15
+}
+```
 
-### GET /engines
-Get list of engines with optional filtering.
+#### Manage Blocked Emails
+```http
+GET /api/v1/admin/blocked-emails
+Authorization: Bearer <admin_access_token>
+```
+
+**Response (200):**
+```json
+{
+  "emails": ["spam@example.com", "abuse@test.com"],
+  "count": 2
+}
+```
+
+```http
+POST /api/v1/admin/blocked-emails
+Authorization: Bearer <admin_access_token>
+```
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "action": "add"  // or "remove"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Email user@example.com added to blocked list",
+  "user_logged_out": true,
+  "added": true
+}
+```
+
+#### User Management
+```http
+POST /api/v1/admin/users
+Authorization: Bearer <admin_access_token>
+```
+
+**Find User:**
+```json
+{
+  "action": "find",
+  "email": "user@example.com"
+}
+```
+
+**Delete User:**
+```json
+{
+  "action": "delete",
+  "user_id": 123
+}
+```
+
+#### Generate User Report
+```http
+POST /api/v1/admin/downloads/users
+Authorization: Bearer <admin_access_token>
+```
+
+**Request Body:**
+```json
+{
+  "user_limit": "2024-01-01",
+  "include_deleted": false
+}
+```
+
+Returns Excel file download.
+
+#### History Downloads
+```http
+GET /api/v1/admin/downloads/history
+Authorization: Bearer <admin_access_token>
+```
+
+```http
+POST /api/v1/admin/downloads/history
+Authorization: Bearer <admin_access_token>
+```
+
+**Request Body:**
+```json
+{
+  "filename": "history_240101.xlsx"  // or "history.zip" for all files
+}
+```
+
+### Configuration & Utilities
+
+#### Get Configuration
+```http
+GET /api/v1/config
+```
+
+**Response (200):**
+```json
+{
+  "audio_extensions": [".wav", ".mp3", ".m4a"],
+  "max_file_size": 104857600,
+  "supported_languages": ["eng", "fra", "spa"],
+  "user_limits": {
+    "anonymous_daily_limit": 10,
+    "registered_daily_limit": 100
+  }
+}
+```
+
+#### Health Check
+```http
+GET /api/v1/health
+```
+
+**Response (200):**
+```json
+{
+  "status": "healthy",
+  "message": "API is running"
+}
+```
+
+#### Site Status Check
+```http
+GET /api/v1/site-status
+```
+
+**Response (200):**
+```json
+{
+  "active": true,
+  "message": "Site status retrieved successfully"
+}
+```
+
+#### Team Information
+```http
+GET /api/v1/team
+```
+
+#### Contact Email
+```http
+POST /api/v1/contact/send-email
+```
+
+**Request Body:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "message": "Hello, I have a question..."
+}
+```
+
+### Upload Status & Downloads
+
+#### Real-time Upload Status
+```http
+GET /api/v1/upload/status
+Authorization: Bearer <access_token>
+```
+
+Returns Server-Sent Events (SSE) for real-time upload progress tracking.
+
+#### Task File Downloads
+```http
+GET /api/v1/tasks/{task_id}/download/{download_type}
+Authorization: Bearer <access_token>
+```
+
+**Download Types:**
+- `textgrid`: TextGrid alignment files
+- `audio`: Original audio files
+- `transcript`: Text transcripts
+- `zip`: Complete task archive
+
+#### Missing Words Report
+```http
+GET /api/v1/tasks/{task_id}/missing-words
+Authorization: Bearer <access_token>
+```
+
+### Language Change Operations
+
+#### Change Task Language
+```http
+POST /api/v1/tasks/change-language
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "task_id": "task_abc123",
+  "new_language_id": 2
+}
+```
+
+#### Get Available Languages for Task
+```http
+GET /api/v1/tasks/{task_id}/available-languages
+Authorization: Bearer <access_token>
+```
+
+### Reupload Operations
+
+#### Reupload Task Files
+```http
+POST /api/v1/tasks/{task_id}/reupload
+Authorization: Bearer <access_token>
+Content-Type: multipart/form-data
+```
+
+**Form Data:**
+- `files`: New audio files
+
+#### Get Reupload Information
+```http
+GET /api/v1/tasks/{task_id}/reupload-info
+Authorization: Bearer <access_token>
+```
+
+### Task History & Reports
+
+#### Get Task History
+```http
+GET /api/v1/tasks/history
+Authorization: Bearer <access_token>
+```
 
 **Query Parameters:**
-- `active`: Filter active engines (default: true)
+- `start_date`: Filter from date (YYYY-MM-DD)
+- `end_date`: Filter to date (YYYY-MM-DD)
+- `status`: Filter by status
 
-**Response:**
-```json
-{
-  "engines": [{ /* engine objects */ }],
-  "count": 10
-}
+#### Monthly Report Download
+```http
+GET /api/v1/monthly-download
+Authorization: Bearer <access_token>
 ```
-
-### POST /engines
-Create new engine (Admin only).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "code": "mfa",
-  "name": "Montreal Forced Alignment",
-  "documentation_link": "https://montreal-forced-alignment.readthedocs.io/",
-  "is_active": true
-}
-```
-
-### GET /engines/{engine_id}
-Get engine by ID.
-
-### PUT /engines/{engine_id}
-Update engine (Admin only).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### DELETE /engines/{engine_id}
-Delete engine (Admin only, cannot delete if used in tasks).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### GET /engines/code/{code}
-Get engine by code.
-
-### GET /engines/{engine_id}/languages
-Get languages for an engine.
-
-### POST /engines/{engine_id}/languages
-Add language to engine (Admin only).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "language_id": 123
-}
-```
-
-## Task Management Endpoints
-
-### GET /tasks
-Get list of tasks with optional filtering.
-
-**Headers:** `Authorization: Bearer <access_token>`
 
 **Query Parameters:**
-- `status`: Filter by task status (pending, processing, completed, failed, cancelled)
-- `user_id`: Filter by user (Admin only)
-- `language_id`: Filter by language
-- `engine_id`: Filter by engine
-- `limit`: Limit number of results
+- `month`: Month (1-12)
+- `year`: Year (YYYY)
 
-**Response:**
-```json
-{
-  "tasks": [{ /* task objects */ }],
-  "count": 25
-}
-```
+## Error Handling
 
-### POST /tasks
-Create new task.
+The API uses standard HTTP status codes and returns detailed error messages:
 
-**Headers:** `Authorization: Bearer <access_token>`
+### Common Status Codes
 
-**Request Body:**
-```json
-{
-  "task_id": "unique_task_id",
-  "user_id": 123,
-  "lang_id": 1,
-  "engine_id": 1,
-  "anonymous": false,
-  "trans_choice": "phonemes",
-  "lang": "en",
-  "multitier": false,
-  "no_of_files": 1,
-  "no_of_tiers": 1
-}
-```
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request (validation errors)
+- `401` - Unauthorized (invalid/missing token)
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found
+- `409` - Conflict (e.g., duplicate email)
+- `422` - Unprocessable Entity (validation errors)
+- `500` - Internal Server Error
+- `503` - Service Unavailable (site inactive)
 
-### GET /tasks/{task_id}
-Get task by ID.
+### Error Response Format
 
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Response:**
-```json
-{
-  "task": { /* complete task object with relationships */ }
-}
-```
-
-### PUT /tasks/{task_id}
-Update task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "task_status": "processing",
-  "anonymous": false,
-  "task_path": "/path/to/task",
-  "log_path": "/path/to/log",
-  "size": "1024.50",
-  "words": 100,
-  "missing_words": 5,
-  "duration": 3600
-}
-```
-
-### DELETE /tasks/{task_id}
-Delete task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### PUT /tasks/{task_id}/status
-Update task status.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "status": "completed"
-}
-```
-
-### GET /tasks/{task_id}/files
-Get files for a task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### POST /tasks/{task_id}/files
-Add file to task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "file_type": "audio",
-  "file_path": "/path/to/file.wav",
-  "original_filename": "recording.wav",
-  "file_key": "audio_01"
-}
-```
-
-### GET /tasks/{task_id}/file-names
-Get file names for a task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### POST /tasks/{task_id}/file-names
-Add file name to task.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "file_key": "audio_01",
-  "original_name": "recording.wav"
-}
-```
-
-### DELETE /tasks/bulk-delete
-Delete multiple tasks at once.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "task_ids": ["task_1", "task_2", "task_3"]
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Bulk delete completed",
-  "deleted": ["task_1", "task_2"],
-  "deleted_count": 2,
-  "permission_denied": [],
-  "permission_denied_count": 0,
-  "not_found": ["task_3"],
-  "not_found_count": 1
-}
-```
-
-## Dictionary Management Endpoints
-
-### GET /dictionaries
-Get list of dictionaries.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Query Parameters:**
-- `user_id`: Filter by user (Admin only)
-- `language`: Filter by language
-
-**Response:**
-```json
-{
-  "dictionaries": [{ /* dictionary objects */ }],
-  "count": 5
-}
-```
-
-### POST /dictionaries
-Create new dictionary.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-**Request Body:**
-```json
-{
-  "user_id": 123,
-  "lang": "en",
-  "dictionary_content": "word1 pronunciation1\nword2 pronunciation2",
-  "file_path": "/path/to/dictionary.txt"
-}
-```
-
-### GET /dictionaries/{dict_id}
-Get dictionary by ID.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### PUT /dictionaries/{dict_id}
-Update dictionary.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### DELETE /dictionaries/{dict_id}
-Delete dictionary (removes file if exists).
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### GET /users/{user_id}/dictionaries
-Get dictionaries for specific user.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### GET /dictionaries/language/{language}
-Get current user's dictionary for specific language.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-### POST /dictionaries/language/{language}
-Create dictionary for specific language.
-
-**Headers:** `Authorization: Bearer <access_token>`
-
-## Status Codes
-
-- **200 OK**: Successful GET, PUT, DELETE
-- **201 Created**: Successful POST
-- **207 Multi-Status**: Partial success (bulk operations)
-- **400 Bad Request**: Invalid request data
-- **401 Unauthorized**: Invalid or missing authentication
-- **403 Forbidden**: Insufficient permissions
-- **404 Not Found**: Resource not found
-- **409 Conflict**: Resource already exists or constraint violation
-- **500 Internal Server Error**: Server error
-
-## Error Responses
-
-Error responses include a descriptive message:
 ```json
 {
   "message": "Error description",
-  "errors": { /* validation errors if applicable */ }
+  "errors": {
+    "field_name": ["Field-specific error messages"]
+  },
+  "code": "ERROR_CODE",
+  "timestamp": "2024-01-01T10:00:00Z"
 }
 ```
+
+### Site Inactive Response
+
+When the site is deactivated by admin, regular endpoints return:
+
+```json
+{
+  "message": "Site is currently inactive",
+  "active": false
+}
+```
+
+Status Code: `503 Service Unavailable`
+
+**Note:** Admin endpoints remain accessible when the site is inactive.
+
+## Rate Limiting
+
+The API implements rate limiting to prevent abuse:
+
+- **Anonymous Users**: 10 tasks per day (tracked by session)
+- **Registered Users**: 100 tasks per day (tracked by user ID)
+- **File Uploads**: Limited by file size and count
+- **Admin Operations**: No specific limits (trusted users)
+
+Rate limit information is included in response headers:
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1704067200
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Install test dependencies
+pip install -r requirements-test.txt
+
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=app
+```
+
+### Database Migrations
+
+```bash
+# Create new migration
+flask db migrate -m "Description of changes"
+
+# Apply migrations
+flask db upgrade
+
+# Rollback migration
+flask db downgrade
+```
+
+### Adding New Endpoints
+
+1. **Create Resource Class** in `app/resources/`
+2. **Add to Resources Init** in `app/resources/__init__.py`
+3. **Register Route** in `app/api/v1/routes.py`
+4. **Create Schema** (if needed) in `app/schemas/`
+5. **Add Tests** in `tests/`
+
+### Logging
+
+The API provides comprehensive logging:
+
+- **Request/Response Logging**: All API calls are logged with timing
+- **Error Logging**: Exceptions are captured with full stack traces
+- **Authentication Logging**: Login/logout events are tracked
+- **Admin Action Logging**: Administrative actions are logged
+
+Log levels:
+- `DEBUG`: Detailed debugging information
+- `INFO`: General application flow
+- `WARNING`: Warning messages (non-fatal errors)
+- `ERROR`: Error conditions
+- `CRITICAL`: Critical errors requiring immediate attention
+
+### Environment Configuration
+
+Different configurations for different environments:
+
+- **Development**: Debug mode, SQLite database, verbose logging
+- **Testing**: In-memory database, disabled authentication checks
+- **Production**: PostgreSQL database, secure settings, optimized logging
+
+### Security Considerations
+
+- **JWT Secret Keys**: Use strong, random secret keys
+- **Password Hashing**: Passwords are hashed using Werkzeug's secure methods
+- **Token Blacklisting**: Revoked tokens are tracked and rejected
+- **Input Validation**: All inputs are validated using Marshmallow schemas
+- **File Upload Security**: File types and sizes are restricted
+- **Admin Access Control**: Admin functions require verified admin privileges
+
+### Deployment
+
+For production deployment:
+
+1. **Use Production WSGI Server** (Gunicorn, uWSGI)
+2. **Set Environment Variables** securely
+3. **Configure Database** with connection pooling
+4. **Set up Reverse Proxy** (Nginx, Apache)
+5. **Enable HTTPS** with SSL certificates
+6. **Configure Logging** to files or external services
+7. **Set up Monitoring** for health checks and performance
+
+### API Versioning
+
+The API uses URL-based versioning (`/api/v1/`). When making breaking changes:
+
+1. Create new version endpoint (`/api/v2/`)
+2. Maintain backward compatibility for existing version
+3. Document migration path for clients
+4. Eventually deprecate old version with sufficient notice
 
 ## Data Models
 
@@ -649,45 +982,39 @@ Error responses include a descriptive message:
 ```json
 {
   "id": 123,
-  "uuid": "550e8400-e29b-41d4-a716-446655440000",
-  "username": "johndoe",
-  "email": "john@example.com",
+  "uuid": "abc123",
+  "email": "user@example.com",
   "first_name": "John",
   "last_name": "Doe",
+  "title": "Dr.",
+  "org": "University",
+  "industry": "Education",
   "admin": false,
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z"
+  "verified": false,
+  "created_at": "2024-01-01T10:00:00Z",
+  "updated_at": "2024-01-01T10:00:00Z"
 }
 ```
 
 ### Task Object
 ```json
 {
-  "id": 123,
-  "task_id": "unique_task_id",
-  "user_id": 456,
-  "lang_id": 1,
+  "id": "task_abc123",
+  "user_id": 123,
+  "language_id": 1,
   "engine_id": 1,
-  "task_status": "completed",
+  "status": "completed",
   "anonymous": false,
-  "trans_choice": "phonemes",
-  "lang": "en",
+  "transcription_choice": "phonemes",
+  "language_code": "eng",
   "task_path": "/path/to/task",
   "log_path": "/path/to/log",
-  "size": "1024.50",
-  "words": 100,
-  "missing_words": 5,
-  "duration": 3600,
-  "no_of_files": 1,
-  "no_of_tiers": 1,
-  "multitier": false,
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z",
-  "owner": { /* user object */ },
-  "language": { /* language object */ },
-  "engine": { /* engine object */ },
-  "files": [{ /* file objects */ }],
-  "file_names": [{ /* file name objects */ }]
+  "file_count": 3,
+  "words_count": 150,
+  "missing_words": 2,
+  "duration": 120.5,
+  "created_at": "2024-01-01T10:00:00Z",
+  "updated_at": "2024-01-01T10:05:00Z"
 }
 ```
 
@@ -695,16 +1022,14 @@ Error responses include a descriptive message:
 ```json
 {
   "id": 1,
-  "code": "en",
+  "code": "eng",
   "display_name": "English",
   "language_name": "English",
   "type": "primary",
   "alphabet": "latin",
   "priority": 1,
   "homepage": true,
-  "is_active": true,
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z"
+  "is_active": true
 }
 ```
 
@@ -715,81 +1040,10 @@ Error responses include a descriptive message:
   "code": "mfa",
   "name": "Montreal Forced Alignment",
   "documentation_link": "https://montreal-forced-alignment.readthedocs.io/",
-  "is_active": true,
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z"
+  "is_active": true
 }
 ```
 
-### Dictionary Object
-```json
-{
-  "id": 1,
-  "user_id": 123,
-  "lang": "en",
-  "dictionary_content": "word1 pronunciation1\nword2 pronunciation2",
-  "file_path": "/path/to/dictionary.txt",
-  "created_at": "2024-01-01T12:00:00Z",
-  "updated_at": "2024-01-01T12:00:00Z"
-}
-```
+---
 
-## Enums
-
-### TaskStatus
-- `pending`: Task is waiting to be processed
-- `processing`: Task is currently being processed
-- `completed`: Task has completed successfully
-- `failed`: Task processing failed
-- `cancelled`: Task was cancelled
-
-### FileType
-- `audio`: Audio file
-- `textgrid`: TextGrid file
-- `held`: Held file
-- `output`: Output file
-
-### LanguageType
-- `primary`: Primary language
-- `secondary`: Secondary language
-- (Additional values defined in LanguageType enum)
-
-## Security Features
-
-### Token Blacklisting
-- Tokens are blacklisted on logout to prevent reuse
-- Admin can revoke all tokens for specific users
-- Expired tokens are automatically cleaned up
-- Password changes revoke all existing tokens
-
-### Permission System
-- Admin users have full access to all resources
-- Regular users can only access their own resources
-- Public endpoints provide limited data for non-authenticated users
-- Soft delete for users maintains data integrity
-
-### Validation
-- Input validation using Marshmallow schemas
-- SQL injection prevention through ORM
-- Password hashing using Werkzeug
-- CORS configuration for cross-origin requests
-
-## Development Setup
-
-1. Install dependencies: `pip install -r requirements.txt`
-2. Set environment variables in `.env` file
-3. Initialize database: `flask db upgrade`
-4. Run development server: `flask run`
-
-## Health Check
-
-### GET /api/v1/health
-Check API health status.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "API is running"
-}
-```
+For additional support or questions, please refer to the project documentation or contact the development team.
