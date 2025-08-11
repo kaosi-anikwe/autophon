@@ -38,7 +38,7 @@ class LanguageChangeResource(Resource):
             - new_lang: New language code (e.g., 'engGB_MFA1_v010')
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
@@ -326,7 +326,7 @@ class TaskLanguageListResource(Resource):
         Get list of available languages for language change
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 

@@ -30,7 +30,7 @@ class AlignerDashboardResource(Resource):
         Get aligner dashboard with user tasks, languages, and queue information
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 

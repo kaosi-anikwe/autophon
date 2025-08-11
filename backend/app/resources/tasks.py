@@ -33,7 +33,7 @@ class TaskListResource(Resource):
     def get(self):
         """Get list of tasks with optional filtering"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             # Get query parameters
@@ -85,7 +85,7 @@ class TaskListResource(Resource):
     def post(self):
         """Create new task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
 
             schema = TaskCreateSchema()
             data = schema.load(request.get_json())
@@ -126,7 +126,7 @@ class TaskResource(Resource):
     def get(self, task_id):
         """Get task by ID"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -147,7 +147,7 @@ class TaskResource(Resource):
     def put(self, task_id):
         """Update task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -182,7 +182,7 @@ class TaskResource(Resource):
     def delete(self, task_id):
         """Delete task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -208,7 +208,7 @@ class TaskStatusResource(Resource):
     def put(self, task_id):
         """Update task status"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -246,7 +246,7 @@ class TaskFilesResource(Resource):
     def get(self, task_id):
         """Get files for a task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -267,7 +267,7 @@ class TaskFilesResource(Resource):
     def post(self, task_id):
         """Add file to task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -305,7 +305,7 @@ class TaskFileNamesResource(Resource):
     def get(self, task_id):
         """Get file names for a task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -329,7 +329,7 @@ class TaskFileNamesResource(Resource):
     def post(self, task_id):
         """Add file name to task"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -372,7 +372,7 @@ class TaskCancelResource(Resource):
         try:
             import os
 
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
@@ -421,7 +421,7 @@ class TaskBulkDeleteResource(Resource):
     def delete(self):
         """Delete multiple tasks"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
             current_user = User.query.get(current_user_id)
 
             data = request.get_json()
@@ -505,7 +505,7 @@ class TaskHistoryResource(Resource):
     def get(self):
         """Get user's task history with optional date filtering"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
 
             # Get query parameters
             year = request.args.get("year", type=int)
@@ -599,7 +599,7 @@ class TaskMonthlyReportResource(Resource):
             from app.utils.uploads import convert_size
             import os
 
-            current_user_id = get_jwt_identity()
+            current_user_id = int(int(get_jwt_identity()))
 
             # Get query parameters
             year = request.args.get("year")

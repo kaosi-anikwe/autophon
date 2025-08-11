@@ -37,7 +37,7 @@ class UserDictionaryUploadResource(Resource):
         """
         try:
             # Get current user
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
@@ -278,7 +278,7 @@ class UserDictionaryResource(Resource):
             - lang: Language code to retrieve dictionary for
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
@@ -370,7 +370,7 @@ class UserDictionaryListResource(Resource):
         Get list of user's uploaded dictionaries
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
@@ -465,7 +465,7 @@ class UserDictionaryDeleteResource(Resource):
             lang_code: Language code of dictionary to delete
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 

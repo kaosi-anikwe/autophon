@@ -26,7 +26,7 @@ class LanguageListResource(Resource):
     def get(self):
         """Get list of languages with optional filtering (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -72,7 +72,7 @@ class LanguageListResource(Resource):
     def post(self):
         """Create new language (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -112,7 +112,7 @@ class LanguageResource(Resource):
     def get(self, language_id):
         """Get language by ID (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -132,7 +132,7 @@ class LanguageResource(Resource):
     def put(self, language_id):
         """Update language (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -174,7 +174,7 @@ class LanguageResource(Resource):
     def delete(self, language_id):
         """Delete language (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -204,7 +204,7 @@ class LanguageByCodeResource(Resource):
     def get(self, code):
         """Get language by code (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -228,7 +228,7 @@ class LanguageEnginesResource(Resource):
     def get(self, language_id):
         """Get engines for a language (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -254,7 +254,7 @@ class LanguageEnginesResource(Resource):
     def post(self, language_id):
         """Add engine to language (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:

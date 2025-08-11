@@ -24,7 +24,7 @@ class AdminRequiredMixin:
     def check_admin_access(self):
         """Check if current user is admin"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:

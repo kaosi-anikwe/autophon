@@ -20,7 +20,7 @@ class DictionaryListResource(Resource):
     def get(self):
         """Get list of dictionaries"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(int(current_user_id))
 
             # Get query parameters
@@ -55,7 +55,7 @@ class DictionaryListResource(Resource):
     def post(self):
         """Create new dictionary"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             schema = DictionaryCreateSchema()
@@ -99,7 +99,7 @@ class DictionaryResource(Resource):
     def get(self, dict_id):
         """Get dictionary by ID"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             dictionary = UserDictionary.query.filter_by(id=dict_id).first()
@@ -120,7 +120,7 @@ class DictionaryResource(Resource):
     def put(self, dict_id):
         """Update dictionary"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             dictionary = UserDictionary.query.filter_by(id=dict_id).first()
@@ -169,7 +169,7 @@ class DictionaryResource(Resource):
     def delete(self, dict_id):
         """Delete dictionary"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             dictionary = UserDictionary.query.filter_by(id=dict_id).first()
@@ -204,7 +204,7 @@ class UserDictionariesResource(Resource):
     def get(self, user_id):
         """Get user's dictionaries"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             # Users can only view their own dictionaries or admin can view any
@@ -234,7 +234,7 @@ class DictionaryByLanguageResource(Resource):
     def get(self, language):
         """Get user's dictionary for specific language"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
 
             dictionary = UserDictionary.query.filter_by(
                 user_id=current_user_id, lang=language
@@ -253,7 +253,7 @@ class DictionaryByLanguageResource(Resource):
     def post(self, language):
         """Create dictionary for specific language"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
 
             # Check if dictionary already exists
             existing = UserDictionary.query.filter_by(

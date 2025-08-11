@@ -88,7 +88,7 @@ class UploadStatusResource(Resource):
         try:
             # Try JWT first (authenticated users)
             verify_jwt_in_request(optional=True)
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if current_user_id:
                 return current_user_id
         except:
@@ -211,7 +211,7 @@ class TaskDownloadResource(Resource):
         """Get user ID from JWT or query parameter"""
         try:
             verify_jwt_in_request(optional=True)
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if current_user_id:
                 return current_user_id
         except:
@@ -399,7 +399,7 @@ class TaskMissingWordsResource(Resource):
         """Get user ID from JWT or query parameter"""
         try:
             verify_jwt_in_request(optional=True)
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if current_user_id:
                 return current_user_id
         except:

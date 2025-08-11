@@ -20,7 +20,7 @@ class UserListResource(Resource):
     def get(self):
         """Get list of users (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -37,7 +37,7 @@ class UserListResource(Resource):
     def post(self):
         """Create new user (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -81,7 +81,7 @@ class UserResource(Resource):
     def get(self, user_id):
         """Get user by ID (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -102,7 +102,7 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update user (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -137,7 +137,7 @@ class UserResource(Resource):
     def delete(self, user_id):
         """Delete (soft delete) user (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -167,7 +167,7 @@ class UserProfileResource(Resource):
     def get(self):
         """Get current user profile"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
 
             if not user:
@@ -184,7 +184,7 @@ class UserProfileResource(Resource):
     def put(self):
         """Update current user profile"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
 
             if not user:
@@ -219,7 +219,7 @@ class UserTasksResource(Resource):
     def get(self, user_id):
         """Get user's tasks (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:

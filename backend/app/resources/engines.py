@@ -22,7 +22,7 @@ class EngineListResource(Resource):
     def get(self):
         """Get list of engines with optional filtering (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -49,7 +49,7 @@ class EngineListResource(Resource):
     def post(self):
         """Create new engine (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -88,7 +88,7 @@ class EngineResource(Resource):
     def get(self, engine_id):
         """Get engine by ID (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -108,7 +108,7 @@ class EngineResource(Resource):
     def put(self, engine_id):
         """Update engine (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -150,7 +150,7 @@ class EngineResource(Resource):
     def delete(self, engine_id):
         """Delete engine (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:
@@ -179,7 +179,7 @@ class EngineByCodeResource(Resource):
     def get(self, code):
         """Get engine by code (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -203,7 +203,7 @@ class EngineLanguagesResource(Resource):
     def get(self, engine_id):
         """Get languages for an engine (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -229,7 +229,7 @@ class EngineLanguagesResource(Resource):
     def post(self, engine_id):
         """Add language to engine (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             current_user = User.query.get(current_user_id)
 
             if not current_user.admin:

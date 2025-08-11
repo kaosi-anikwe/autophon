@@ -31,7 +31,7 @@ class TaskReuploadResource(Resource):
             - audio_file: The new audio file to upload
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
@@ -303,7 +303,7 @@ class TaskReuploadInfoResource(Resource):
         Get reupload information for a specific task
         """
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
