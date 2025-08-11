@@ -41,7 +41,7 @@ def check_if_token_revoked(jwt_header, jwt_payload):
         return True
 
     # Check if all user tokens have been revoked
-    user = User.query.get(user_id)
+    user = User.query.get(int(user_id))
     if user and user.tokens_revoked_at:
         if token_issued_at < user.tokens_revoked_at:
             if logger:

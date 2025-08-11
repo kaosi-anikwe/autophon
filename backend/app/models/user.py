@@ -53,12 +53,12 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     def revoke_all_tokens(self, reason="manual"):
         """Revoke all tokens for this user by updating the revocation timestamp"""
-        from datetime import datetime, timezone
+        from app.utils.datetime_helpers import utc_now
         from app.utils.logger import get_logger
 
         logger = get_logger(__name__)
 
-        self.tokens_revoked_at = datetime.now(timezone.utc)
+        self.tokens_revoked_at = utc_now()
         self.update()
         logger.info(
             f"All tokens revoked for user {self.email} (ID: {self.id}) - Reason: {reason}"

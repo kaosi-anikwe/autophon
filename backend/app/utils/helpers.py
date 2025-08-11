@@ -11,6 +11,7 @@ import random
 import subprocess
 import unicodedata
 from datetime import datetime, timedelta, timezone
+from app.utils.datetime_helpers import utc_now
 
 # Third-party imports
 import charset_normalizer

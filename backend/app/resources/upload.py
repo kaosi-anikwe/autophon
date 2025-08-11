@@ -2,6 +2,7 @@ import os
 import uuid
 import shutil
 from datetime import datetime
+from app.utils.datetime_helpers import utc_now
 from flask_restful import Resource
 from flask import request, session, current_app, make_response
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
@@ -70,7 +71,7 @@ class FileUploadResource(Resource):
 
             # Handle anonymous users
             if anonymous:
-                current_day = datetime.now().strftime("%y%m%d")
+                current_day = utc_now().strftime("%y%m%d")
                 user_uuid = request.cookies.get("user_id")
 
                 if user_uuid:
@@ -172,7 +173,7 @@ class FileUploadResource(Resource):
                     "exp-a": "Exp Ling A",
                 }
 
-                current_time = datetime.now()
+                current_time = utc_now()
                 download_date = current_time.strftime("%Y/%m/%d - %H:%M:%S")
 
                 # Helper function to create task files

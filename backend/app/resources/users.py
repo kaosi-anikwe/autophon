@@ -139,8 +139,9 @@ class UserResource(Resource):
 
             # Soft delete
             from datetime import datetime
+from app.utils.datetime_helpers import utc_now
 
-            user.deleted = datetime.now().isoformat()
+            user.deleted = utc_now().isoformat()
             user.update()
 
             return {"message": "User deleted successfully"}, 200

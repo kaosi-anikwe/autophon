@@ -1,10 +1,10 @@
 import base64
 from flask import request
-from datetime import datetime
 from flask_restful import Resource
 
 from app.models.captcha import Captcha
 from app.utils.helpers import generate_captcha
+from app.utils.datetime_helpers import utc_now
 from app.utils.logger import get_logger, log_request_info, log_response_info
 
 logger = get_logger(__name__)
@@ -28,7 +28,7 @@ class CaptchaResource(Resource):
 
             # Store captcha in database
             captcha = Captcha(
-                text=captcha_text, timestamp=datetime.utcnow(), used=False
+                text=captcha_text, timestamp=utc_now(), used=False
             )
             captcha.insert()
 
@@ -81,7 +81,7 @@ class CaptchaResource(Resource):
                 return response, 400
 
             # Check if captcha is still valid (within 30 seconds)
-            time_difference = (datetime.utcnow() - captcha.timestamp).total_seconds()
+            time_difference = (utc_now() - captcha.timestamp).total_seconds()
 
             if time_difference > 30:
                 response = {

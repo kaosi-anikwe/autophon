@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask_restful import Resource
 from flask import current_app, request
 from datetime import datetime, timedelta
+from app.utils.datetime_helpers import utc_now
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
@@ -190,7 +191,7 @@ class AlignerDashboardResource(Resource):
 
         for aligned_task in aligned_tasks:
             if aligned_task.aligned:  # Currently being aligned
-                time_spent = datetime.now() - aligned_task.aligned
+                time_spent = utc_now() - aligned_task.aligned
                 current_app.logger.info(
                     f"Time spent aligning {aligned_task.download_title}: "
                     f"{time_spent.total_seconds()} secs, from total: {aligned_task.duration}"
@@ -231,7 +232,7 @@ class AlignerDashboardResource(Resource):
         completed_today = Task.query.filter(
             Task.task_status == TaskStatus.COMPLETED,
             Task.updated_at
-            >= datetime.now().replace(hour=0, minute=0, second=0, microsecond=0),
+            >= utc_now().replace(hour=0, minute=0, second=0, microsecond=0),
             Task.deleted == "",
         ).count()
 
@@ -301,7 +302,7 @@ class AlignTaskResource(Resource):
             if not task_path or not os.path.exists(task_path):
                 # Mark task as expired
                 task.task_status = TaskStatus.EXPIRED
-                task.updated_at = datetime.now()
+                task.updated_at = utc_now()
                 db.session.commit()
 
                 current_app.logger.warning(
@@ -320,7 +321,7 @@ class AlignTaskResource(Resource):
             # Update task status to aligned and set duration
             task.task_status = TaskStatus.ALIGNED
             task.duration = duration
-            task.updated_at = datetime.now()
+            task.updated_at = utc_now()
             # Note: aligned field will be set by the background alignment process when it picks up the task
 
             db.session.commit()
@@ -336,7 +337,7 @@ class AlignTaskResource(Resource):
                     "task_id": task_id,
                     "task_status": TaskStatus.ALIGNED.value,
                     "estimated_duration": duration,
-                    "queued_at": datetime.now().isoformat(),
+                    "queued_at": utc_now().isoformat(),
                 },
             }
 
@@ -394,7 +395,7 @@ class TaskExpirationResource(Resource):
         try:
             # Find tasks that should be expired
             # Tasks uploaded but not completed by end of day
-            start_of_day = datetime.now().replace(
+            start_of_day = utc_now().replace(
                 hour=0, minute=0, second=0, microsecond=0
             )
 
@@ -407,7 +408,7 @@ class TaskExpirationResource(Resource):
             expired_count = 0
             for task in expired_tasks:
                 task.task_status = TaskStatus.EXPIRED
-                task.updated_at = datetime.now()
+                task.updated_at = utc_now()
                 expired_count += 1
 
             if expired_count > 0:
@@ -451,7 +452,7 @@ class AlignmentQueueResource(Resource):
                 "completed_today": Task.query.filter(
                     Task.task_status == TaskStatus.COMPLETED,
                     Task.updated_at
-                    >= datetime.now().replace(
+                    >= utc_now().replace(
                         hour=0, minute=0, second=0, microsecond=0
                     ),
                     Task.deleted == "",
@@ -459,7 +460,7 @@ class AlignmentQueueResource(Resource):
                 "expired_today": Task.query.filter(
                     Task.task_status == TaskStatus.EXPIRED,
                     Task.updated_at
-                    >= datetime.now().replace(
+                    >= utc_now().replace(
                         hour=0, minute=0, second=0, microsecond=0
                     ),
                     Task.deleted == "",
@@ -479,7 +480,7 @@ class AlignmentQueueResource(Resource):
 
             current_task_info = None
             if current_task:
-                time_elapsed = (datetime.now() - current_task.aligned).total_seconds()
+                time_elapsed = (utc_now() - current_task.aligned).total_seconds()
                 time_remaining = max(0, (current_task.duration or 0) - time_elapsed)
 
                 current_task_info = {
@@ -497,7 +498,7 @@ class AlignmentQueueResource(Resource):
                 "data": {
                     "queue_stats": queue_stats,
                     "current_task": current_task_info,
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": utc_now().isoformat(),
                 },
             }
 

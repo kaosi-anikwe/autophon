@@ -2,6 +2,7 @@ import os
 import shutil
 import traceback
 from datetime import datetime
+from app.utils.datetime_helpers import utc_now
 from dotenv import load_dotenv
 from flask_restful import Resource
 from flask import current_app, request
@@ -61,7 +62,7 @@ class TaskReuploadResource(Resource):
             if not held_paths:
                 # Mark task as disabled if no transcription files
                 task.task_status = TaskStatus.FAILED
-                task.updated_at = datetime.now()
+                task.updated_at = utc_now()
                 db.session.commit()
 
                 return {
@@ -232,7 +233,7 @@ class TaskReuploadResource(Resource):
 
         # Update task status
         task.task_status = TaskStatus.UPLOADED
-        task.updated_at = datetime.now()
+        task.updated_at = utc_now()
 
         # Update file records if using file relationships
         self._update_file_records(task, audio_path, textgrid_path)

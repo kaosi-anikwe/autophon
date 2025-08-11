@@ -5,6 +5,7 @@ import traceback
 import subprocess
 import charset_normalizer
 from datetime import datetime
+from app.utils.datetime_helpers import utc_now
 from dotenv import load_dotenv
 from flask_restful import Resource
 from flask import current_app, request
@@ -148,7 +149,7 @@ class LanguageChangeResource(Resource):
         task_map = task.task_path.split("/")[-1] if task.task_path else task.task_id
 
         # Create timestamp for the missing pronunciation file
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        timestamp = utc_now().strftime("%Y-%m-%d_%H.%M.%S")
         final_path = os.path.join(
             UPLOADS, str(user_id), "dic", "missing", f"suggpron_{timestamp}.txt"
         )
@@ -175,7 +176,7 @@ class LanguageChangeResource(Resource):
         task.lang = new_lang
         task.missing_words = total_missing_words
         task.missingprondict = final_path
-        task.updated_at = datetime.now()
+        task.updated_at = utc_now()
 
         # Update language relationship if available
         language = Language.query.filter_by(code=new_lang).first()

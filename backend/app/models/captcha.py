@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from app.extensions import db
 from app.models.base import TimestampMixin, DatabaseHelperMixin
+from app.utils.datetime_helpers import utc_now
 
 
 class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
@@ -10,7 +11,7 @@ class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(10), nullable=False, unique=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, nullable=False, default=utc_now)
     used = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
@@ -21,7 +22,7 @@ class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
         if self.used:
             return False
 
-        time_diff = (datetime.utcnow() - self.timestamp).total_seconds()
+        time_diff = (utc_now() - self.timestamp).total_seconds()
         return time_diff <= timeout_seconds
 
     def mark_as_used(self):
@@ -32,7 +33,7 @@ class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
     @classmethod
     def cleanup_expired_captchas(cls, timeout_seconds=30):
         """Remove expired captchas from database"""
-        cutoff_time = datetime.utcnow() - timedelta(seconds=timeout_seconds)
+        cutoff_time = utc_now() - timedelta(seconds=timeout_seconds)
         expired_captchas = cls.query.filter(
             db.or_(cls.used == True, cls.timestamp < cutoff_time)
         ).all()

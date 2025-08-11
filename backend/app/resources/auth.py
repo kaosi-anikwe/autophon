@@ -11,6 +11,7 @@ from flask_jwt_extended import (
     get_jwt,
 )
 
+
 from app.extensions import db
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
@@ -21,6 +22,7 @@ from app.utils.logger import (
     log_request_info,
     log_response_info,
 )
+from app.utils.jwt_helpers import get_current_user_id
 
 logger = get_logger(__name__)
 
@@ -47,8 +49,8 @@ class Register(Resource):
             user.insert()
 
             # Create tokens
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
 
             # Return user data and tokens
             user_schema = UserSchema(exclude=["password_hash"])
@@ -112,8 +114,8 @@ class Login(Resource):
                 return response, 401
 
             # Create tokens
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
 
             # Return user data and tokens
             user_schema = UserSchema(exclude=["password_hash"])
@@ -146,14 +148,14 @@ class Logout(Resource):
     def post(self):
         """Logout user (blacklist current token)"""
         try:
-            from datetime import datetime, timezone
+            from app.utils.datetime_helpers import utc_from_timestamp
 
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             token = get_jwt()
             jti = token["jti"]
             token_type = token.get("type", "access")
             expires_timestamp = token["exp"]
-            expires = datetime.fromtimestamp(expires_timestamp, tz=timezone.utc)
+            expires = utc_from_timestamp(expires_timestamp)
 
             # Add current token to blacklist
             TokenBlacklist.add_token_to_blacklist(
@@ -181,7 +183,7 @@ class RefreshToken(Resource):
     def post(self):
         """Refresh access token"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
 
             # Check if user still exists and is not deleted
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
@@ -189,7 +191,7 @@ class RefreshToken(Resource):
                 return {"message": "User not found or account deactivated"}, 404
 
             # Create new access token
-            access_token = create_access_token(identity=current_user_id)
+            access_token = create_access_token(identity=str(current_user_id))
 
             return {"access_token": access_token}, 200
 
@@ -204,7 +206,7 @@ class ChangePassword(Resource):
     def put(self):
         """Change user password"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
 
             if not user:
@@ -276,7 +278,7 @@ class VerifyToken(Resource):
     def get(self):
         """Verify token and return user info"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
 
             if not user:
@@ -296,7 +298,7 @@ class LogoutAllDevices(Resource):
     def post(self):
         """Logout user from all devices (revoke all tokens)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             user = User.query.filter_by(id=current_user_id, deleted=None).first()
 
             if not user:
@@ -321,7 +323,7 @@ class TokenCleanup(Resource):
     def post(self):
         """Clean up expired tokens from blacklist"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
@@ -346,7 +348,7 @@ class RevokeUserTokens(Resource):
     def post(self):
         """Revoke all tokens for a specific user (admin only)"""
         try:
-            current_user_id = get_jwt_identity()
+            current_user_id = get_current_user_id()
             current_user = User.query.get(current_user_id)
 
             if not current_user or not current_user.admin:
