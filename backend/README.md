@@ -310,10 +310,22 @@ Authorization: Bearer <access_token>
 }
 ```
 
-#### Get User Tasks
+#### Get Users List (Admin Only)
+```http
+GET /api/v1/users
+Authorization: Bearer <admin_access_token>
+```
+
+#### Get User by ID (Admin Only)
+```http
+GET /api/v1/users/{user_id}
+Authorization: Bearer <admin_access_token>
+```
+
+#### Get User Tasks (Admin Only)
 ```http
 GET /api/v1/users/{user_id}/tasks
-Authorization: Bearer <access_token>
+Authorization: Bearer <admin_access_token>
 ```
 
 ### Task Management
@@ -435,11 +447,12 @@ Authorization: Bearer <access_token>
 - `audio`: Original audio files
 - `transcripts`: Text transcripts
 
-### Language & Engine Management
+### Language & Engine Management (Admin Only)
 
-#### Get Languages
+#### Get Languages (Admin Only)
 ```http
 GET /api/v1/languages
+Authorization: Bearer <admin_access_token>
 ```
 
 **Response (200):**
@@ -456,19 +469,34 @@ GET /api/v1/languages
 }
 ```
 
-#### Get Language by Code
+#### Get Language by Code (Admin Only)
 ```http
 GET /api/v1/languages/code/{code}
+Authorization: Bearer <admin_access_token>
 ```
 
-#### Get Engines
+#### Get Language Engines (Admin Only)
+```http
+GET /api/v1/languages/{language_id}/engines
+Authorization: Bearer <admin_access_token>
+```
+
+#### Get Engines (Admin Only)
 ```http
 GET /api/v1/engines
+Authorization: Bearer <admin_access_token>
 ```
 
-#### Get Engine by Code
+#### Get Engine by Code (Admin Only)
 ```http
 GET /api/v1/engines/code/{code}
+Authorization: Bearer <admin_access_token>
+```
+
+#### Get Engine Languages (Admin Only)
+```http
+GET /api/v1/engines/{engine_id}/languages
+Authorization: Bearer <admin_access_token>
 ```
 
 ### Dictionary Management

@@ -20,11 +20,18 @@ from app.schemas import (
 
 
 class LanguageListResource(Resource):
-    """Handle operations on language collection"""
+    """Handle operations on language collection (admin only)"""
 
+    @jwt_required()
     def get(self):
-        """Get list of languages with optional filtering"""
+        """Get list of languages with optional filtering (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             # Get query parameters
             language_type = request.args.get("type")
             homepage_only = request.args.get("homepage", "false").lower() == "true"
@@ -99,11 +106,18 @@ class LanguageListResource(Resource):
 
 
 class LanguageResource(Resource):
-    """Handle operations on individual languages"""
+    """Handle operations on individual languages (admin only)"""
 
+    @jwt_required()
     def get(self, language_id):
-        """Get language by ID"""
+        """Get language by ID (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             language = Language.query.filter_by(id=language_id).first()
             if not language:
                 return {"message": "Language not found"}, 404
@@ -184,11 +198,18 @@ class LanguageResource(Resource):
 
 
 class LanguageByCodeResource(Resource):
-    """Handle operations on languages by code"""
+    """Handle operations on languages by code (admin only)"""
 
+    @jwt_required()
     def get(self, code):
-        """Get language by code"""
+        """Get language by code (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             language = Language.query.filter_by(code=code, is_active=True).first()
             if not language:
                 return {"message": "Language not found"}, 404
@@ -201,12 +222,18 @@ class LanguageByCodeResource(Resource):
 
 
 class LanguageEnginesResource(Resource):
-    """Handle language-engine relationships"""
+    """Handle language-engine relationships (admin only)"""
 
     @jwt_required()
     def get(self, language_id):
-        """Get engines for a language"""
+        """Get engines for a language (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             language = Language.query.filter_by(id=language_id).first()
             if not language:
                 return {"message": "Language not found"}, 404

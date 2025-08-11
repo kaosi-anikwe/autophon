@@ -14,11 +14,18 @@ logger = get_logger(__name__)
 
 
 class UserListResource(Resource):
-    """Handle operations on user collection"""
+    """Handle operations on user collection (admin only)"""
 
+    @jwt_required()
     def get(self):
         """Get list of users (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             users = User.query.filter_by(deleted=None).all()
             schema = UserPublicSchema(many=True)
             return {"users": schema.dump(users), "count": len(users)}, 200
@@ -26,9 +33,16 @@ class UserListResource(Resource):
             log_exception(logger, "Error retrieving users")
             return {"message": f"Error retrieving users: {str(e)}"}, 500
 
+    @jwt_required()
     def post(self):
-        """Create new user"""
+        """Create new user (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             schema = UserCreateSchema()
             data = schema.load(request.get_json())
 
@@ -61,25 +75,23 @@ class UserListResource(Resource):
 
 
 class UserResource(Resource):
-    """Handle operations on individual users"""
+    """Handle operations on individual users (admin only)"""
 
     @jwt_required()
     def get(self, user_id):
-        """Get user by ID"""
+        """Get user by ID (admin only)"""
         try:
             current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
 
             user = User.query.filter_by(id=user_id, deleted=None).first()
             if not user:
                 return {"message": "User not found"}, 404
 
-            # Users can only view their own profile or admin can view any
-            current_user = User.query.get(current_user_id)
-            if not current_user.admin and str(current_user_id) != str(user_id):
-                schema = UserPublicSchema()
-            else:
-                schema = UserSchema(exclude=["password_hash"])
-
+            schema = UserSchema(exclude=["password_hash"])
             return {"user": schema.dump(user)}, 200
 
         except Exception as e:
@@ -88,18 +100,17 @@ class UserResource(Resource):
 
     @jwt_required()
     def put(self, user_id):
-        """Update user"""
+        """Update user (admin only)"""
         try:
             current_user_id = get_jwt_identity()
             current_user = User.query.get(current_user_id)
 
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             user = User.query.filter_by(id=user_id, deleted=None).first()
             if not user:
                 return {"message": "User not found"}, 404
-
-            # Users can only update their own profile or admin can update any
-            if not current_user.admin and str(current_user_id) != str(user_id):
-                return {"message": "Permission denied"}, 403
 
             schema = UserUpdateSchema()
             data = schema.load(request.get_json())
@@ -124,22 +135,20 @@ class UserResource(Resource):
 
     @jwt_required()
     def delete(self, user_id):
-        """Delete (soft delete) user"""
+        """Delete (soft delete) user (admin only)"""
         try:
             current_user_id = get_jwt_identity()
             current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
 
             user = User.query.filter_by(id=user_id, deleted=None).first()
             if not user:
                 return {"message": "User not found"}, 404
 
-            # Users can only delete their own account or admin can delete any
-            if not current_user.admin and str(current_user_id) != str(user_id):
-                return {"message": "Permission denied"}, 403
-
             # Soft delete
-            from datetime import datetime
-from app.utils.datetime_helpers import utc_now
+            from app.utils.datetime_helpers import utc_now
 
             user.deleted = utc_now().isoformat()
             user.update()
@@ -204,18 +213,17 @@ class UserProfileResource(Resource):
 
 
 class UserTasksResource(Resource):
-    """Handle user's tasks"""
+    """Handle user's tasks (admin only)"""
 
     @jwt_required()
     def get(self, user_id):
-        """Get user's tasks"""
+        """Get user's tasks (admin only)"""
         try:
             current_user_id = get_jwt_identity()
             current_user = User.query.get(current_user_id)
 
-            # Users can only view their own tasks or admin can view any
-            if not current_user.admin and str(current_user_id) != str(user_id):
-                return {"message": "Permission denied"}, 403
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
 
             user = User.query.filter_by(id=user_id, deleted=None).first()
             if not user:

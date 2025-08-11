@@ -16,11 +16,18 @@ from app.schemas import (
 
 
 class EngineListResource(Resource):
-    """Handle operations on engine collection"""
+    """Handle operations on engine collection (admin only)"""
 
+    @jwt_required()
     def get(self):
-        """Get list of engines with optional filtering"""
+        """Get list of engines with optional filtering (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             # Get query parameters
             active_only = request.args.get("active", "true").lower() == "true"
 
@@ -75,11 +82,18 @@ class EngineListResource(Resource):
 
 
 class EngineResource(Resource):
-    """Handle operations on individual engines"""
+    """Handle operations on individual engines (admin only)"""
 
+    @jwt_required()
     def get(self, engine_id):
-        """Get engine by ID"""
+        """Get engine by ID (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             engine = Engine.query.filter_by(id=engine_id).first()
             if not engine:
                 return {"message": "Engine not found"}, 404
@@ -159,11 +173,18 @@ class EngineResource(Resource):
 
 
 class EngineByCodeResource(Resource):
-    """Handle operations on engines by code"""
+    """Handle operations on engines by code (admin only)"""
 
+    @jwt_required()
     def get(self, code):
-        """Get engine by code"""
+        """Get engine by code (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             engine = Engine.query.filter_by(code=code, is_active=True).first()
             if not engine:
                 return {"message": "Engine not found"}, 404
@@ -176,11 +197,18 @@ class EngineByCodeResource(Resource):
 
 
 class EngineLanguagesResource(Resource):
-    """Handle engine-language relationships"""
+    """Handle engine-language relationships (admin only)"""
 
+    @jwt_required()
     def get(self, engine_id):
-        """Get languages for an engine"""
+        """Get languages for an engine (admin only)"""
         try:
+            current_user_id = get_jwt_identity()
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
             engine = Engine.query.filter_by(id=engine_id).first()
             if not engine:
                 return {"message": "Engine not found"}, 404

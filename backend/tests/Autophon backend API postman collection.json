@@ -387,13 +387,13 @@
 					}
 				},
 				{
-					"name": "Get Users List",
+					"name": "Get Users List (Admin Only)",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
+								"value": "Bearer {{admin_access_token}}"
 							}
 						],
 						"url": {
@@ -404,36 +404,36 @@
 					}
 				},
 				{
-					"name": "Get User by ID",
+					"name": "Get User by ID (Admin Only)",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
+								"value": "Bearer {{admin_access_token}}"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/users/{{user_id}}",
+							"raw": "{{base_url}}/users/{{admin_user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["users", "{{user_id}}"]
+							"path": ["users", "{{admin_user_id}}"]
 						}
 					}
 				},
 				{
-					"name": "Get User Tasks",
+					"name": "Get User Tasks (Admin Only)",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
+								"value": "Bearer {{admin_access_token}}"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/users/{{user_id}}/tasks",
+							"raw": "{{base_url}}/users/{{admin_user_id}}/tasks",
 							"host": ["{{base_url}}"],
-							"path": ["users", "{{user_id}}", "tasks"]
+							"path": ["users", "{{admin_user_id}}", "tasks"]
 						}
 					}
 				}
@@ -754,7 +754,7 @@
 			"name": "🌍 Languages & Engines",
 			"item": [
 				{
-					"name": "Get Languages",
+					"name": "Get Languages (Admin Only)",
 					"event": [
 						{
 							"listen": "test",
@@ -778,7 +778,12 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/languages",
 							"host": ["{{base_url}}"],
@@ -787,10 +792,15 @@
 					}
 				},
 				{
-					"name": "Get Language by ID",
+					"name": "Get Language by ID (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/languages/{{language_id}}",
 							"host": ["{{base_url}}"],
@@ -799,10 +809,15 @@
 					}
 				},
 				{
-					"name": "Get Language by Code",
+					"name": "Get Language by Code (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/languages/code/{{language_code}}",
 							"host": ["{{base_url}}"],
@@ -811,13 +826,13 @@
 					}
 				},
 				{
-					"name": "Get Language Engines",
+					"name": "Get Language Engines (Admin Only)",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
+								"value": "Bearer {{admin_access_token}}"
 							}
 						],
 						"url": {
@@ -828,7 +843,7 @@
 					}
 				},
 				{
-					"name": "Get Engines",
+					"name": "Get Engines (Admin Only)",
 					"event": [
 						{
 							"listen": "test",
@@ -852,7 +867,12 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/engines",
 							"host": ["{{base_url}}"],
@@ -861,10 +881,15 @@
 					}
 				},
 				{
-					"name": "Get Engine by ID",
+					"name": "Get Engine by ID (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/engines/{{engine_id}}",
 							"host": ["{{base_url}}"],
@@ -873,10 +898,15 @@
 					}
 				},
 				{
-					"name": "Get Engine by Code",
+					"name": "Get Engine by Code (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/engines/code/{{engine_code}}",
 							"host": ["{{base_url}}"],
@@ -885,10 +915,15 @@
 					}
 				},
 				{
-					"name": "Get Engine Languages",
+					"name": "Get Engine Languages (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/engines/{{engine_id}}/languages",
 							"host": ["{{base_url}}"],
