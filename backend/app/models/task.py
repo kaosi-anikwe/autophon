@@ -78,7 +78,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
         return f"<Task {self.task_id}>"
 
 
-class TaskFile(db.Model, TimestampMixin):
+class TaskFile(db.Model, TimestampMixin, DatabaseHelperMixin):
     __tablename__ = "task_files"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -89,7 +89,7 @@ class TaskFile(db.Model, TimestampMixin):
     file_key = db.Column(db.String(100))
 
 
-class TaskFileName(db.Model, TimestampMixin):
+class TaskFileName(db.Model, TimestampMixin, DatabaseHelperMixin):
     __tablename__ = "task_file_names"
 
     id = db.Column(db.Integer, primary_key=True)

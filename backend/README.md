@@ -339,7 +339,7 @@ Content-Type: multipart/form-data
 
 **Form Data:**
 - `files`: Audio files for alignment
-- `transcription_mode`: `"batch"` or `"individual"`
+- `trans_choice`: `"var-ling"` | `"comp-ling"` | `"exp-a"` | `"exp-b"`
 - `language`: Language code (e.g., `"eng"`)
 - `engine`: Engine code (e.g., `"mfa"`)
 

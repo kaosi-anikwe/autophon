@@ -474,23 +474,13 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "files",
+									"key": "files[]",
 									"type": "file",
 									"src": []
 								},
 								{
-									"key": "transcription_mode",
+									"key": "trans_choice",
 									"value": "batch",
-									"type": "text"
-								},
-								{
-									"key": "language",
-									"value": "eng",
-									"type": "text"
-								},
-								{
-									"key": "engine",
-									"value": "mfa",
 									"type": "text"
 								}
 							]
