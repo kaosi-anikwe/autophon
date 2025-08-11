@@ -63,6 +63,30 @@ def load_audio_extensions(app):
         app.audio_extensions = []
 
 
+def load_site_status(app):
+    """Load site active status from admin/switch.txt into app global property"""
+    try:
+        # Construct path to switch.txt
+        switch_path = os.path.join(
+            os.getenv("ADMIN_UPDATES", os.getenv("ADMIN", "")), "switch.txt"
+        )
+
+        site_active = True  # Default to active
+        if os.path.exists(switch_path):
+            with open(switch_path, "r") as file:
+                status_lines = file.readlines()
+                if status_lines:
+                    site_active = status_lines[0].strip() == "on"
+
+        # Store as a global property on the Flask app
+        app.site_active = site_active
+        app.logger.info(f"Site active status loaded: {site_active}")
+
+    except Exception as e:
+        app.logger.error(f"Failed to load site active status: {str(e)}")
+        app.site_active = True  # Default to active on error
+
+
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv("FLASK_CONFIG", "default")
@@ -73,6 +97,7 @@ def create_app(config_name=None):
     # Load configuration files as global app properties
     load_user_limits(app)
     load_audio_extensions(app)
+    load_site_status(app)
 
     # Setup logging
     logger = setup_logging(app)
@@ -91,11 +116,43 @@ def create_app(config_name=None):
 
     # Register blueprints
     from app.api.v1.routes import api_bp
+    from app.api.admin.routes import admin_api_bp
 
     app.register_blueprint(api_bp, url_prefix="/api/v1")
+    app.register_blueprint(admin_api_bp, url_prefix="/api/v1/admin")
 
     @app.route("/api/v1/health")
     def health_check():
         return {"status": "healthy", "message": "API is running"}
+
+    @app.route("/api/v1/site-status")
+    def site_status():
+        """Check if site is active"""
+        return {
+            "active": getattr(app, "site_active", True),
+            "message": "Site status retrieved successfully",
+        }
+
+    @app.before_request
+    def check_site_status():
+        """Check site status before each request (except for certain endpoints)"""
+        from flask import request, g
+
+        # Reload site status for each request to get real-time updates
+        load_site_status(app)
+
+        # Make site status available in request context
+        g.site_is_active = getattr(app, "site_active", True)
+
+        # Allow certain endpoints even when site is inactive
+        allowed_when_inactive = ["/api/v1/health", "/api/v1/site-status"]
+
+        if not g.site_is_active and request.path not in allowed_when_inactive:
+            # Allow all admin API endpoints when site is inactive
+            if request.path.startswith("/api/v1/admin/"):
+                pass
+            else:
+                # Return site inactive message for regular users
+                return {"message": "Site is currently inactive", "active": False}, 503
 
     return app

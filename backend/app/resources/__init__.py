@@ -116,6 +116,15 @@ from .captcha import (
     CaptchaCleanupResource,
 )
 
+# Admin resources
+from .admin import (
+    BlockedEmailsResource,
+    SiteStatusResource,
+    AdminUsersResource,
+    AdminDownloadsResource,
+    AdminHistoryResource,
+)
+
 __all__ = [
     # Authentication resources
     "Register",
@@ -190,4 +199,10 @@ __all__ = [
     # Captcha resources
     "CaptchaResource",
     "CaptchaCleanupResource",
+    # Admin resources
+    "BlockedEmailsResource",
+    "SiteStatusResource",
+    "AdminUsersResource",
+    "AdminDownloadsResource",
+    "AdminHistoryResource",
 ]
