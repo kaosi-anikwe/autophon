@@ -60,7 +60,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
     download_title = db.Column(db.String(255))
     download_counts = db.Column(db.Integer, default=0)
     download_date = db.Column(db.String(50))
-    deleted = db.Column(db.String(255), default="")
+    deleted = db.Column(db.String(255))
 
     # Processing metadata
     pid = db.Column(db.Integer)

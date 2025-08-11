@@ -97,7 +97,7 @@ class LanguageChangeResource(Resource):
                     "old_lang": task.lang,
                     "new_lang": new_lang,
                     "missing_words": result["missing_words"],
-                    "missing_dict_path": result["missing_dict_path"],
+                    "missing_dict_path": os.path.relpath(result["missing_dict_path"]),
                 },
             }
 

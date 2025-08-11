@@ -39,7 +39,7 @@ class AlignerDashboardResource(Resource):
             if not user:
                 return {"status": "error", "message": "User not found"}, 404
 
-            if not user.is_verified:
+            if not user.verified:
                 return {
                     "status": "error",
                     "message": "Account verification required",

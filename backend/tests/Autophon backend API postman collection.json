@@ -619,14 +619,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/tasks/{{task_id}}/download/results",
+							"raw": "{{base_url}}/tasks/{{task_id}}/download/complete",
 							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "download", "results"]
+							"path": ["tasks", "{{task_id}}", "download", "complete"]
 						}
 					}
 				},
 				{
-					"name": "Download Task Audio",
+					"name": "Download Task TextGrid",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -636,9 +636,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/tasks/{{task_id}}/download/audio",
+							"raw": "{{base_url}}/tasks/{{task_id}}/download/textgrid",
 							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "download", "audio"]
+							"path": ["tasks", "{{task_id}}", "download", "textgrid"]
 						}
 					}
 				},
@@ -653,9 +653,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/tasks/{{task_id}}/missing-words",
+							"raw": "{{base_url}}/tasks/{{task_id}}/download/missing_dict",
 							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "missing-words"]
+							"path": ["tasks", "{{task_id}}", "download", "missing_dict"]
 						}
 					}
 				},
@@ -695,17 +695,17 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/tasks/history?start_date=2024-01-01&end_date=2024-12-31",
+							"raw": "{{base_url}}/tasks/history?year=2025&month=Aug",
 							"host": ["{{base_url}}"],
 							"path": ["tasks", "history"],
 							"query": [
 								{
-									"key": "start_date",
-									"value": "2024-01-01"
+									"key": "year",
+									"value": 2025
 								},
 								{
-									"key": "end_date",
-									"value": "2024-12-31"
+									"key": "month",
+									"value": "Aug"
 								}
 							]
 						}
@@ -927,23 +927,6 @@
 			"name": "📚 Dictionary Management",
 			"item": [
 				{
-					"name": "Get Dictionaries",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/dictionaries",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries"]
-						}
-					}
-				},
-				{
 					"name": "Upload User Dictionary",
 					"request": {
 						"method": "POST",
@@ -957,12 +940,12 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "file",
+									"key": "dict",
 									"type": "file",
 									"src": []
 								},
 								{
-									"key": "language",
+									"key": "lang",
 									"value": "{{language_code}}",
 									"type": "text"
 								}
@@ -972,23 +955,6 @@
 							"raw": "{{base_url}}/dictionaries/upload",
 							"host": ["{{base_url}}"],
 							"path": ["dictionaries", "upload"]
-						}
-					}
-				},
-				{
-					"name": "Get User Dictionary",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/dictionaries/get",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries", "get"]
 						}
 					}
 				},
@@ -1029,34 +995,21 @@
 				{
 					"name": "Get Dictionary by Language",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "Bearer {{access_token}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lang\": \"{{language_code}}\"\n}"
+						},
 						"url": {
-							"raw": "{{base_url}}/dictionaries/language/{{language_code}}",
+							"raw": "{{base_url}}/dictionaries/get/",
 							"host": ["{{base_url}}"],
 							"path": ["dictionaries", "language", "{{language_code}}"]
-						}
-					}
-				},
-				{
-					"name": "Get User Dictionaries",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/users/{{user_id}}/dictionaries",
-							"host": ["{{base_url}}"],
-							"path": ["users", "{{user_id}}", "dictionaries"]
 						}
 					}
 				}
@@ -1092,6 +1045,10 @@
 								"value": "Bearer {{access_token}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"task_id\": \"{{task_id}}\"\n }"
+						},
 						"url": {
 							"raw": "{{base_url}}/aligner/align",
 							"host": ["{{base_url}}"],
@@ -1113,23 +1070,6 @@
 							"raw": "{{base_url}}/aligner/queue",
 							"host": ["{{base_url}}"],
 							"path": ["aligner", "queue"]
-						}
-					}
-				},
-				{
-					"name": "Task Expiration",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/aligner/expire",
-							"host": ["{{base_url}}"],
-							"path": ["aligner", "expire"]
 						}
 					}
 				}
@@ -1154,29 +1094,12 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"task_id\": \"{{task_id}}\",\n    \"new_language_id\": {{language_id}}\n}"
+							"raw": "{\n    \"task_id\": \"{{task_id}}\",\n    \"new_lang\": {{language_id}}\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/tasks/change-language",
 							"host": ["{{base_url}}"],
 							"path": ["tasks", "change-language"]
-						}
-					}
-				},
-				{
-					"name": "Get Available Languages for Task",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/tasks/{{task_id}}/available-languages",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "available-languages"]
 						}
 					}
 				},
@@ -1194,7 +1117,7 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "files",
+									"key": "audio_file",
 									"type": "file",
 									"src": []
 								}
@@ -1227,40 +1150,15 @@
 			]
 		},
 		{
-			"name": "📤 Upload Status & Downloads",
+			"name": "📤 Downloads",
 			"item": [
-				{
-					"name": "Get Upload Status (SSE)",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							},
-							{
-								"key": "Accept",
-								"value": "text/event-stream"
-							},
-							{
-								"key": "Cache-Control",
-								"value": "no-cache"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/upload/status",
-							"host": ["{{base_url}}"],
-							"path": ["upload", "status"]
-						}
-					}
-				},
 				{
 					"name": "Download Static Files",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/static/audio/sample.wav",
+							"raw": "{{base_url}}/static/guides/danDK_MFA1_v040.pdf",
 							"host": ["{{base_url}}"],
 							"path": ["static", "audio", "sample.wav"]
 						}
@@ -1606,7 +1504,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/team-images",
+							"raw": "{{base_url}}/team-images?category=developers&member=member_1",
 							"host": ["{{base_url}}"],
 							"path": ["team-images"]
 						}
@@ -1624,7 +1522,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"message\": \"Hello, I have a question about the Autophon API...\"\n}"
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"subject\": \"Question for you\",  \"body\": \"Hello, I have a question about the Autophon API...\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/contact/send-email",

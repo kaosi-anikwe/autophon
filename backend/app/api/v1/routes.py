@@ -116,7 +116,7 @@ api.add_resource(EngineLanguagesResource, "/engines/<int:engine_id>/languages")
 # Task routes
 api.add_resource(TaskListResource, "/tasks")
 api.add_resource(TaskResource, "/tasks/<string:task_id>")
-api.add_resource(TaskStatusResource, "/tasks/<string:task_id>/status")
+# api.add_resource(TaskStatusResource, "/tasks/<string:task_id>/status")
 api.add_resource(TaskFilesResource, "/tasks/<string:task_id>/files")
 api.add_resource(TaskFileNamesResource, "/tasks/<string:task_id>/file-names")
 api.add_resource(TaskCancelResource, "/tasks/<string:task_id>/cancel")
@@ -125,18 +125,18 @@ api.add_resource(TaskHistoryResource, "/tasks/history")
 api.add_resource(TaskMonthlyReportResource, "/monthly-download")
 
 # Dictionary routes
-api.add_resource(DictionaryListResource, "/dictionaries")
-api.add_resource(DictionaryResource, "/dictionaries/<int:dict_id>")
-api.add_resource(UserDictionariesResource, "/users/<int:user_id>/dictionaries")
-api.add_resource(
-    DictionaryByLanguageResource, "/dictionaries/language/<string:language>"
-)
+# api.add_resource(DictionaryListResource, "/dictionaries")
+# api.add_resource(DictionaryResource, "/dictionaries/<int:dict_id>")
+# api.add_resource(UserDictionariesResource, "/users/<int:user_id>/dictionaries")
+# api.add_resource(
+#     DictionaryByLanguageResource, "/dictionaries/language/<string:language>"
+# )
 
 # Configuration routes
 api.add_resource(ConfigResource, "/config")
 
 # Upload Status and Download routes
-api.add_resource(UploadStatusResource, "/upload/status")
+# api.add_resource(UploadStatusResource, "/upload/status")
 api.add_resource(
     UploadStatusResource,
     "/tasks/<string:task_id>/status",
@@ -157,14 +157,14 @@ api.add_resource(UserDictionaryDeleteResource, "/dictionaries/user/<string:lang_
 # Aligner routes
 api.add_resource(AlignerDashboardResource, "/aligner/dashboard")
 api.add_resource(AlignTaskResource, "/aligner/align")
-api.add_resource(TaskExpirationResource, "/aligner/expire")
+# api.add_resource(TaskExpirationResource, "/aligner/expire")
 api.add_resource(AlignmentQueueResource, "/aligner/queue")
 
 # Language Change routes
 api.add_resource(LanguageChangeResource, "/tasks/change-language")
-api.add_resource(
-    TaskLanguageListResource, "/tasks/<string:task_id>/available-languages"
-)
+# api.add_resource(
+#     TaskLanguageListResource, "/tasks/<string:task_id>/available-languages"
+# )
 
 # Reupload routes
 api.add_resource(TaskReuploadResource, "/tasks/<string:task_id>/reupload")

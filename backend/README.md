@@ -443,9 +443,9 @@ Authorization: Bearer <access_token>
 ```
 
 **Download Types:**
-- `results`: Alignment results
-- `audio`: Original audio files
-- `transcripts`: Text transcripts
+- `textgrid`: Uploaded TextGrid
+- `complete`: Complete task archive (zip)
+- `missing_dict`: Missing words report
 
 ### Language & Engine Management (Admin Only)
 
@@ -509,13 +509,26 @@ Content-Type: multipart/form-data
 ```
 
 **Form Data:**
-- `file`: Dictionary file
-- `language`: Language code
+- `dict`: Dictionary file
+- `lang`: Language code
 
 #### Get User Dictionaries
 ```http
 GET /api/v1/dictionaries/user
 Authorization: Bearer <access_token>
+```
+
+#### Get User Dictionary by Language
+```http
+POST /api/v1/dictionaries/get
+Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "lang": "danDK_MFA1_v040",
+}
 ```
 
 #### Delete User Dictionary
@@ -524,15 +537,7 @@ DELETE /api/v1/dictionaries/user/{lang_code}
 Authorization: Bearer <access_token>
 ```
 
-### File Upload & Download
-
-#### Upload Status (SSE)
-```http
-GET /api/v1/upload/status
-Authorization: Bearer <access_token>
-```
-
-Returns Server-Sent Events for real-time upload progress.
+### File Download
 
 #### Download Static Files
 ```http
@@ -551,6 +556,13 @@ Authorization: Bearer <access_token>
 ```http
 POST /api/v1/aligner/align
 Authorization: Bearer <access_token>
+```
+
+**Request Body:**
+```json
+{
+  "task_id": "<task_id>",
+}
 ```
 
 #### Check Alignment Queue
@@ -758,19 +770,10 @@ POST /api/v1/contact/send-email
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "message": "Hello, I have a question..."
+  "subject": "Question for you",
+  "body": "Hello, I have a question..."
 }
 ```
-
-### Upload Status & Downloads
-
-#### Real-time Upload Status
-```http
-GET /api/v1/upload/status
-Authorization: Bearer <access_token>
-```
-
-Returns Server-Sent Events (SSE) for real-time upload progress tracking.
 
 #### Task File Downloads
 ```http
@@ -802,14 +805,8 @@ Authorization: Bearer <access_token>
 ```json
 {
   "task_id": "task_abc123",
-  "new_language_id": 2
+  "new_lang": "danDK_MFA1_v040"
 }
-```
-
-#### Get Available Languages for Task
-```http
-GET /api/v1/tasks/{task_id}/available-languages
-Authorization: Bearer <access_token>
 ```
 
 ### Reupload Operations
@@ -822,7 +819,7 @@ Content-Type: multipart/form-data
 ```
 
 **Form Data:**
-- `files`: New audio files
+- `audio_file`: New audio file
 
 #### Get Reupload Information
 ```http
@@ -839,9 +836,8 @@ Authorization: Bearer <access_token>
 ```
 
 **Query Parameters:**
-- `start_date`: Filter from date (YYYY-MM-DD)
-- `end_date`: Filter to date (YYYY-MM-DD)
-- `status`: Filter by status
+- `year`: Filter year(YYYY)
+- `month`: Filter month (eg Jan, Feb, etc.)
 
 #### Monthly Report Download
 ```http

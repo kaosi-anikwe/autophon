@@ -129,7 +129,7 @@ class FileUploadResource(Resource):
                 logger.info(f"Total files after extraction: {len(files)}")
 
                 # Save files to temporary folder
-                working_user_id = user_uuid if anonymous else str(user_id)
+                working_user_id = user_uuid if anonymous else User.query.get(user_id).uuid
                 temp_path = os.path.join(UPLOADS, working_user_id, "temp")
 
                 if os.path.exists(temp_path):
@@ -247,6 +247,10 @@ class FileUploadResource(Resource):
                         no_of_files=len(grouped_files),
                     )
                     task.insert()
+
+                    # Convet log path to relpath
+                    task.log_path = os.path.relpath(log_file)
+                    
                     created_tasks.append(task)
 
                     # Store file information
@@ -258,7 +262,7 @@ class FileUploadResource(Resource):
                 else:
                     # Create individual tasks for each file group
                     for group in grouped_files:
-                        task_id = current_time.strftime("%Y-%m-%d_%H.%M.%S.%f")
+                        task_id = utc_now().strftime("%Y-%m-%d_%H.%M.%S.%f")
                         task_path = os.path.join(working_user_id, "upl", task_id)
                         download_title = os.path.splitext(os.path.basename(group[0]))[0]
 
@@ -276,6 +280,10 @@ class FileUploadResource(Resource):
                             no_of_files=len(group),
                         )
                         task.insert()
+
+                        # Convet log path to relpath
+                        task.log_path = os.path.relpath(log_file)
+
                         created_tasks.append(task)
 
                         # Store file information

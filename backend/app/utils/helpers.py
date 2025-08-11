@@ -418,7 +418,9 @@ def get_monthly_download(user_id, date, task_list: list, totals: dict):
 
 
 def purge_unverified_accounts(timeframe: int = 48):
-    """Delete unverified accounts from SQLAlchemy database after `timeframe` in hours"""
+    """Delete unverified accounts from SQLAlchemy database after `timeframe` in hours\n
+    Should be called withing an app context.
+    """
     from app.models.user import User
 
     cutoff_time = datetime.now(timezone.utc) - timedelta(hours=timeframe)

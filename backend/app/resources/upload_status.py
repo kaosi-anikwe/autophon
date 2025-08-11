@@ -8,6 +8,9 @@ from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
 from app.models.task import Task
 from app.utils.helpers import missing_word_html
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class UploadStatusResource(Resource):
@@ -103,9 +106,9 @@ class UploadStatusResource(Resource):
         task_data = {
             "task_id": task.task_id,
             "user_id": task.user_id,
-            "task_status": task.task_status,
+            "task_status": task.task_status.value,
             "download_title": task.download_title or f"Task {task.task_id}",
-            "download_date": task.download_date.isoformat()
+            "download_date": task.download_date
             if task.download_date
             else None,
             "trans_choice": task.trans_choice,
@@ -114,7 +117,6 @@ class UploadStatusResource(Resource):
             "missing_words": str(task.missing_words or 0),
             "no_of_files": task.no_of_files or 0,
             "words": task.words or 0,
-            "cost": float(task.cost or 0),
             "duration": task.duration or 0,
             "created_at": task.created_at.isoformat() if task.created_at else None,
             "updated_at": task.updated_at.isoformat() if task.updated_at else None,
@@ -434,10 +436,10 @@ class StaticDownloadResource(Resource):
     def _download_user_guide(self, filename):
         """Download user guide PDFs"""
         # Construct file path - adjust based on your static files structure
-        static_path = os.path.join(current_app.root_path, "..", "..", "admin", "static")
-        file_path = os.path.join(static_path, filename)
+        static_path = os.path.join(os.getenv("ADMIN"), os.path.splitext(filename)[0], filename)
+        logger.info(f"GUIDE PATH: {static_path}")
 
-        if not os.path.exists(file_path):
+        if not os.path.exists(static_path):
             return {"status": "error", "message": "File not found"}, 404
 
         # Generate display name
@@ -445,7 +447,7 @@ class StaticDownloadResource(Resource):
         display_name = f"User guide {file_code}.pdf"
 
         return send_file(
-            file_path,
+            static_path,
             as_attachment=True,
             download_name=display_name,
             mimetype="application/pdf",

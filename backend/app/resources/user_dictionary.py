@@ -118,11 +118,11 @@ class UserDictionaryUploadResource(Resource):
                 }, 500
 
             # Check dictionary size limit
-            word_count = len(file_content.splitlines())
-            if word_count > current_app.user_limits.get("user_dict_limit", 50000):
+            character_count = len(file_content.splitlines())
+            if character_count > current_app.user_limits.get("user_dict_limit", 50000):
                 return {
                     "status": "error",
-                    "message": f'Dictionary must have less than {current_app.user_limits.get("user_dict_limit", 50000)} words',
+                    "message": f'Dictionary must have less than {current_app.user_limits.get("user_dict_limit", 50000)} characters',
                 }, 400
 
             # Save dictionary
@@ -142,7 +142,7 @@ class UserDictionaryUploadResource(Resource):
                     "message": "Dictionary uploaded successfully",
                     "data": {
                         "dict_default": lang,
-                        "word_count": word_count,
+                        "word_count": character_count,
                         "operation": op_type,
                     },
                 }
@@ -282,7 +282,8 @@ class UserDictionaryResource(Resource):
             if not current_user_id:
                 return {"status": "error", "message": "Authentication required"}, 401
 
-            lang = request.form.get("lang")
+            data = request.get_json()
+            lang = data.get("lang")
             if not lang:
                 return {"status": "error", "message": "Language must be specified"}, 400
 
