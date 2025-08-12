@@ -382,51 +382,7 @@ class AlignTaskResource(Resource):
         return duration
 
 
-class TaskExpirationResource(Resource):
-    """
-    Utility resource for handling task expiration
-    """
-
-    def post(self):
-        """
-        Mark tasks as expired if they haven't been processed by end of day
-        This would typically be called by a background job/cron
-        """
-        try:
-            # Find tasks that should be expired
-            # Tasks uploaded but not completed by end of day
-            start_of_day = utc_now().replace(hour=0, minute=0, second=0, microsecond=0)
-
-            expired_tasks = Task.query.filter(
-                Task.task_status.in_([TaskStatus.UPLOADED, TaskStatus.ALIGNED]),
-                Task.created_at < start_of_day,
-                Task.deleted == "",
-            ).all()
-
-            expired_count = 0
-            for task in expired_tasks:
-                task.task_status = TaskStatus.EXPIRED
-                task.updated_at = utc_now()
-                expired_count += 1
-
-            if expired_count > 0:
-                db.session.commit()
-                current_app.logger.info(f"Expired {expired_count} tasks")
-
-            return {
-                "status": "success",
-                "message": f"Expired {expired_count} tasks",
-                "data": {"expired_count": expired_count},
-            }
-
-        except Exception as e:
-            current_app.logger.error(
-                f"Error in TaskExpirationResource: {traceback.format_exc()}"
-            )
-            return {
-                "status": "error",
-                "message": "Failed to process task expiration",
-            }, 500
+# TaskExpirationResource removed - unused route
 
 
 class AlignmentQueueResource(Resource):

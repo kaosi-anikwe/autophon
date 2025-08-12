@@ -40,7 +40,6 @@ from .engines import (
 from .tasks import (
     TaskListResource,
     TaskResource,
-    TaskStatusResource,
     TaskFilesResource,
     TaskFileNamesResource,
     TaskCancelResource,
@@ -49,13 +48,7 @@ from .tasks import (
     TaskMonthlyReportResource,
 )
 
-# Dictionary resources
-from .dictionaries import (
-    DictionaryListResource,
-    DictionaryResource,
-    UserDictionariesResource,
-    DictionaryByLanguageResource,
-)
+# Dictionary resources - all unused, removing imports
 
 # Configuration resources
 from .config import (
@@ -82,14 +75,12 @@ from .user_dictionary import (
 from .aligner import (
     AlignerDashboardResource,
     AlignTaskResource,
-    TaskExpirationResource,
     AlignmentQueueResource,
 )
 
 # Language Change resources
 from .language_change import (
     LanguageChangeResource,
-    TaskLanguageListResource,
 )
 
 # Reupload resources
@@ -155,18 +146,13 @@ __all__ = [
     # Task resources
     "TaskListResource",
     "TaskResource",
-    "TaskStatusResource",
     "TaskFilesResource",
     "TaskFileNamesResource",
     "TaskCancelResource",
     "TaskBulkDeleteResource",
     "TaskHistoryResource",
     "TaskMonthlyReportResource",
-    # Dictionary resources
-    "DictionaryListResource",
-    "DictionaryResource",
-    "UserDictionariesResource",
-    "DictionaryByLanguageResource",
+    # Dictionary resources - all removed as unused
     # Configuration resources
     "ConfigResource",
     # Upload Status and Download resources
@@ -182,11 +168,9 @@ __all__ = [
     # Aligner resources
     "AlignerDashboardResource",
     "AlignTaskResource",
-    "TaskExpirationResource",
     "AlignmentQueueResource",
     # Language Change resources
     "LanguageChangeResource",
-    "TaskLanguageListResource",
     # Reupload resources
     "TaskReuploadResource",
     "TaskReuploadInfoResource",

@@ -33,18 +33,13 @@ from app.resources import (
     # Tasks
     TaskListResource,
     TaskResource,
-    TaskStatusResource,
     TaskFilesResource,
     TaskFileNamesResource,
     TaskCancelResource,
     TaskBulkDeleteResource,
     TaskHistoryResource,
     TaskMonthlyReportResource,
-    # Dictionaries
-    DictionaryListResource,
-    DictionaryResource,
-    UserDictionariesResource,
-    DictionaryByLanguageResource,
+    # Dictionaries - removed unused imports
     # Configuration
     ConfigResource,
     # Upload Status and Download resources
@@ -60,11 +55,9 @@ from app.resources import (
     # Aligner resources
     AlignerDashboardResource,
     AlignTaskResource,
-    TaskExpirationResource,
     AlignmentQueueResource,
     # Language Change resources
     LanguageChangeResource,
-    TaskLanguageListResource,
     # Reupload resources
     TaskReuploadResource,
     TaskReuploadInfoResource,
@@ -116,7 +109,6 @@ api.add_resource(EngineLanguagesResource, "/engines/<int:engine_id>/languages")
 # Task routes
 api.add_resource(TaskListResource, "/tasks")
 api.add_resource(TaskResource, "/tasks/<string:task_id>")
-# api.add_resource(TaskStatusResource, "/tasks/<string:task_id>/status")
 api.add_resource(TaskFilesResource, "/tasks/<string:task_id>/files")
 api.add_resource(TaskFileNamesResource, "/tasks/<string:task_id>/file-names")
 api.add_resource(TaskCancelResource, "/tasks/<string:task_id>/cancel")
@@ -124,19 +116,12 @@ api.add_resource(TaskBulkDeleteResource, "/tasks/bulk-delete")
 api.add_resource(TaskHistoryResource, "/tasks/history")
 api.add_resource(TaskMonthlyReportResource, "/monthly-download")
 
-# Dictionary routes
-# api.add_resource(DictionaryListResource, "/dictionaries")
-# api.add_resource(DictionaryResource, "/dictionaries/<int:dict_id>")
-# api.add_resource(UserDictionariesResource, "/users/<int:user_id>/dictionaries")
-# api.add_resource(
-#     DictionaryByLanguageResource, "/dictionaries/language/<string:language>"
-# )
+# Dictionary routes - removed unused commented routes
 
 # Configuration routes
 api.add_resource(ConfigResource, "/config")
 
 # Upload Status and Download routes
-# api.add_resource(UploadStatusResource, "/upload/status")
 api.add_resource(
     UploadStatusResource,
     "/tasks/<string:task_id>/status",
@@ -157,14 +142,12 @@ api.add_resource(UserDictionaryDeleteResource, "/dictionaries/user/<string:lang_
 # Aligner routes
 api.add_resource(AlignerDashboardResource, "/aligner/dashboard")
 api.add_resource(AlignTaskResource, "/aligner/align")
-# api.add_resource(TaskExpirationResource, "/aligner/expire")
+# Removed unused TaskExpirationResource
 api.add_resource(AlignmentQueueResource, "/aligner/queue")
 
 # Language Change routes
 api.add_resource(LanguageChangeResource, "/tasks/change-language")
-# api.add_resource(
-#     TaskLanguageListResource, "/tasks/<string:task_id>/available-languages"
-# )
+# Removed unused TaskLanguageListResource
 
 # Reupload routes
 api.add_resource(TaskReuploadResource, "/tasks/<string:task_id>/reupload")

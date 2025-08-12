@@ -201,42 +201,7 @@ class TaskResource(Resource):
             return {"message": f"Error deleting task: {str(e)}"}, 500
 
 
-class TaskStatusResource(Resource):
-    """Handle task status updates"""
-
-    @jwt_required()
-    def put(self, task_id):
-        """Update task status"""
-        try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
-
-            task = Task.query.filter_by(task_id=task_id).first()
-            if not task:
-                return {"message": "Task not found"}, 404
-
-            # Users can only update their own tasks or admin can update any
-            if not current_user.admin and task.user_id != current_user_id:
-                return {"message": "Permission denied"}, 403
-
-            data = request.get_json()
-            status = data.get("status")
-
-            if not status:
-                return {"message": "status is required"}, 400
-
-            try:
-                task_status = TaskStatus(status)
-                task.task_status = task_status
-                task.update()
-
-                return {"message": f"Task status updated to {status}"}, 200
-
-            except ValueError:
-                return {"message": f"Invalid task status: {status}"}, 400
-
-        except Exception as e:
-            return {"message": f"Error updating task status: {str(e)}"}, 500
+# TaskStatusResource removed - unused (functionality replaced by UploadStatusResource)
 
 
 class TaskFilesResource(Resource):
