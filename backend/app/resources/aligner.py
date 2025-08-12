@@ -395,9 +395,7 @@ class TaskExpirationResource(Resource):
         try:
             # Find tasks that should be expired
             # Tasks uploaded but not completed by end of day
-            start_of_day = utc_now().replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
+            start_of_day = utc_now().replace(hour=0, minute=0, second=0, microsecond=0)
 
             expired_tasks = Task.query.filter(
                 Task.task_status.in_([TaskStatus.UPLOADED, TaskStatus.ALIGNED]),
@@ -452,17 +450,13 @@ class AlignmentQueueResource(Resource):
                 "completed_today": Task.query.filter(
                     Task.task_status == TaskStatus.COMPLETED,
                     Task.updated_at
-                    >= utc_now().replace(
-                        hour=0, minute=0, second=0, microsecond=0
-                    ),
+                    >= utc_now().replace(hour=0, minute=0, second=0, microsecond=0),
                     Task.deleted == "",
                 ).count(),
                 "expired_today": Task.query.filter(
                     Task.task_status == TaskStatus.EXPIRED,
                     Task.updated_at
-                    >= utc_now().replace(
-                        hour=0, minute=0, second=0, microsecond=0
-                    ),
+                    >= utc_now().replace(hour=0, minute=0, second=0, microsecond=0),
                     Task.deleted == "",
                 ).count(),
             }

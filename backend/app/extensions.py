@@ -48,10 +48,11 @@ def check_if_token_revoked(jwt_header, jwt_payload):
             if user.tokens_revoked_at.tzinfo is None:
                 # If user.tokens_revoked_at is naive, make it UTC-aware
                 from app.utils.datetime_helpers import make_utc_aware
+
                 user_revoked_at = make_utc_aware(user.tokens_revoked_at)
             else:
                 user_revoked_at = user.tokens_revoked_at
-                
+
             if token_issued_at < user_revoked_at:
                 if logger:
                     logger.warning(
@@ -60,7 +61,9 @@ def check_if_token_revoked(jwt_header, jwt_payload):
                 return True
         except Exception as e:
             if logger:
-                logger.error(f"Error comparing token timestamps for user {user_id}: {str(e)}")
+                logger.error(
+                    f"Error comparing token timestamps for user {user_id}: {str(e)}"
+                )
             # If comparison fails, don't block the token to avoid breaking auth
             pass
 

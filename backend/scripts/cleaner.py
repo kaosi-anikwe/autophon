@@ -102,7 +102,9 @@ def mark_deleted():
             if task.task_path:
                 task_full_path = os.path.join(UPLOADS, task.task_path)
                 if not os.path.exists(task_full_path):
-                    logger.info(f"Folder {task.task_path} does not exist, marking as expired")
+                    logger.info(
+                        f"Folder {task.task_path} does not exist, marking as expired"
+                    )
                     task.task_status = TaskStatus.EXPIRED
                     task.update()
 
@@ -319,7 +321,6 @@ def main():
             backup_data()
 
         cleanup_captchas()
-
 
         # Clear temp files
         clear_temp()

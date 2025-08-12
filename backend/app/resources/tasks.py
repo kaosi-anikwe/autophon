@@ -209,7 +209,7 @@ class TaskStatusResource(Resource):
         """Update task status"""
         try:
             current_user_id = int(get_jwt_identity())
-            current_user =  User.query.get(current_user_id)
+            current_user = User.query.get(current_user_id)
 
             task = Task.query.filter_by(task_id=task_id).first()
             if not task:

@@ -20,6 +20,7 @@ class FileType(Enum):
     TEXTGRID = "textgrid"
     HELD = "held"
     OUTPUT = "output"
+    LOG = "log"
 
 
 class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
@@ -27,7 +28,12 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("users.id")
+    )  # nullable due to anonymous users
+
+    # Anonymous user identifier
+    user_uuid = db.Column(db.String(6))
 
     # language and engine relationships
     lang_id = db.Column(db.Integer, db.ForeignKey("languages.id"))
@@ -44,6 +50,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
     log_path = db.Column(db.String(500))
     download_path = db.Column(db.String(500))
     missingprondict = db.Column(db.String(500))
+    final_temp = db.Column(db.String(500))
 
     # Processing results
     size = db.Column(db.Numeric(10, 2))

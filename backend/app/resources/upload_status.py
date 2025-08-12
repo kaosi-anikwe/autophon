@@ -6,7 +6,7 @@ from flask_restful import Resource
 from flask import current_app, request, send_file
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
-from app.models.task import Task
+from app.models.task import Task, TaskStatus
 from app.utils.helpers import missing_word_html
 from app.utils.logger import get_logger
 
@@ -52,7 +52,7 @@ class UploadStatusResource(Resource):
             # Add status filter if specified
             status_filter = request.args.get("status_filter")
             if status_filter:
-                statuses = [s.strip() for s in status_filter.split(",")]
+                statuses = [TaskStatus(s.strip()) for s in status_filter.split(",")]
                 query = query.filter(Task.task_status.in_(statuses))
 
             # Apply limit
@@ -108,9 +108,7 @@ class UploadStatusResource(Resource):
             "user_id": task.user_id,
             "task_status": task.task_status.value,
             "download_title": task.download_title or f"Task {task.task_id}",
-            "download_date": task.download_date
-            if task.download_date
-            else None,
+            "download_date": task.download_date if task.download_date else None,
             "trans_choice": task.trans_choice,
             "lang": task.lang,
             "size": str(task.size or 0),
@@ -128,7 +126,7 @@ class UploadStatusResource(Resource):
         )
 
         # Generate download URLs based on task status
-        if task.task_status in ["uploading", "pre-error"]:
+        if task.task_status in [TaskStatus.UPLOADING, TaskStatus.FAILED]:
             task_data["textgrid_url"] = None
             task_data["download_url"] = None
         else:
@@ -138,7 +136,7 @@ class UploadStatusResource(Resource):
             ] = f"/api/v1/tasks/{task.task_id}/download/textgrid"
 
             # Complete download URL (completed tasks)
-            if task.task_status == "completed":
+            if task.task_status == TaskStatus.COMPLETED:
                 task_data[
                     "download_url"
                 ] = f"/api/v1/tasks/{task.task_id}/download/complete"
@@ -245,7 +243,7 @@ class TaskDownloadResource(Resource):
 
     def _download_complete(self, task):
         """Download complete task ZIP file"""
-        if task.task_status != "completed":
+        if task.task_status != TaskStatus.COMPLETED:
             return {"status": "error", "message": "Task not completed yet"}, 400
 
         zip_path = task.download_path
@@ -436,7 +434,9 @@ class StaticDownloadResource(Resource):
     def _download_user_guide(self, filename):
         """Download user guide PDFs"""
         # Construct file path - adjust based on your static files structure
-        static_path = os.path.join(os.getenv("ADMIN"), os.path.splitext(filename)[0], filename)
+        static_path = os.path.join(
+            os.getenv("ADMIN"), os.path.splitext(filename)[0], filename
+        )
         logger.info(f"GUIDE PATH: {static_path}")
 
         if not os.path.exists(static_path):

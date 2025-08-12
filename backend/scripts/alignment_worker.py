@@ -34,6 +34,7 @@ from app.utils.logger import get_logger
 # Third-party imports
 from praatio import textgrid
 from dotenv import load_dotenv
+from praatio.utilities.constants import Interval
 
 # Load environment
 load_dotenv()
@@ -44,11 +45,9 @@ UPLOADS = os.getenv("UPLOADS")
 CURRENT_DIR = os.getenv("CURRENT_DIR")
 PHONE_REPLACEMENT = os.getenv("PHONE_REPLACEMENT")
 CONDA_ENV = os.getenv("APP_CONDA_ENV")
-LOGS = os.getenv("LOGS")
+LOGS = os.getenv("LOG_DIR")
 VALIDATOR = os.getenv("VALIDATOR")
 
-# FAVE directory (still needed as it's not an engine path but a working directory)
-FAVE_DIR = os.getenv("FAVE_DIR")
 
 # Worker configuration
 MAX_WORKERS = int(os.getenv("ALIGNMENT_WORKERS", "1"))
@@ -96,7 +95,7 @@ class TaskProcessor:
                 if language:
                     lang_info = {
                         "id": language.id,
-                        "full_name": language.name,
+                        "full_name": language.language_name,
                         "alphabet": language.alphabet or "",
                         "code": language.code,
                     }
@@ -305,7 +304,7 @@ class TaskProcessor:
             tier = tg.getTier(tier_name)
             # Create a new list of intervals with text converted to lowercase
             updated_intervals = [
-                textgrid.Interval(start=start, end=end, label=label.lower())
+                Interval(start=start, end=end, label=label.lower())
                 for start, end, label in tier.entries
             ]
             new_tier = textgrid.IntervalTier(
@@ -647,7 +646,7 @@ class TaskProcessor:
             raise FileNotFoundError(f"Model file not found for language {lang_code}")
 
         # User dictionary paths with validation and creation
-        user_dict_dir = os.path.join(UPLOADS, str(task.user_id), "dic")
+        user_dict_dir = os.path.join(UPLOADS, str(task.user_uuid), "dic")
 
         # Ensure user dict directory exists
         try:
@@ -1032,8 +1031,8 @@ class TaskProcessor:
                 logger.debug(f"MFA2 command: {cmd}")
 
             elif engine_code == "FAVE":
-                if not FAVE_DIR or not os.path.exists(FAVE_DIR):
-                    logger.error(f"FAVE_DIR not found: {FAVE_DIR}")
+                if not engine_path or not os.path.exists(engine_path):
+                    logger.error(f"FAVE_DIR not found: {engine_path}")
                     return False
 
                 align_txt = os.path.join(
@@ -1048,7 +1047,7 @@ class TaskProcessor:
                 )
                 self.tg_to_tsv(speaker, intervals, align_txt)
 
-                cmd = f"cd {FAVE_DIR} && {CONDA_ENV} {engine_path} -d {self.fave_dict_prep(temp_dict_path)} {align_wav} {align_txt} {os.path.join(lang_folder, temp_textgrid_name)}"
+                cmd = f"cd {engine_path} && {CONDA_ENV} {engine_path} -d {self.fave_dict_prep(temp_dict_path)} {align_wav} {align_txt} {os.path.join(lang_folder, temp_textgrid_name)}"
                 aligning = subprocess.Popen(
                     cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
@@ -1314,7 +1313,7 @@ class TaskProcessor:
                     for interval in tier.entries:
                         for line in substitutions:
                             if interval.label == line["dummy"]:
-                                new_interval = textgrid.Interval(
+                                new_interval = Interval(
                                     start=interval.start,
                                     end=interval.end,
                                     label=line["ipa"],
@@ -1367,7 +1366,7 @@ class TaskProcessor:
                 zipdir(align_folder, zipf)
 
             # Move to final location
-            zip_path = os.path.join(UPLOADS, str(task.user_id), "otp", task.task_id)
+            zip_path = os.path.join(UPLOADS, str(task.user_uuid), "otp", task.task_id)
             os.makedirs(zip_path, exist_ok=True)
             full_zip_path = os.path.join(zip_path, zip_filename)
 
@@ -1431,7 +1430,7 @@ class AlignmentWorker:
             with app.app_context():
                 tasks = (
                     Task.query.filter(
-                        Task.task_status == TaskStatus.UPLOADED,
+                        Task.task_status == TaskStatus.ALIGNED,
                         Task.deleted.is_(None),
                         Task.cancelled != True,
                     )
@@ -1505,7 +1504,7 @@ class AlignmentWorker:
             self.stats["peak_active_tasks"] = current_active
 
         logger.info(
-            f"Worker Stats - Uptime: {uptime}, "
+            f"Aligner Worker Stats - Uptime: {uptime}, "
             f"Processed: {self.stats['tasks_processed']}, "
             f"Success: {self.stats['tasks_succeeded']} ({success_rate:.1f}%), "
             f"Failed: {self.stats['tasks_failed']}, "
@@ -1586,12 +1585,6 @@ def validate_environment():
                 errors.append(f"Path does not exist for {var_name}: {var_value}")
             else:
                 warnings.append(f"Path may not exist for {var_name}: {var_value}")
-
-    # Optional but recommended
-    if not FAVE_DIR:
-        warnings.append("FAVE_DIR not set - FAVE alignment will not work")
-    elif not os.path.exists(FAVE_DIR):
-        warnings.append(f"FAVE_DIR path does not exist: {FAVE_DIR}")
 
     if not CONDA_ENV:
         warnings.append("APP_CONDA_ENV not set - may cause issues with some aligners")

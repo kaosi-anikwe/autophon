@@ -36,7 +36,7 @@ load_dotenv()
 
 # Configuration for real-time processing
 UPLOADS = os.getenv("UPLOADS")
-LOGS = os.getenv("LOGS")
+LOGS = os.getenv("LOG_DIR")
 
 # Upload worker configuration - optimized for real-time
 MAX_UPLOAD_WORKERS = int(os.getenv("UPLOAD_WORKERS", "3"))
@@ -182,8 +182,8 @@ class UploadTaskProcessor:
                     )
                     return {"success": True, "msg": "No valid file groups"}
 
-                # Get the working user ID (handle both authenticated and anonymous users)
-                working_user_id = str(task.user_id) if task.user_id else "anonymous"
+                # Get the working user ID for forming paths
+                working_user_id = task.user_uuid
 
                 logger.info(
                     f"Processing upload task {task.task_id} with {len(files)} file groups"
@@ -196,7 +196,7 @@ class UploadTaskProcessor:
                     user_id=working_user_id,
                     task_id=task.task_id,
                     upload_log=task.log_path,
-                    final_temp=None,
+                    final_temp=task.final_temp,
                 )
 
                 # Handle the result

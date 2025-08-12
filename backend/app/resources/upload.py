@@ -129,7 +129,9 @@ class FileUploadResource(Resource):
                 logger.info(f"Total files after extraction: {len(files)}")
 
                 # Save files to temporary folder
-                working_user_id = user_uuid if anonymous else User.query.get(user_id).uuid
+                working_user_id = (
+                    user_uuid if anonymous else User.query.get(user_id).uuid
+                )
                 temp_path = os.path.join(UPLOADS, working_user_id, "temp")
 
                 if os.path.exists(temp_path):
@@ -145,7 +147,7 @@ class FileUploadResource(Resource):
                     user_files.append(file_path)
 
                 # Process files based on transcription mode
-                processed_files, log_file, _ = transcription_mode(
+                processed_files, log_file, final_temp = transcription_mode(
                     user_files,
                     trans_choice,
                     original_dir=temp_path,
@@ -190,17 +192,11 @@ class FileUploadResource(Resource):
                                 if isAudioFile(file_path)
                                 else FileType.TEXTGRID
                             )
-                            file_key = (
-                                f"{key_prefix}_{j}"
-                                if len(file_groups) == 1
-                                else f"group_{i}_file_{j}"
-                            )
                             task_file = TaskFile(
                                 task_id=task.id,
                                 file_type=file_type,
                                 file_path=file_path,
                                 original_filename=os.path.basename(file_path),
-                                file_key=file_key,
                             )
                             task_file.insert()
 
@@ -236,8 +232,10 @@ class FileUploadResource(Resource):
                     task = Task(
                         task_id=task_id,
                         user_id=user_id if not anonymous else None,
+                        user_uuid=working_user_id,
                         anonymous=anonymous,
                         task_path=task_path,
+                        final_temp=final_temp,
                         trans_choice=trans_choice,
                         log_path=log_file,
                         download_title=download_title,
@@ -250,7 +248,7 @@ class FileUploadResource(Resource):
 
                     # Convet log path to relpath
                     task.log_path = os.path.relpath(log_file)
-                    
+
                     created_tasks.append(task)
 
                     # Store file information
@@ -269,8 +267,10 @@ class FileUploadResource(Resource):
                         task = Task(
                             task_id=task_id,
                             user_id=user_id if not anonymous else None,
+                            user_uuid=working_user_id,
                             anonymous=anonymous,
                             task_path=task_path,
+                            final_temp=final_temp,
                             trans_choice=trans_choice,
                             log_path=log_file,
                             download_title=download_title,

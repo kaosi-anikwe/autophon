@@ -27,9 +27,7 @@ class CaptchaResource(Resource):
                     break
 
             # Store captcha in database
-            captcha = Captcha(
-                text=captcha_text, timestamp=utc_now(), used=False
-            )
+            captcha = Captcha(text=captcha_text, timestamp=utc_now(), used=False)
             captcha.insert()
 
             # Encode image as base64

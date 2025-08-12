@@ -177,7 +177,7 @@ def processTextGridNew(
     with open(missing_dict_path, "w", encoding="utf-8") as f:
         if len(missing_words) > 0:
             logger.info(f"writing missing words to missing.dict: {missing_dict_path}")
-            logger.info("\n".join(missing_words))
+            # logger.info("\n".join(missing_words))
             f.writelines("\n".join(missing_words))
         else:
             logger.info("no missing words")
@@ -504,7 +504,15 @@ def uploaderOps(
     import uuid
     from praatio import textgrid
     from app.extensions import db
-    from app.models import Task, TaskFile, TaskFileName, FileType, TaskStatus
+    from app.models import (
+        Task,
+        TaskFile,
+        TaskFileName,
+        FileType,
+        TaskStatus,
+        Language,
+        Engine,
+    )
 
     verify = True
     verify_msg = "File upload successful."
@@ -658,22 +666,13 @@ def uploaderOps(
             batch_update_task("pre_error", True)
             apply_task_updates()
             return response
-            # return render_template('messages.html', users=[], inbox_messages=[], sent_messages=[], res=verify_msg, balance=user_balance)
-
-        # per_word_price = 1 / getPricePerWord(lang)
-        # cost = round(per_word_price * tot_words, 2)
-
-        # logger.info("Cost per word")
-        # costdec = "{0:.2f}".format(round(per_word_price * tot_words, 2))
-        # logger.info("costdec: ", costdec)
-        # if user_balance < per_word_price * tot_words:
-        #     balance_failed_msg = f"Your balance is too low. For {tot_words} words you need at least {costdec.replace('.',',')} SEK in balance."
-        #     response = {"success": False, "msg": balance_failed_msg}
-        #     return response
 
         # calculate lang
         logger.info(f"LANGS RESULT: {langs}")
         lang = max(langs, key=langs.get)
+        engine = lang.split("_")[1]
+        lang_record = Language.query.filter_by(code=lang).first()
+        engine_record = Engine.query.filter_by(code=engine).first()
         # batch update task with new fields
         batch_update_task("lang", f"{lang} (suggested)" if suggested else lang)
         batch_update_task("words", tot_words)
@@ -681,6 +680,8 @@ def uploaderOps(
         batch_update_task("multitier", multitier)
         batch_update_task("no_of_tiers", n_tiers)
         batch_update_task("no_of_files", len(files))
+        batch_update_task("lang_id", lang_record.id)
+        batch_update_task("engine_id", engine_record.id)
 
         for fileGroup in files:
             missing_dict_path = os.path.join(
@@ -717,12 +718,14 @@ def uploaderOps(
                 sizes.append(size)
                 size_in_kb = size / 1024
                 logger.info(f"File size in kilobytes : {size_in_kb}")
-                if size_in_kb > current_app.size_limit:
+
+                size_limit = current_app.user_limits.get("size_limit", 500000)
+                if size_in_kb > size_limit:
                     ps = [UPLOADS, str(user_id), task_id]
                     if os.path.exists(os.path.join(*ps)):
                         shutil.rmtree(os.path.join(*ps))
                     verify = False
-                    verify_msg = f"Error: File exceeds limit of {convert_size(current_app.size_limit * 1000)}."
+                    verify_msg = f"Error: File exceeds limit of {convert_size(size_limit * 1000)}."
                     # Multi Process
                     response = {"success": False, "msg": verify_msg}
                     batch_update_task("pre_error", True)
@@ -850,9 +853,14 @@ def uploaderOps(
         batch_update_task("missingprondict", final_path)
 
         # Queue held file paths as TaskFile records
-        for held_path in held_paths:
+        for idx, held_path in enumerate(held_paths):
             task_files_to_insert.append(
-                TaskFile(task_id=task.id, file_type=FileType.HELD, file_path=held_path)
+                TaskFile(
+                    task_id=task.id,
+                    file_type=FileType.HELD,
+                    file_key=f"held_{idx}",
+                    file_path=held_path,
+                )
             )
 
         # Queue file names as TaskFileName records
@@ -872,8 +880,9 @@ def uploaderOps(
         task_files_to_insert.append(
             TaskFile(
                 task_id=task.id,
-                file_type=FileType.OUTPUT,
+                file_type=FileType.LOG,
                 file_path=log_path,
+                file_key="log_file",
                 original_filename=os.path.basename(upload_log),
             )
         )
@@ -899,12 +908,15 @@ def uploaderOps(
         batch_update_task("size", size_in_mb)
         logger.info(f"Total size in megabytes: {size_in_mb}")
 
-        if size_in_kb > current_app.size_limit:
+        size_limit = current_app.user_limits.get("size_limit", 500000)
+        if size_in_kb > size_limit:
             ps = [UPLOADS, str(user_id), task_id]
             if os.path.exists(os.path.join(*ps)):
                 shutil.rmtree(os.path.join(*ps))
             verify = False
-            verify_msg = f"Error: File exceeds limit of {convert_size(current_app.size_limit*1000)}."
+            verify_msg = (
+                f"Error: File exceeds limit of {convert_size(size_limit*1000)}."
+            )
             response = {"success": False, "msg": verify_msg}
             batch_update_task("pre_error", True)
             apply_task_updates()  # Apply error status immediately
@@ -929,6 +941,14 @@ def uploaderOps(
                 logger.info(
                     f"Bulk inserting {len(task_filenames_to_insert)} task filenames"
                 )
+
+            # Remove /tmp file records
+            logger.info(f"Removing /tmp records")
+            for tmp_file in TaskFile.query.filter_by(
+                task_id=task.id, file_key=None
+            ).all():
+                logger.info(f"Removing record: {tmp_file.file_path}")
+                tmp_file.delete()
 
             # Commit all inserts
             db.session.commit()
