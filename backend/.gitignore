@@ -132,3 +132,6 @@ Desktop.ini
 
 # Local MySQL config
 mysql.cnf
+
+# Service files
+scripts/systemd
