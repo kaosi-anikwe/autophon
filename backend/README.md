@@ -24,11 +24,12 @@ A modern RESTful API backend for the Autophon forced aligner web application, bu
 
 ## Overview
 
-The Autophon Backend API provides a comprehensive set of endpoints for managing forced alignment tasks, user authentication, file uploads, dictionary management, and administrative operations. The API follows RESTful principles and uses JWT for authentication.
+The Autophon Backend API provides a comprehensive set of endpoints for managing forced alignment tasks, user authentication, file uploads, dictionary management, and administrative operations. The API follows RESTful principles and uses JWT authentication with HTTP-only cookies for enhanced security.
 
 ### Key Features
 
-- **JWT Authentication** with refresh tokens and token blacklisting
+- **JWT Authentication** with HTTP-only cookies, refresh tokens and token blacklisting
+- **Enhanced Security** - XSS protection through HTTP-only cookie authentication
 - **File Upload & Processing** for audio alignment tasks
 - **User Dictionary Management** with multi-language support
 - **Task Management** with status tracking and cancellation
@@ -127,22 +128,27 @@ The API will be available at `http://localhost:5000`
 
 ## Authentication
 
-The API uses JWT (JSON Web Tokens) for authentication with the following features:
+The API uses JWT (JSON Web Tokens) with HTTP-only cookies for secure authentication:
 
-- **Access Tokens**: Short-lived (1 hour default) for API access
+- **HTTP-Only Cookies**: Tokens stored in secure, HTTP-only cookies (XSS protection)
+- **Access Tokens**: Short-lived (24 hours default) for API access
 - **Refresh Tokens**: Long-lived (30 days default) for token renewal
 - **Token Blacklisting**: Revoked tokens are tracked and blocked
 - **Global Token Revocation**: Users can logout from all devices
+- **CORS Support**: Configured for cross-origin requests with credentials
 
 ### Authentication Flow
 
-1. **Register/Login** to get access and refresh tokens
-2. **Include access token** in all authenticated requests:
-   ```
-   Authorization: Bearer <access_token>
-   ```
-3. **Refresh tokens** when access token expires
-4. **Logout** to blacklist current tokens
+1. **Register/Login** - Server sets HTTP-only cookies containing JWT tokens
+2. **Automatic Authentication** - Browser automatically includes cookies in requests
+3. **Token Refresh** - Automatic refresh using HTTP-only refresh token cookie
+4. **Logout** - Server clears HTTP-only cookies
+
+### Security Benefits
+
+- **XSS Protection**: HTTP-only cookies cannot be accessed by JavaScript
+- **Automatic Management**: Browser handles cookie storage and transmission
+- **CSRF Protection**: SameSite cookie attributes prevent CSRF attacks
 
 ### Anonymous Users
 
@@ -150,6 +156,29 @@ The API supports anonymous users with session-based tracking:
 - Daily task limits enforced via session cookies
 - No account registration required
 - Limited functionality compared to registered users
+
+### Testing with HTTP-Only Cookies
+
+When testing the API with tools like Postman or curl, note that HTTP-only cookies require special handling:
+
+#### Postman Configuration
+1. **Enable Cookie Jar**: Go to Settings → General → Enable "Automatically follow redirects" and "Send cookies with requests"
+2. **Cookie Management**: Use the Cookies tab under the send button to view and manage cookies
+3. **Request Sequence**: Login first, then subsequent requests will automatically include cookies
+
+#### cURL Examples
+```bash
+# Login (save cookies to file)
+curl -c cookies.txt -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password"}'
+
+# Use cookies for authenticated request
+curl -b cookies.txt -X GET http://localhost:5000/api/v1/auth/verify
+
+# Logout (clears cookies)
+curl -b cookies.txt -c cookies.txt -X POST http://localhost:5000/api/v1/auth/logout
+```
 
 ## API Endpoints
 
@@ -187,11 +216,13 @@ POST /api/v1/auth/register
     "last_name": "Doe",
     "verified": false,
     "admin": false
-  },
-  "access_token": "eyJ...",
-  "refresh_token": "eyJ..."
+  }
 }
 ```
+
+**HTTP-Only Cookies Set:**
+- `access_token` - JWT access token (HttpOnly, SameSite=Lax)
+- `refresh_token` - JWT refresh token (HttpOnly, SameSite=Lax)
 
 #### Login User
 ```http
@@ -216,30 +247,37 @@ POST /api/v1/auth/login
     "email": "user@example.com",
     "first_name": "John",
     "last_name": "Doe"
-  },
-  "access_token": "eyJ...",
-  "refresh_token": "eyJ..."
+  }
 }
 ```
+
+**HTTP-Only Cookies Set:**
+- `access_token` - JWT access token (HttpOnly, SameSite=Lax)
+- `refresh_token` - JWT refresh token (HttpOnly, SameSite=Lax)
 
 #### Refresh Token
 ```http
 POST /api/v1/auth/refresh
-Authorization: Bearer <refresh_token>
 ```
+
+**Note:** Uses existing HTTP-only refresh token cookie automatically.
 
 **Response (200):**
 ```json
 {
-  "access_token": "eyJ..."
+  "message": "Token refreshed successfully"
 }
 ```
+
+**HTTP-Only Cookie Updated:**
+- `access_token` - New JWT access token (HttpOnly, SameSite=Lax)
 
 #### Logout
 ```http
 POST /api/v1/auth/logout
-Authorization: Bearer <access_token>
 ```
+
+**Note:** Uses existing HTTP-only access token cookie automatically.
 
 **Response (200):**
 ```json
@@ -248,11 +286,15 @@ Authorization: Bearer <access_token>
 }
 ```
 
+**HTTP-Only Cookies Cleared:**
+- All JWT cookies are cleared by the server
+
 #### Change Password
 ```http
 PUT /api/v1/auth/change-password
-Authorization: Bearer <access_token>
 ```
+
+**Note:** Uses existing HTTP-only access token cookie automatically.
 
 **Request Body:**
 ```json
@@ -265,8 +307,9 @@ Authorization: Bearer <access_token>
 #### Verify Token
 ```http
 GET /api/v1/auth/verify
-Authorization: Bearer <access_token>
 ```
+
+**Note:** Uses existing HTTP-only access token cookie automatically.
 
 **Response (200):**
 ```json
@@ -284,8 +327,9 @@ Authorization: Bearer <access_token>
 #### Logout All Devices
 ```http
 POST /api/v1/auth/logout-all
-Authorization: Bearer <access_token>
 ```
+
+**Note:** Uses existing HTTP-only access token cookie automatically.
 
 ### User Management
 

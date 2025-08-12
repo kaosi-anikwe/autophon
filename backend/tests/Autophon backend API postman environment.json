@@ -38,34 +38,6 @@
 			"enabled": true
 		},
 		{
-			"key": "access_token",
-			"value": "",
-			"description": "JWT access token for regular user authentication",
-			"type": "secret",
-			"enabled": true
-		},
-		{
-			"key": "refresh_token",
-			"value": "",
-			"description": "JWT refresh token for token renewal",
-			"type": "secret",
-			"enabled": true
-		},
-		{
-			"key": "admin_access_token",
-			"value": "",
-			"description": "JWT access token for admin user authentication",
-			"type": "secret",
-			"enabled": true
-		},
-		{
-			"key": "admin_refresh_token",
-			"value": "",
-			"description": "JWT refresh token for admin user",
-			"type": "secret",
-			"enabled": true
-		},
-		{
 			"key": "user_id",
 			"value": "",
 			"description": "Current user ID (automatically set after login)",

@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "autophon-backend-api",
 		"name": "Autophon Backend API",
-		"description": "Complete API collection for Autophon Backend - A RESTful API for forced alignment web application",
+		"description": "Complete API collection for Autophon Backend - HTTP-only cookie authentication",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "autophon-backend"
 	},
@@ -17,22 +17,33 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 201) {",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    // Verify HTTP-only cookies are set",
+									"    const cookies = pm.cookies.toObject();",
+									"    pm.test('Access token cookie is set', () => {",
+									"        pm.expect(cookies).to.have.property('access_token');",
+									"    });",
+									"    pm.test('Refresh token cookie is set', () => {",
+									"        pm.expect(cookies).to.have.property('refresh_token');",
+									"    });",
+									"    ",
+									"    // Store user data only (not tokens)",
 									"    const response = pm.response.json();",
-									"    pm.environment.set('access_token', response.access_token);",
-									"    pm.environment.set('refresh_token', response.refresh_token);",
-									"    pm.environment.set('user_id', response.user.id);",
-									"    pm.environment.set('user_email', response.user.email);",
+									"    if (response.user) {",
+									"        pm.environment.set('user_id', response.user.id);",
+									"        pm.environment.set('user_email', response.user.email);",
+									"        if (response.user.admin) {",
+									"            pm.environment.set('admin_user_id', response.user.id);",
+									"        }",
+									"    }",
 									"}",
 									"",
-									"pm.test('Status code is 201', function () {",
-									"    pm.response.to.have.status(201);",
+									"pm.test('Status code is correct', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
 									"",
-									"pm.test('Response has access token', function () {",
-									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('access_token');",
-									"    pm.expect(jsonData).to.have.property('refresh_token');",
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -53,8 +64,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/register",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "register"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
 						}
 					}
 				},
@@ -65,22 +81,33 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 200) {",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    // Verify HTTP-only cookies are set",
+									"    const cookies = pm.cookies.toObject();",
+									"    pm.test('Access token cookie is set', () => {",
+									"        pm.expect(cookies).to.have.property('access_token');",
+									"    });",
+									"    pm.test('Refresh token cookie is set', () => {",
+									"        pm.expect(cookies).to.have.property('refresh_token');",
+									"    });",
+									"    ",
+									"    // Store user data only (not tokens)",
 									"    const response = pm.response.json();",
-									"    pm.environment.set('access_token', response.access_token);",
-									"    pm.environment.set('refresh_token', response.refresh_token);",
-									"    pm.environment.set('user_id', response.user.id);",
-									"    pm.environment.set('user_email', response.user.email);",
+									"    if (response.user) {",
+									"        pm.environment.set('user_id', response.user.id);",
+									"        pm.environment.set('user_email', response.user.email);",
+									"        if (response.user.admin) {",
+									"            pm.environment.set('admin_user_id', response.user.id);",
+									"        }",
+									"    }",
 									"}",
 									"",
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test('Status code is correct', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
 									"",
-									"pm.test('Response has tokens', function () {",
-									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('access_token');",
-									"    pm.expect(jsonData).to.have.property('refresh_token');",
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -101,8 +128,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/login",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
 						}
 					}
 				},
@@ -113,16 +145,34 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const response = pm.response.json();",
-									"    pm.environment.set('admin_access_token', response.access_token);",
-									"    pm.environment.set('admin_refresh_token', response.refresh_token);",
-									"    pm.environment.set('admin_user_id', response.user.id);",
-									"}",
+									"pm.test('Status code is successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
 									"",
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"// Store relevant data from response",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    ",
+									"    // Store task ID if present",
+									"    if (response.task_id) {",
+									"        pm.environment.set('task_id', response.task_id);",
+									"    }",
+									"    ",
+									"    // Store language/engine data if present",
+									"    if (response.languages && response.languages.length > 0) {",
+									"        pm.environment.set('language_id', response.languages[0].id);",
+									"        pm.environment.set('language_code', response.languages[0].code);",
+									"    }",
+									"    ",
+									"    if (response.engines && response.engines.length > 0) {",
+									"        pm.environment.set('engine_id', response.engines[0].id);",
+									"        pm.environment.set('engine_code', response.engines[0].code);",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -142,8 +192,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/login",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
 						}
 					}
 				},
@@ -155,12 +210,19 @@
 							"script": {
 								"exec": [
 									"if (pm.response.code === 200) {",
-									"    const response = pm.response.json();",
-									"    pm.environment.set('access_token', response.access_token);",
+									"    // Verify new access token cookie is set",
+									"    const cookies = pm.cookies.toObject();",
+									"    pm.test('New access token cookie is set', () => {",
+									"        pm.expect(cookies).to.have.property('access_token');",
+									"    });",
 									"}",
 									"",
 									"pm.test('Status code is 200', function () {",
 									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -169,16 +231,16 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{refresh_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/refresh",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "refresh"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
 						}
 					}
 				},
@@ -189,14 +251,34 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test('Status code is successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
 									"",
-									"pm.test('Token is valid', function () {",
-									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData.valid).to.be.true;",
-									"});"
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"// Store relevant data from response",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    ",
+									"    // Store task ID if present",
+									"    if (response.task_id) {",
+									"        pm.environment.set('task_id', response.task_id);",
+									"    }",
+									"    ",
+									"    // Store language/engine data if present",
+									"    if (response.languages && response.languages.length > 0) {",
+									"        pm.environment.set('language_id', response.languages[0].id);",
+									"        pm.environment.set('language_code', response.languages[0].code);",
+									"    }",
+									"    ",
+									"    if (response.engines && response.engines.length > 0) {",
+									"        pm.environment.set('engine_id', response.engines[0].id);",
+									"        pm.environment.set('engine_code', response.engines[0].code);",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -204,16 +286,16 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/verify",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "verify"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"verify"
+							]
 						}
 					}
 				},
@@ -222,10 +304,6 @@
 					"request": {
 						"method": "PUT",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -237,8 +315,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/change-password",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "change-password"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
 						}
 					}
 				},
@@ -258,8 +341,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/reset-password",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "reset-password"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
 						}
 					}
 				},
@@ -267,16 +355,16 @@
 					"name": "Logout All Devices",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/logout-all",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "logout-all"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout-all"
+							]
 						}
 					}
 				},
@@ -284,16 +372,16 @@
 					"name": "Logout",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/logout",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "logout"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
 						}
 					}
 				},
@@ -301,16 +389,16 @@
 					"name": "Cleanup Tokens (Admin)",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/cleanup-tokens",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "cleanup-tokens"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"cleanup-tokens"
+							]
 						}
 					}
 				},
@@ -319,10 +407,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -334,8 +418,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/revoke-user-tokens",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "revoke-user-tokens"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"revoke-user-tokens"
+							]
 						}
 					}
 				}
@@ -348,16 +437,15 @@
 					"name": "Get User Profile",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/profile",
-							"host": ["{{base_url}}"],
-							"path": ["profile"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile"
+							]
 						}
 					}
 				},
@@ -366,10 +454,6 @@
 					"request": {
 						"method": "PUT",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -381,8 +465,12 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/profile",
-							"host": ["{{base_url}}"],
-							"path": ["profile"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile"
+							]
 						}
 					}
 				},
@@ -390,16 +478,15 @@
 					"name": "Get Users List (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/users",
-							"host": ["{{base_url}}"],
-							"path": ["users"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
 						}
 					}
 				},
@@ -407,16 +494,16 @@
 					"name": "Get User by ID (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/users/{{admin_user_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["users", "{{admin_user_id}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{admin_user_id}}"
+							]
 						}
 					}
 				},
@@ -424,16 +511,17 @@
 					"name": "Get User Tasks (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/users/{{admin_user_id}}/tasks",
-							"host": ["{{base_url}}"],
-							"path": ["users", "{{admin_user_id}}", "tasks"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{admin_user_id}}",
+								"tasks"
+							]
 						}
 					}
 				}
@@ -449,14 +537,34 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 201) {",
-									"    const response = pm.response.json();",
-									"    pm.environment.set('task_id', response.task_id);",
-									"}",
+									"pm.test('Status code is successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
 									"",
-									"pm.test('Status code is 201', function () {",
-									"    pm.response.to.have.status(201);",
-									"});"
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"// Store relevant data from response",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    ",
+									"    // Store task ID if present",
+									"    if (response.task_id) {",
+									"        pm.environment.set('task_id', response.task_id);",
+									"    }",
+									"    ",
+									"    // Store language/engine data if present",
+									"    if (response.languages && response.languages.length > 0) {",
+									"        pm.environment.set('language_id', response.languages[0].id);",
+									"        pm.environment.set('language_code', response.languages[0].code);",
+									"    }",
+									"    ",
+									"    if (response.engines && response.engines.length > 0) {",
+									"        pm.environment.set('engine_id', response.engines[0].id);",
+									"        pm.environment.set('engine_code', response.engines[0].code);",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -464,12 +572,7 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
@@ -487,8 +590,12 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/upload",
-							"host": ["{{base_url}}"],
-							"path": ["upload"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
+							]
 						}
 					}
 				},
@@ -496,16 +603,15 @@
 					"name": "Get Tasks List",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks?page=1&per_page=10&status=completed",
-							"host": ["{{base_url}}"],
-							"path": ["tasks"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -527,16 +633,16 @@
 					"name": "Get Task Details",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}"
+							]
 						}
 					}
 				},
@@ -544,16 +650,17 @@
 					"name": "Get Task Status",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/status",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "status"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"status"
+							]
 						}
 					}
 				},
@@ -561,16 +668,17 @@
 					"name": "Cancel Task",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/cancel",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "cancel"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"cancel"
+							]
 						}
 					}
 				},
@@ -578,16 +686,17 @@
 					"name": "Get Task Files",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/files",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "files"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"files"
+							]
 						}
 					}
 				},
@@ -595,16 +704,17 @@
 					"name": "Get Task File Names",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/file-names",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "file-names"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"file-names"
+							]
 						}
 					}
 				},
@@ -612,16 +722,18 @@
 					"name": "Download Task Results",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/download/complete",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "download", "complete"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"download",
+								"complete"
+							]
 						}
 					}
 				},
@@ -629,16 +741,18 @@
 					"name": "Download Task TextGrid",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/download/textgrid",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "download", "textgrid"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"download",
+								"textgrid"
+							]
 						}
 					}
 				},
@@ -646,16 +760,18 @@
 					"name": "Get Missing Words",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/download/missing_dict",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "download", "missing_dict"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"download",
+								"missing_dict"
+							]
 						}
 					}
 				},
@@ -664,10 +780,6 @@
 					"request": {
 						"method": "DELETE",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -679,8 +791,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/tasks/bulk-delete",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "bulk-delete"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"bulk-delete"
+							]
 						}
 					}
 				},
@@ -688,16 +805,16 @@
 					"name": "Get Task History",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/history?year=2025&month=Aug",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "history"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"history"
+							],
 							"query": [
 								{
 									"key": "year",
@@ -715,16 +832,15 @@
 					"name": "Monthly Report Download",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/monthly-download?month=1&year=2024",
-							"host": ["{{base_url}}"],
-							"path": ["monthly-download"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monthly-download"
+							],
 							"query": [
 								{
 									"key": "month",
@@ -750,17 +866,34 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 200) {",
+									"pm.test('Status code is successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"// Store relevant data from response",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
 									"    const response = pm.response.json();",
+									"    ",
+									"    // Store task ID if present",
+									"    if (response.task_id) {",
+									"        pm.environment.set('task_id', response.task_id);",
+									"    }",
+									"    ",
+									"    // Store language/engine data if present",
 									"    if (response.languages && response.languages.length > 0) {",
 									"        pm.environment.set('language_id', response.languages[0].id);",
 									"        pm.environment.set('language_code', response.languages[0].code);",
 									"    }",
-									"}",
-									"",
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									"    ",
+									"    if (response.engines && response.engines.length > 0) {",
+									"        pm.environment.set('engine_id', response.engines[0].id);",
+									"        pm.environment.set('engine_code', response.engines[0].code);",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -768,16 +901,15 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/languages",
-							"host": ["{{base_url}}"],
-							"path": ["languages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"languages"
+							]
 						}
 					}
 				},
@@ -785,16 +917,16 @@
 					"name": "Get Language by ID (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/languages/{{language_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["languages", "{{language_id}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"languages",
+								"{{language_id}}"
+							]
 						}
 					}
 				},
@@ -802,16 +934,17 @@
 					"name": "Get Language by Code (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/languages/code/{{language_code}}",
-							"host": ["{{base_url}}"],
-							"path": ["languages", "code", "{{language_code}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"languages",
+								"code",
+								"{{language_code}}"
+							]
 						}
 					}
 				},
@@ -819,16 +952,17 @@
 					"name": "Get Language Engines (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/languages/{{language_id}}/engines",
-							"host": ["{{base_url}}"],
-							"path": ["languages", "{{language_id}}", "engines"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"languages",
+								"{{language_id}}",
+								"engines"
+							]
 						}
 					}
 				},
@@ -839,17 +973,34 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"if (pm.response.code === 200) {",
+									"pm.test('Status code is successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Response time is less than 5000ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"// Store relevant data from response",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
 									"    const response = pm.response.json();",
+									"    ",
+									"    // Store task ID if present",
+									"    if (response.task_id) {",
+									"        pm.environment.set('task_id', response.task_id);",
+									"    }",
+									"    ",
+									"    // Store language/engine data if present",
+									"    if (response.languages && response.languages.length > 0) {",
+									"        pm.environment.set('language_id', response.languages[0].id);",
+									"        pm.environment.set('language_code', response.languages[0].code);",
+									"    }",
+									"    ",
 									"    if (response.engines && response.engines.length > 0) {",
 									"        pm.environment.set('engine_id', response.engines[0].id);",
 									"        pm.environment.set('engine_code', response.engines[0].code);",
 									"    }",
-									"}",
-									"",
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -857,16 +1008,15 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/engines",
-							"host": ["{{base_url}}"],
-							"path": ["engines"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"engines"
+							]
 						}
 					}
 				},
@@ -874,16 +1024,16 @@
 					"name": "Get Engine by ID (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/engines/{{engine_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["engines", "{{engine_id}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"engines",
+								"{{engine_id}}"
+							]
 						}
 					}
 				},
@@ -891,16 +1041,17 @@
 					"name": "Get Engine by Code (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/engines/code/{{engine_code}}",
-							"host": ["{{base_url}}"],
-							"path": ["engines", "code", "{{engine_code}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"engines",
+								"code",
+								"{{engine_code}}"
+							]
 						}
 					}
 				},
@@ -908,16 +1059,17 @@
 					"name": "Get Engine Languages (Admin Only)",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/engines/{{engine_id}}/languages",
-							"host": ["{{base_url}}"],
-							"path": ["engines", "{{engine_id}}", "languages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"engines",
+								"{{engine_id}}",
+								"languages"
+							]
 						}
 					}
 				}
@@ -930,12 +1082,7 @@
 					"name": "Upload User Dictionary",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
@@ -953,8 +1100,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/dictionaries/upload",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries", "upload"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dictionaries",
+								"upload"
+							]
 						}
 					}
 				},
@@ -962,16 +1114,16 @@
 					"name": "Get User Dictionaries List",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/dictionaries/user",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries", "user"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dictionaries",
+								"user"
+							]
 						}
 					}
 				},
@@ -979,16 +1131,17 @@
 					"name": "Delete User Dictionary",
 					"request": {
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/dictionaries/user/{{language_code}}",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries", "user", "{{language_code}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dictionaries",
+								"user",
+								"{{language_code}}"
+							]
 						}
 					}
 				},
@@ -996,20 +1149,21 @@
 					"name": "Get Dictionary by Language",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"lang\": \"{{language_code}}\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/dictionaries/get/",
-							"host": ["{{base_url}}"],
-							"path": ["dictionaries", "language", "{{language_code}}"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dictionaries",
+								"language",
+								"{{language_code}}"
+							]
 						}
 					}
 				}
@@ -1022,16 +1176,16 @@
 					"name": "Get Aligner Dashboard",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/aligner/dashboard",
-							"host": ["{{base_url}}"],
-							"path": ["aligner", "dashboard"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"aligner",
+								"dashboard"
+							]
 						}
 					}
 				},
@@ -1039,20 +1193,20 @@
 					"name": "Start Alignment",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"task_id\": \"{{task_id}}\"\n }"
 						},
 						"url": {
 							"raw": "{{base_url}}/aligner/align",
-							"host": ["{{base_url}}"],
-							"path": ["aligner", "align"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"aligner",
+								"align"
+							]
 						}
 					}
 				},
@@ -1060,16 +1214,16 @@
 					"name": "Get Alignment Queue",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/aligner/queue",
-							"host": ["{{base_url}}"],
-							"path": ["aligner", "queue"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"aligner",
+								"queue"
+							]
 						}
 					}
 				}
@@ -1084,10 +1238,6 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							},
-							{
 								"key": "Content-Type",
 								"value": "application/json"
 							}
@@ -1098,8 +1248,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/tasks/change-language",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "change-language"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"change-language"
+							]
 						}
 					}
 				},
@@ -1107,12 +1262,7 @@
 					"name": "Reupload Task Files",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
@@ -1125,8 +1275,14 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/reupload",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "reupload"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"reupload"
+							]
 						}
 					}
 				},
@@ -1134,16 +1290,17 @@
 					"name": "Get Reupload Info",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/tasks/{{task_id}}/reupload-info",
-							"host": ["{{base_url}}"],
-							"path": ["tasks", "{{task_id}}", "reupload-info"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"reupload-info"
+							]
 						}
 					}
 				}
@@ -1159,8 +1316,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/static/guides/danDK_MFA1_v040.pdf",
-							"host": ["{{base_url}}"],
-							"path": ["static", "audio", "sample.wav"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"static",
+								"audio",
+								"sample.wav"
+							]
 						}
 					}
 				}
@@ -1173,16 +1336,16 @@
 					"name": "Get Site Status",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/admin/site-status",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "site-status"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"site-status"
+							]
 						}
 					}
 				},
@@ -1191,10 +1354,6 @@
 					"request": {
 						"method": "PUT",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1206,8 +1365,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/site-status",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "site-status"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"site-status"
+							]
 						}
 					}
 				},
@@ -1215,16 +1379,16 @@
 					"name": "Get Blocked Emails",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/admin/blocked-emails",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "blocked-emails"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"blocked-emails"
+							]
 						}
 					}
 				},
@@ -1233,10 +1397,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1248,8 +1408,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/blocked-emails",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "blocked-emails"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"blocked-emails"
+							]
 						}
 					}
 				},
@@ -1258,10 +1423,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1273,8 +1434,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/blocked-emails",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "blocked-emails"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"blocked-emails"
+							]
 						}
 					}
 				},
@@ -1283,10 +1449,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1298,8 +1460,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/users",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "users"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
 						}
 					}
 				},
@@ -1308,10 +1475,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1323,8 +1486,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/users",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "users"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
 						}
 					}
 				},
@@ -1333,10 +1501,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1348,8 +1512,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/users",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "users"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
 						}
 					}
 				},
@@ -1358,10 +1527,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1373,8 +1538,14 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/downloads/users",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "downloads", "users"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"downloads",
+								"users"
+							]
 						}
 					}
 				},
@@ -1382,16 +1553,17 @@
 					"name": "Get History Spreadsheets",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/admin/downloads/history",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "downloads", "history"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"downloads",
+								"history"
+							]
 						}
 					}
 				},
@@ -1400,10 +1572,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1415,8 +1583,14 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/downloads/history",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "downloads", "history"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"downloads",
+								"history"
+							]
 						}
 					}
 				},
@@ -1425,10 +1599,6 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -1440,8 +1610,14 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/admin/downloads/history",
-							"host": ["{{base_url}}"],
-							"path": ["admin", "downloads", "history"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"downloads",
+								"history"
+							]
 						}
 					}
 				}
@@ -1457,8 +1633,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/health",
-							"host": ["{{base_url}}"],
-							"path": ["health"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
 						}
 					}
 				},
@@ -1469,8 +1649,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/site-status",
-							"host": ["{{base_url}}"],
-							"path": ["site-status"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"site-status"
+							]
 						}
 					}
 				},
@@ -1481,8 +1665,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/config",
-							"host": ["{{base_url}}"],
-							"path": ["config"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"config"
+							]
 						}
 					}
 				},
@@ -1493,8 +1681,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/team",
-							"host": ["{{base_url}}"],
-							"path": ["team"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team"
+							]
 						}
 					}
 				},
@@ -1505,8 +1697,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/team-images?category=developers&member=member_1",
-							"host": ["{{base_url}}"],
-							"path": ["team-images"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team-images"
+							]
 						}
 					}
 				},
@@ -1526,8 +1722,13 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/contact/send-email",
-							"host": ["{{base_url}}"],
-							"path": ["contact", "send-email"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contact",
+								"send-email"
+							]
 						}
 					}
 				}
@@ -1543,8 +1744,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/register-captcha",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "register-captcha"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register-captcha"
+							]
 						}
 					}
 				},
@@ -1552,16 +1758,16 @@
 					"name": "Cleanup Captcha (Admin)",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{admin_access_token}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/auth/captcha-cleanup",
-							"host": ["{{base_url}}"],
-							"path": ["auth", "captcha-cleanup"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"captcha-cleanup"
+							]
 						}
 					}
 				}

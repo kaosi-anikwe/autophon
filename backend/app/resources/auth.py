@@ -8,6 +8,9 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt,
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies,
 )
 
 
@@ -51,17 +54,22 @@ class Register(Resource):
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
 
-            # Return user data and tokens
+            # Return user data (tokens will be set as HTTP-only cookies)
             user_schema = UserSchema(exclude=["password_hash"])
-            response = {
+            from flask import jsonify
+            response = jsonify({
                 "message": "User registered successfully",
                 "user": user_schema.dump(user),
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-            }
+            })
+            
+            # Set HTTP-only cookies
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            
             logger.info(f"User registered successfully: {user.email} (ID: {user.id})")
-            log_response_info(logger, response, 201)
-            return response, 201
+            log_response_info(logger, {"message": "User registered successfully", "user": user_schema.dump(user)}, 201)
+            response.status_code = 201
+            return response
 
         except ValidationError as e:
             logger.warning(f"Registration validation error: {e.messages}")
@@ -116,17 +124,21 @@ class Login(Resource):
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
 
-            # Return user data and tokens
+            # Return user data (tokens will be set as HTTP-only cookies)
             user_schema = UserSchema(exclude=["password_hash"])
-            response = {
+            from flask import jsonify
+            response = jsonify({
                 "message": "Login successful",
                 "user": user_schema.dump(user),
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-            }
+            })
+            
+            # Set HTTP-only cookies
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            
             logger.info(f"User logged in successfully: {user.email} (ID: {user.id})")
-            log_response_info(logger, response, 200)
-            return response, 200
+            log_response_info(logger, {"message": "Login successful", "user": user_schema.dump(user)}, 200)
+            return response
 
         except ValidationError as e:
             logger.warning(f"Login validation error: {e.messages}")
@@ -165,8 +177,13 @@ class Logout(Resource):
                 reason="logout",
             )
 
+            # Clear HTTP-only cookies
+            from flask import jsonify
+            response = jsonify({"message": "Successfully logged out"})
+            unset_jwt_cookies(response)
+            
             logger.info(f"User logged out successfully: {current_user_id}")
-            return {"message": "Successfully logged out"}, 200
+            return response
 
         except Exception as e:
             log_exception(logger, "Logout failed")
@@ -192,7 +209,12 @@ class RefreshToken(Resource):
             # Create new access token
             access_token = create_access_token(identity=str(current_user_id))
 
-            return {"access_token": access_token}, 200
+            # Set new access token as HTTP-only cookie
+            from flask import jsonify
+            response = jsonify({"message": "Token refreshed successfully"})
+            set_access_cookies(response, access_token)
+            
+            return response
 
         except Exception as e:
             return {"message": f"Token refresh failed: {str(e)}"}, 500

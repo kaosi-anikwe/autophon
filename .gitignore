@@ -48,3 +48,5 @@ uploads/*
 .vscode
 .env
 
+templates
+.claude

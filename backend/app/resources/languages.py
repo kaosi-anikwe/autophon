@@ -287,3 +287,52 @@ class LanguageEnginesResource(Resource):
 
         except Exception as e:
             return {"message": f"Error adding engine to language: {str(e)}"}, 500
+
+
+class PublicLanguageListResource(Resource):
+    """Public endpoint for homepage languages (no authentication required)"""
+
+    def get(self):
+        """Get list of homepage languages for public display"""
+        try:
+            # Get query parameters
+            language_type = request.args.get("type")
+            homepage_only = request.args.get("homepage", "true").lower() == "true"
+
+            if homepage_only:
+                # Get homepage languages using the model method
+                languages = Language.get_homepage_languages()
+            else:
+                # Get all active languages, optionally filtered by type
+                query = Language.query.filter_by(is_active=True)
+                
+                if language_type:
+                    try:
+                        lang_type_enum = LanguageType(language_type)
+                        query = query.filter_by(type=lang_type_enum)
+                    except ValueError:
+                        return {"message": f"Invalid language type: {language_type}"}, 400
+                
+                languages = query.order_by(Language.priority).all()
+
+            # Use homepage schema for consistent public display
+            schema = LanguageHomepageSchema(many=True)
+            
+            # Group languages by type for better frontend organization
+            grouped_languages = {"nordic": [], "other": []}
+            for lang in languages:
+                lang_data = schema.dump(lang)
+                if lang.type.value in grouped_languages:
+                    grouped_languages[lang.type.value].append(lang_data)
+                else:
+                    grouped_languages["other"].append(lang_data)
+
+            return {
+                "languages": schema.dump(languages),
+                "grouped_languages": grouped_languages,
+                "count": len(languages)
+            }, 200
+
+        except Exception as e:
+            log_exception(logger, "Error retrieving public languages")
+            return {"message": f"Error retrieving languages: {str(e)}"}, 500

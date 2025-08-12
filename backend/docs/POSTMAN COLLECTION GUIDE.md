@@ -1,6 +1,6 @@
 # Autophon Backend API - Postman Collection Guide
 
-This guide explains how to use the comprehensive Postman collection for testing all Autophon Backend API endpoints.
+This guide explains how to use the comprehensive Postman collection for testing all Autophon Backend API endpoints with HTTP-only cookie authentication.
 
 ## 📁 Files Included
 
@@ -20,17 +20,25 @@ This guide explains how to use the comprehensive Postman collection for testing 
    - `Autophon_Backend_API.postman_environment.json`
 5. Click **Import**
 
-### 2. Set Environment
+### 2. Configure Postman for HTTP-Only Cookies
 
-1. In the top-right corner, click the environment dropdown
-2. Select **Autophon Backend Environment**
-3. Verify the base URL is set correctly (default: `http://localhost:5000/api/v1`)
+1. **Enable Cookie Jar**: 
+   - Go to **Settings** → **General**
+   - Enable "Automatically follow redirects"
+   - Enable "Send cookies with requests"
+   - Enable "Capture cookies"
+
+2. **Set Environment**: 
+   - In the top-right corner, click the environment dropdown
+   - Select **Autophon Backend Environment**
+   - Verify the base URL is set correctly (default: `http://localhost:5000/api/v1`)
 
 ### 3. Start Testing
 
 1. Ensure your Autophon backend server is running
 2. Start with **🔐 Authentication → Register User** or **Login User**
-3. Tokens will be automatically set for subsequent requests
+3. HTTP-only cookies will be automatically set and managed by Postman
+4. View cookies by clicking the **Cookies** link under the Send button
 
 ## 📊 Collection Structure
 
@@ -133,10 +141,6 @@ This guide explains how to use the comprehensive Postman collection for testing 
 ## 🔑 Environment Variables
 
 ### Automatic Variables (Set by Scripts)
-- `access_token` - JWT access token
-- `refresh_token` - JWT refresh token
-- `admin_access_token` - Admin JWT token
-- `admin_refresh_token` - Admin refresh token
 - `user_id` - Current user ID
 - `admin_user_id` - Admin user ID
 - `user_email` - Current user email
@@ -145,6 +149,11 @@ This guide explains how to use the comprehensive Postman collection for testing 
 - `language_code` - Language code
 - `engine_id` - Engine ID
 - `engine_code` - Engine code
+
+### Authentication Notes
+- **JWT Tokens**: Now stored as HTTP-only cookies, not environment variables
+- **Automatic Management**: Postman handles cookies automatically after login
+- **Cookie Viewing**: Use the Cookies tab to view current authentication state
 
 ### Configuration Variables
 - `base_url` - API base URL (default: `http://localhost:5000/api/v1`)
@@ -163,10 +172,16 @@ The collection includes global pre-request scripts that:
 
 Each request includes test scripts that:
 - Verify response status codes
-- Extract tokens and IDs for subsequent requests
+- Extract user data and IDs for subsequent requests
 - Validate response structure
-- Set environment variables automatically
+- Set environment variables automatically (excluding tokens)
+- Verify HTTP-only cookie presence
 - Log errors for debugging
+
+### Cookie-Specific Tests
+- **Login/Register**: Verify `Set-Cookie` headers contain `access_token` and `refresh_token`
+- **Protected Endpoints**: Verify cookies are automatically sent
+- **Logout**: Verify cookies are cleared from browser
 
 ## 📝 Testing Workflow
 
@@ -238,14 +253,21 @@ Add your own test scripts:
 ### Common Issues
 
 **401 Unauthorized**
-- Ensure you're logged in (check `access_token` variable)
-- Try refreshing the token
-- Verify admin endpoints use `admin_access_token`
+- Ensure you're logged in (check Cookies tab for `access_token`)
+- Try logging out and logging back in
+- Verify Postman cookie settings are enabled
+- Check if cookies have expired
 
 **404 Not Found**
 - Check the `base_url` environment variable
 - Ensure the backend server is running
 - Verify endpoint paths match API documentation
+
+**Cookie Issues**
+- Verify "Send cookies with requests" is enabled in Postman settings
+- Check if cookies are visible in the Cookies tab
+- Clear cookies and re-authenticate if needed
+- Ensure CORS is configured correctly on the backend
 
 **File Upload Issues**
 - Ensure files are selected in the Body tab
@@ -255,7 +277,7 @@ Add your own test scripts:
 **Variables Not Set**
 - Run the authentication requests first
 - Check the Tests tab for script errors
-- Manually set variables if needed
+- Manually set variables if needed (user data only, not tokens)
 
 ### Debug Mode
 1. Open Postman Console (**View → Show Postman Console**)

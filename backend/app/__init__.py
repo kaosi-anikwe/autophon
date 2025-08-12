@@ -106,7 +106,14 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app)
+    
+    # Configure CORS with credentials support
+    cors.init_app(app, 
+                  origins=app.config['CORS_ORIGINS'],
+                  supports_credentials=app.config['CORS_SUPPORTS_CREDENTIALS'],
+                  allow_headers=["Content-Type", "Authorization"],
+                  methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    
     ma.init_app(app)
 
     # Initialize logger in extensions
