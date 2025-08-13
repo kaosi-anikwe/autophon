@@ -1,23 +1,48 @@
-export function TeamPage() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Team</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Meet the researchers and developers behind Autophon.
-        </p>
-      </div>
+import TeamCategory from "@/components/team/TeamCategory";
+import type { TeamMember } from "@/types/api";
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div className="text-center">
-          <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4"></div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Team Member</h3>
-          <p className="text-gray-600 mb-2">Role</p>
-          <p className="text-sm text-gray-500">
-            Brief description about the team member and their contribution to the project.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+export function TeamPage() {
+  const teamCategories: { title: string; members: TeamMember[] }[] = [
+    {
+      title: "Current Members",
+      members: [
+        {
+          bio: "Nate Young is the founder and project lead of Autophon. His responsibilities include procuring funding, training and validating the language models, harvesting and enhancing the language dictionaries, managing front- and backend development, and testing and validating the app's functionality. Nate is an Assistant Professor of Swedish as a Second Language at the Department of Swedish at Linnaeus University in Växjö, Sweden. A native of North Carolina, he has a Ph.D. in Linguistics from Queen Mary, University of London (2020), an M.A. in Linguistics from Stockholm University (2015), and a B.S. in Business Administration and B.A. in Slavic Linguistics from the University of North Carolina at Chapel Hill (2004).",
+          imaage:
+            "https://img.daisyui.com/images/profile/demo/batperson@192.webp",
+          name: "Nathan Young",
+          role: "Project Lead",
+        },
+        {
+          bio: "Nate Young is the founder and project lead of Autophon. His responsibilities include procuring funding, training and validating the language models, harvesting and enhancing the language dictionaries, managing front- and backend development, and testing and validating the app's functionality. Nate is an Assistant Professor of Swedish as a Second Language at the Department of Swedish at Linnaeus University in Växjö, Sweden. A native of North Carolina, he has a Ph.D. in Linguistics from Queen Mary, University of London (2020), an M.A. in Linguistics from Stockholm University (2015), and a B.S. in Business Administration and B.A. in Slavic Linguistics from the University of North Carolina at Chapel Hill (2004).",
+          imaage:
+            "https://img.daisyui.com/images/profile/demo/batperson@192.webp",
+          name: "Nathan Young",
+          role: "Project Lead",
+        },
+      ],
+    },
+  ];
+
+  return (
+    <>
+      <h1 className="text-[3.5rem] leading-[1.1] text-left mb-4 pb-4">
+        Autophon Team
+      </h1>
+      {teamCategories.map((category) => (
+        <TeamCategory
+          key={category.title}
+          title={category.title}
+          members={category.members}
+        />
+      ))}
+      {teamCategories.map((category) => (
+        <TeamCategory
+          key={category.title}
+          title={category.title}
+          members={category.members}
+        />
+      ))}
+    </>
+  );
 }

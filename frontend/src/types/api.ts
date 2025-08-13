@@ -14,6 +14,13 @@ export interface User {
   updated_at: string;
 }
 
+export interface TeamMember {
+  name: string;
+  role: string;
+  imaage: string;
+  bio: string;
+}
+
 // Auth types
 export interface LoginRequest {
   email: string;

@@ -1,7 +1,9 @@
-export { HomePage } from './HomePage'
-export { DashboardPage } from './DashboardPage'
-export { LoginPage } from './LoginPage'
-export { RegisterPage } from './RegisterPage'
-export { ProfilePage } from './ProfilePage'
-export { TeamPage } from './TeamPage'
-export { AboutPage } from './AboutPage'
+export { HomePage } from "./HomePage";
+export { DashboardPage } from "./DashboardPage";
+export { RegisterPage } from "./RegisterPage";
+export { ProfilePage } from "./ProfilePage";
+export { TeamPage } from "./TeamPage";
+export { AboutPage } from "./AboutPage";
+export { SupportPage } from "./SupportPage";
+export { HistoryPage } from "./HistoryPage";
+export { AdminPage } from "./AdminPage";

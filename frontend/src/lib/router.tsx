@@ -1,57 +1,88 @@
-import { createBrowserRouter } from 'react-router-dom'
-import { Layout } from '../components/layout/Layout'
-import { ProtectedRoute } from '../components/layout/ProtectedRoute'
-import { 
-  HomePage, 
-  DashboardPage, 
-  LoginPage, 
-  RegisterPage, 
+import { createBrowserRouter } from "react-router-dom";
+import { Layout } from "../components/layout/Layout";
+import { AdminLayout } from "../components/layout/AdminLayout";
+import { ProtectedRoute } from "../components/layout/ProtectedRoute";
+import {
+  HomePage,
+  DashboardPage,
+  RegisterPage,
   ProfilePage,
-  TeamPage, 
-  AboutPage 
-} from '../pages'
+  TeamPage,
+  AboutPage,
+  SupportPage,
+  HistoryPage,
+  AdminPage,
+} from "../pages";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Layout />,
     children: [
       {
         index: true,
-        element: <HomePage />
+        element: <HomePage />,
       },
       {
-        path: 'dashboard',
+        path: "login",
+        element: <HomePage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "profile",
         element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        )
+          // <ProtectedRoute>
+          <ProfilePage />
+          // </ProtectedRoute>
+        ),
       },
       {
-        path: 'login',
-        element: <LoginPage />
+        path: "team",
+        element: <TeamPage />,
       },
       {
-        path: 'register',
-        element: <RegisterPage />
+        path: "about",
+        element: <AboutPage />,
       },
       {
-        path: 'profile',
+        path: "support",
+        element: <SupportPage />,
+      },
+      {
+        path: "history",
+        element: <HistoryPage />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
         element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        )
+          // <ProtectedRoute>
+          <DashboardPage />
+          // </ProtectedRoute>
+        ),
       },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
       {
-        path: 'team',
-        element: <TeamPage />
+        index: true,
+        element: (
+          // <ProtectedRoute>
+          <AdminPage />
+          // </ProtectedRoute>
+        ),
       },
-      {
-        path: 'about',
-        element: <AboutPage />
-      }
-    ]
-  }
-])
+    ],
+  },
+]);
