@@ -2,9 +2,12 @@ import { Outlet } from "react-router-dom";
 
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { usePageTitle } from "../../hooks/usePageTitle";
 import backgroundImage from "../../assets/photo-grid_1f.png";
 
 export function Layout() {
+  usePageTitle();
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

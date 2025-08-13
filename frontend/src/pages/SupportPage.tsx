@@ -22,7 +22,7 @@ export function SupportPage() {
                 <div className="md:col-span-3">
                   <input
                     type="text"
-                    className="input"
+                    className="input w=full"
                     required
                     placeholder="Your Name"
                   />
@@ -30,7 +30,7 @@ export function SupportPage() {
                 <div className="md:col-span-3">
                   <input
                     type="email"
-                    className="input"
+                    className="input w-full"
                     required
                     placeholder="Your Email"
                   />

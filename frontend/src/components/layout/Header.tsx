@@ -1,16 +1,19 @@
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
-import { logout } from "../../store/authSlice";
-import { ThemeToggle } from "../features/ThemeToggle";
 import { Moon } from "lucide-react";
+import { logout } from "../../store/authSlice";
+import { Link, useLocation } from "react-router-dom";
+
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 
 export function Header() {
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header className="fixed z-50 w-full bg-base-100 shadow-md">
@@ -30,22 +33,76 @@ export function Header() {
             <div className="hidden lg:flex">
               <ul className="menu menu-horizontal px-1 space-x-1">
                 <li>
-                  <Link to="/history">History</Link>
+                  <Link
+                    to="/history"
+                    className={`${
+                      isActive("/history")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    History
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/about">About</Link>
+                  <Link
+                    to="/about"
+                    className={`${
+                      isActive("/about")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    About
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/admin">Admin</Link>
+                  <Link
+                    to="/admin"
+                    className={`${
+                      isActive("/admin")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Admin
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/support">Support</Link>
+                  <Link
+                    to="/support"
+                    className={`${
+                      isActive("/support")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Support
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/team">Team</Link>
+                  <Link
+                    to="/team"
+                    className={`${
+                      isActive("/team")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Team
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/dashboard">Aligner</Link>
+                  <Link
+                    to="/dashboard"
+                    className={`${
+                      isActive("/dashboard")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Aligner
+                  </Link>
                 </li>
                 <li>
                   <div className="indicator">
@@ -84,22 +141,76 @@ export function Header() {
                 className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow right-0"
               >
                 <li>
-                  <Link to="/history">History</Link>
+                  <Link
+                    to="/history"
+                    className={`${
+                      isActive("/history")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    History
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/about">About</Link>
+                  <Link
+                    to="/about"
+                    className={`${
+                      isActive("/about")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    About
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/admin">Admin</Link>
+                  <Link
+                    to="/admin"
+                    className={`${
+                      isActive("/admin")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Admin
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/support">Support</Link>
+                  <Link
+                    to="/support"
+                    className={`${
+                      isActive("/support")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Support
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/team">Team</Link>
+                  <Link
+                    to="/team"
+                    className={`${
+                      isActive("/team")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Team
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/dashboard">Aligner</Link>
+                  <Link
+                    to="/dashboard"
+                    className={`${
+                      isActive("/dashboard")
+                        ? "bg-base-300 text-primary-content"
+                        : ""
+                    }  `}
+                  >
+                    Aligner
+                  </Link>
                 </li>
                 <li>
                   <div className="indicator">
