@@ -15,7 +15,7 @@ declare global {
 
 // Create axios instance with base configuration
 export const api = axios.create({
-  baseURL: "https://new.autophontest.se/api/v1",
+  baseURL: "/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
