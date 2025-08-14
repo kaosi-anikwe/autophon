@@ -7,7 +7,7 @@ from flask_marshmallow import Marshmallow
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-cors = CORS()
+cors = CORS(supports_credentials=True)
 ma = Marshmallow()
 
 # Import logger (will be initialized after app creation)

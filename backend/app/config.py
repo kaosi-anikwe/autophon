@@ -23,9 +23,7 @@ class Config:
     JWT_REFRESH_COOKIE_NAME = "refresh_token"
     JWT_COOKIE_SECURE = True  # Secure cookies for HTTPS
     JWT_COOKIE_HTTPONLY = True
-    JWT_COOKIE_SAMESITE = "Lax"  # Same-origin setup
-    JWT_COOKIE_CSRF_PROTECT = False  # Can enable for extra CSRF protection
-    JWT_COOKIE_DOMAIN = None  # Same-origin, no domain needed
+    JWT_COOKIE_SAMESITE = "None"  # Same-origin setup
 
     # CORS configuration
     CORS_ORIGINS = os.getenv("CORS_ORIGINS", "https://new.autophontest.se").split(",")

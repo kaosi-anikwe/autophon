@@ -16,18 +16,12 @@ from app.schemas import (
 
 
 class EngineListResource(Resource):
-    """Handle operations on engine collection (admin only)"""
+    """Handle operations on engine collection"""
 
     @jwt_required()
     def get(self):
-        """Get list of engines with optional filtering (admin only)"""
+        """Get list of engines with optional filtering"""
         try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
-
-            if not current_user or not current_user.admin:
-                return {"message": "Admin access required"}, 403
-
             # Get query parameters
             active_only = request.args.get("active", "true").lower() == "true"
 

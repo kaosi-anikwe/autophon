@@ -20,18 +20,12 @@ from app.schemas import (
 
 
 class LanguageListResource(Resource):
-    """Handle operations on language collection (admin only)"""
+    """Handle operations on language collection"""
 
     @jwt_required()
     def get(self):
-        """Get list of languages with optional filtering (admin only)"""
+        """Get list of languages with optional filtering"""
         try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
-
-            if not current_user or not current_user.admin:
-                return {"message": "Admin access required"}, 403
-
             # Get query parameters
             language_type = request.args.get("type")
             homepage_only = request.args.get("homepage", "false").lower() == "true"
