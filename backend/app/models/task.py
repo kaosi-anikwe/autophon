@@ -1,5 +1,7 @@
 from enum import Enum
 from app.extensions import db
+from sqlalchemy import DateTime
+
 from .base import TimestampMixin, DatabaseHelperMixin
 
 
@@ -71,7 +73,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     # Processing metadata
     pid = db.Column(db.Integer)
-    aligned = db.Column(db.DateTime)
+    aligned = db.Column(DateTime(timezone=True))
 
     # Relationships
     files = db.relationship(

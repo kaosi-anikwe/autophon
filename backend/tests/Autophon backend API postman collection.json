@@ -551,7 +551,7 @@
 									"    ",
 									"    // Store task ID if present",
 									"    if (response.task_id) {",
-									"        pm.environment.set('task_id', response.task_id);",
+									"        pm.environment.set('task_id', response.tasks[0].task_id);",
 									"    }",
 									"    ",
 									"    // Store language/engine data if present",

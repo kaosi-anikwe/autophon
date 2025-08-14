@@ -1,3 +1,4 @@
+from sqlalchemy import DateTime
 from datetime import datetime, timezone
 
 from app.extensions import db
@@ -13,9 +14,11 @@ class TokenBlacklist(db.Model, TimestampMixin, DatabaseHelperMixin):
     jti = db.Column(db.String(36), unique=True, nullable=False, index=True)  # JWT ID
     token_type = db.Column(db.String(20), nullable=False)  # 'access' or 'refresh'
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    expires = db.Column(db.DateTime, nullable=False)
+    expires = db.Column(DateTime(timezone=True), nullable=False)
     revoked_at = db.Column(
-        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
     )
     reason = db.Column(
         db.String(100)

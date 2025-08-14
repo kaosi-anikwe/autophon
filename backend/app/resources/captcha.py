@@ -1,5 +1,6 @@
 import base64
 from flask import request
+from datetime import timezone
 from flask_restful import Resource
 
 from app.models.captcha import Captcha
@@ -35,7 +36,6 @@ class CaptchaResource(Resource):
 
             response = {
                 "image": image_b64,
-                "text": captcha_text,
                 "timestamp": captcha.timestamp.isoformat(),
                 "used": False,
             }
@@ -67,19 +67,21 @@ class CaptchaResource(Resource):
 
             if not captcha:
                 response = {"success": False, "message": "CAPTCHA is invalid"}
-                log_response_info(logger, response, 400)
-                return response, 400
+                log_response_info(logger, response, 200)
+                return response, 200
 
             if captcha.used:
                 response = {
                     "success": False,
                     "message": "CAPTCHA has already been used",
                 }
-                log_response_info(logger, response, 400)
-                return response, 400
+                log_response_info(logger, response, 200)
+                return response, 200
 
             # Check if captcha is still valid (within 30 seconds)
-            time_difference = (utc_now() - captcha.timestamp).total_seconds()
+            time_difference = (
+                utc_now() - captcha.timestamp.replace(tzinfo=timezone.utc)
+            ).total_seconds()
 
             if time_difference > 30:
                 response = {
@@ -87,8 +89,8 @@ class CaptchaResource(Resource):
                     "message": "CAPTCHA is expired",
                     "timedelta": time_difference,
                 }
-                log_response_info(logger, response, 400)
-                return response, 400
+                log_response_info(logger, response, 200)
+                return response, 200
 
             # Mark captcha as used
             captcha.mark_as_used()

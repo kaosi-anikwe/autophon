@@ -57,17 +57,27 @@ class Register(Resource):
             # Return user data (tokens will be set as HTTP-only cookies)
             user_schema = UserSchema(exclude=["password_hash"])
             from flask import jsonify
-            response = jsonify({
-                "message": "User registered successfully",
-                "user": user_schema.dump(user),
-            })
-            
+
+            response = jsonify(
+                {
+                    "message": "User registered successfully",
+                    "user": user_schema.dump(user),
+                }
+            )
+
             # Set HTTP-only cookies
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
-            
+
             logger.info(f"User registered successfully: {user.email} (ID: {user.id})")
-            log_response_info(logger, {"message": "User registered successfully", "user": user_schema.dump(user)}, 201)
+            log_response_info(
+                logger,
+                {
+                    "message": "User registered successfully",
+                    "user": user_schema.dump(user),
+                },
+                201,
+            )
             response.status_code = 201
             return response
 
@@ -127,17 +137,24 @@ class Login(Resource):
             # Return user data (tokens will be set as HTTP-only cookies)
             user_schema = UserSchema(exclude=["password_hash"])
             from flask import jsonify
-            response = jsonify({
-                "message": "Login successful",
-                "user": user_schema.dump(user),
-            })
-            
+
+            response = jsonify(
+                {
+                    "message": "Login successful",
+                    "user": user_schema.dump(user),
+                }
+            )
+
             # Set HTTP-only cookies
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
-            
+
             logger.info(f"User logged in successfully: {user.email} (ID: {user.id})")
-            log_response_info(logger, {"message": "Login successful", "user": user_schema.dump(user)}, 200)
+            log_response_info(
+                logger,
+                {"message": "Login successful", "user": user_schema.dump(user)},
+                200,
+            )
             return response
 
         except ValidationError as e:
@@ -179,9 +196,10 @@ class Logout(Resource):
 
             # Clear HTTP-only cookies
             from flask import jsonify
+
             response = jsonify({"message": "Successfully logged out"})
             unset_jwt_cookies(response)
-            
+
             logger.info(f"User logged out successfully: {current_user_id}")
             return response
 
@@ -211,9 +229,10 @@ class RefreshToken(Resource):
 
             # Set new access token as HTTP-only cookie
             from flask import jsonify
+
             response = jsonify({"message": "Token refreshed successfully"})
             set_access_cookies(response, access_token)
-            
+
             return response
 
         except Exception as e:
