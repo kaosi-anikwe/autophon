@@ -1,4 +1,5 @@
 import uuid
+from sqlalchemy import DateTime
 
 from app.extensions import db
 from app.utils.helpers import generate_user_icon
@@ -23,7 +24,9 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     admin = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.String(100))
     password_hash = db.Column(db.String(255), nullable=False)
-    tokens_revoked_at = db.Column(db.DateTime)  # For global token invalidation
+    tokens_revoked_at = db.Column(
+        DateTime(timezone=True)
+    )  # For global token invalidation
 
     # Relationships - defined after class definition to avoid circular imports
 

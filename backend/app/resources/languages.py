@@ -305,19 +305,21 @@ class PublicLanguageListResource(Resource):
             else:
                 # Get all active languages, optionally filtered by type
                 query = Language.query.filter_by(is_active=True)
-                
+
                 if language_type:
                     try:
                         lang_type_enum = LanguageType(language_type)
                         query = query.filter_by(type=lang_type_enum)
                     except ValueError:
-                        return {"message": f"Invalid language type: {language_type}"}, 400
-                
+                        return {
+                            "message": f"Invalid language type: {language_type}"
+                        }, 400
+
                 languages = query.order_by(Language.priority).all()
 
             # Use homepage schema for consistent public display
             schema = LanguageHomepageSchema(many=True)
-            
+
             # Group languages by type for better frontend organization
             grouped_languages = {"nordic": [], "other": []}
             for lang in languages:
@@ -330,7 +332,7 @@ class PublicLanguageListResource(Resource):
             return {
                 "languages": schema.dump(languages),
                 "grouped_languages": grouped_languages,
-                "count": len(languages)
+                "count": len(languages),
             }, 200
 
         except Exception as e:

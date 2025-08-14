@@ -1,18 +1,19 @@
+from sqlalchemy import DateTime
+
 from app.extensions import db
 from app.utils.logger import get_logger
+from app.utils.datetime_helpers import utc_now
 
 logger = get_logger(__name__)
 
 
 # timestamp to be inherited by other class models
 class TimestampMixin(object):
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(DateTime(timezone=True), nullable=False, default=utc_now)
     updated_at = db.Column(
-        db.DateTime,
-        default=db.func.current_timestamp(),
-        onupdate=db.func.current_timestamp(),
+        DateTime(timezone=True),
+        default=utc_now,
+        onupdate=utc_now,
     )
 
     def format_date(self):

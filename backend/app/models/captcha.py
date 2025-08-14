@@ -1,7 +1,9 @@
 from datetime import timedelta
+from sqlalchemy import DateTime
+
 from app.extensions import db
-from app.models.base import TimestampMixin, DatabaseHelperMixin
 from app.utils.datetime_helpers import utc_now
+from app.models.base import TimestampMixin, DatabaseHelperMixin
 
 
 class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
@@ -11,7 +13,7 @@ class Captcha(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(10), nullable=False, unique=True)
-    timestamp = db.Column(db.DateTime, nullable=False, default=utc_now)
+    timestamp = db.Column(DateTime(timezone=True), nullable=False, default=utc_now)
     used = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
