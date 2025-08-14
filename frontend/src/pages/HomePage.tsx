@@ -6,21 +6,15 @@ import LoginForm from "@/components/forms/LoginForm";
 import { useAppSelector } from "../hooks/useAppDispatch";
 import AlignerTable from "@/components/aligner/AlignerTable";
 import ForgotPassword from "@/components/forms/ForgotPassword";
+import { SupportedEngines } from "../components/home/SupportedEngines";
+import { SupportedLanguages } from "../components/home/SupportedLanguages";
+import { useConfig, useAppDegradedState } from "../contexts/AppConfigContext";
 
 export function HomePage() {
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-
-  const [showTranscriptionModal, setShowTranscriptionModal] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedTranscriptionMode, setSelectedTranscriptionMode] =
-    useState<string>("");
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-
-  const handleTranscriptionSelect = (mode: string) => {
-    setSelectedTranscriptionMode(mode);
-    setShowTranscriptionModal(false);
-    setShowUploadModal(true);
-  };
+  const config = useConfig(); // Access app config anywhere!
+  const { isDegraded } = useAppDegradedState();
 
   return (
     <>
@@ -113,10 +107,23 @@ export function HomePage() {
               <>
                 {/* Toggle between sign-in and forgot password */}
                 <div id="login" className="mt-4">
-                  <LoginForm />
-                </div>
-                <div className="mt-4">
-                  <ForgotPassword />
+                  {!showForgotPassword ? (
+                    <LoginForm
+                      onForgotPasswordClick={() => setShowForgotPassword(true)}
+                    />
+                  ) : (
+                    <div>
+                      <ForgotPassword />
+                      <div className="mt-4">
+                        <button
+                          onClick={() => setShowForgotPassword(false)}
+                          className="text-primary hover:underline text-sm"
+                        >
+                          ← Back to Login
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -125,92 +132,9 @@ export function HomePage() {
         {/* Right Column - col-md-4 */}
         <div className="md:col-span-4">
           <div className="card bg-base-100 shadow-lg min-h-[250px] xl:min-h-[300px] p-3 h-full">
-            <h5 className="text-xl font-bold">Nordic languages</h5>
-            <div className="space-y-2">
-              {/* Placeholder Nordic languages with flag placeholders */}
-              {[
-                { name: "Danish", href: "#" },
-                { name: "Norwegian", href: "#" },
-                { name: "Swedish", href: "#" },
-                { name: "Icelandic", href: "#" },
-                { name: "Faroese", href: "#" },
-              ].map((lang, index) => (
-                <div key={index} className="flex items-center my-2">
-                  <div className="w-full">
-                    <a
-                      href={lang.href}
-                      className="text-black no-underline hover:text-primary transition-colors flex items-center font-normal text-lg"
-                    >
-                      <div className="w-6 h-4 bg-gray-300 rounded-sm mr-4 flex-shrink-0"></div>
-                      {lang.name}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <SupportedLanguages />
 
-            <h5 className="text-xl font-bold">Other languages</h5>
-            <div className="space-y-2 mb-4">
-              {/* Placeholder other languages */}
-              {[
-                { name: "English (US)", href: "#" },
-                { name: "English (UK)", href: "#" },
-                { name: "German", href: "#" },
-                { name: "French", href: "#" },
-                { name: "Spanish", href: "#" },
-              ].map((lang, index) => (
-                <div key={index} className="flex items-center my-2">
-                  <div className="w-full">
-                    <a
-                      href={lang.href}
-                      className="text-black no-underline hover:text-primary transition-colors flex items-center font-normal text-lg"
-                    >
-                      <div className="w-6 h-4 bg-gray-300 rounded-sm mr-4 flex-shrink-0"></div>
-                      {lang.name}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p
-              className="text-secondary text-sm italic cursor-pointer hover:text-primary transition-colors"
-              tabIndex={0}
-            >
-              click for a full list
-            </p>
-
-            <h5 className="text-xl font-bold mt-4">Engines</h5>
-            <div className="space-y-2">
-              {[
-                {
-                  name: "Montreal Forced Aligner",
-                  href: "https://montreal-forced-aligner.readthedocs.io/",
-                },
-                {
-                  name: "FAVE-Align",
-                  href: "https://github.com/JoFrhwld/FAVE",
-                },
-                {
-                  name: "faseAlign",
-                  href: "https://github.com/EricWilbanks/faseAlign",
-                },
-              ].map((engine, index) => (
-                <div key={index} className="flex items-center my-2">
-                  <div className="w-full">
-                    <a
-                      href={engine.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-black no-underline hover:text-primary transition-colors flex items-center font-normal text-lg"
-                    >
-                      <div className="w-6 h-4 bg-gray-300 rounded-sm mr-4 flex-shrink-0"></div>
-                      {engine.name}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <SupportedEngines />
           </div>
         </div>
       </div>
@@ -221,8 +145,8 @@ export function HomePage() {
           <AlignerTable title="Align files here" />
           <div className="p-3">
             <p className="text-[#949494] text-sm">
-              * Files under 100MB may be aligned without an account. To align
-              batches as large as 750 MB and to access advanced features,{" "}
+              * Files under {config?.user_limits.a_size_limit || 100}MB may be aligned without an account. To align
+              batches as large as {config?.user_limits.size_limit || 750} MB and to access advanced features,{" "}
               <Link
                 to="/register"
                 className="text-[#949494] no-underline border-b-[0.3px] border-dotted border-[#949494] hover:text-primary transition-colors mx-0"
@@ -230,6 +154,19 @@ export function HomePage() {
                 create a free account here.
               </Link>
             </p>
+            {config && (
+              <p className="text-[#949494] text-xs mt-2">
+                Supported audio formats: {config.audio_extensions.join(', ')}
+              </p>
+            )}
+            {isDegraded && (
+              <div className="alert alert-warning mt-2">
+                <svg className="stroke-current shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span className="text-xs">App configuration unavailable - using default limits</span>
+              </div>
+            )}
           </div>
         </div>
       )}

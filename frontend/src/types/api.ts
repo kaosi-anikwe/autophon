@@ -17,8 +17,29 @@ export interface User {
 export interface TeamMember {
   name: string;
   role: string;
-  imaage: string;
+  image: string;
   bio: string;
+}
+
+export interface TeamCategoryData {
+  name: string;
+  members: TeamMember[];
+}
+
+export interface TeamResponse {
+  team: TeamCategoryData[];
+}
+
+// App Config types
+export interface AppConfig {
+  user_limits: {
+    size_limit: number;
+    file_pair_limit: number;
+    user_dict_limit: number;
+    a_size_limit: number;
+    a_upload_limit: number;
+  };
+  audio_extensions: string[];
 }
 
 // Auth types
@@ -116,6 +137,18 @@ export interface Engine {
   name: string;
   documentation_link?: string;
   is_active: boolean;
+}
+
+export interface EngineHomepage {
+  id: number;
+  code: string;
+  name: string;
+  documentation_link?: string;
+}
+
+export interface EnginesResponse {
+  engines: EngineHomepage[];
+  count: number;
 }
 
 // API Response types

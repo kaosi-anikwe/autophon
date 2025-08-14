@@ -1,10 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { Provider } from 'react-redux'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { store } from './store'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { Provider } from "react-redux";
+import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import "./index.css";
+import App from "./App.tsx";
+import { store } from "./store";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -14,14 +15,14 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-})
+});
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
     </Provider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

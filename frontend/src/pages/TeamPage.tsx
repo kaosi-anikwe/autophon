@@ -1,47 +1,82 @@
-import { ToastExamples } from "@/components/examples/ToastExamples";
+import { useQuery } from "@tanstack/react-query";
+import { teamAPI } from "../lib/api";
 import TeamCategory from "@/components/team/TeamCategory";
-import type { TeamMember } from "@/types/api";
+
+function LoadingSkeleton() {
+  return (
+    <>
+      <h1 className="text-[3.5rem] leading-[1.1] text-left mb-4 pb-4">
+        Autophon Team
+      </h1>
+      {Array.from({ length: 2 }).map((_, categoryIndex) => (
+        <div key={categoryIndex} className="pb-4">
+          <h3 className="text-[2rem] text-left font-bold mb-4 pb-4">
+            <div className="h-8 bg-base-300 rounded w-48 animate-pulse"></div>
+          </h3>
+          {Array.from({ length: 3 }).map((_, memberIndex) => (
+            <div key={memberIndex} className="mb-6">
+              <div className="flex gap-4">
+                <div className="w-24 h-24 bg-base-300 rounded animate-pulse"></div>
+                <div className="flex-1">
+                  <div className="h-6 bg-base-300 rounded w-32 mb-2 animate-pulse"></div>
+                  <div className="h-4 bg-base-300 rounded w-24 mb-3 animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-base-300 rounded animate-pulse"></div>
+                    <div className="h-4 bg-base-300 rounded animate-pulse"></div>
+                    <div className="h-4 bg-base-300 rounded w-3/4 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ErrorState({ error }: { error: Error }) {
+  return (
+    <>
+      <h1 className="text-[3.5rem] leading-[1.1] text-left mb-4 pb-4">
+        Autophon Team
+      </h1>
+      <div className="alert alert-error">
+        <span>Failed to load team data: {error.message}</span>
+      </div>
+    </>
+  );
+}
 
 export function TeamPage() {
-  const teamCategories: { title: string; members: TeamMember[] }[] = [
-    {
-      title: "Current Members",
-      members: [
-        {
-          bio: "Nate Young is the founder and project lead of Autophon. His responsibilities include procuring funding, training and validating the language models, harvesting and enhancing the language dictionaries, managing front- and backend development, and testing and validating the app's functionality. Nate is an Assistant Professor of Swedish as a Second Language at the Department of Swedish at Linnaeus University in Växjö, Sweden. A native of North Carolina, he has a Ph.D. in Linguistics from Queen Mary, University of London (2020), an M.A. in Linguistics from Stockholm University (2015), and a B.S. in Business Administration and B.A. in Slavic Linguistics from the University of North Carolina at Chapel Hill (2004).",
-          imaage:
-            "https://img.daisyui.com/images/profile/demo/batperson@192.webp",
-          name: "Nathan Young",
-          role: "Project Lead",
-        },
-        {
-          bio: "Nate Young is the founder and project lead of Autophon. His responsibilities include procuring funding, training and validating the language models, harvesting and enhancing the language dictionaries, managing front- and backend development, and testing and validating the app's functionality. Nate is an Assistant Professor of Swedish as a Second Language at the Department of Swedish at Linnaeus University in Växjö, Sweden. A native of North Carolina, he has a Ph.D. in Linguistics from Queen Mary, University of London (2020), an M.A. in Linguistics from Stockholm University (2015), and a B.S. in Business Administration and B.A. in Slavic Linguistics from the University of North Carolina at Chapel Hill (2004).",
-          imaage:
-            "https://img.daisyui.com/images/profile/demo/batperson@192.webp",
-          name: "Nathan Young",
-          role: "Project Lead",
-        },
-      ],
-    },
-  ];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["team-members"],
+    queryFn: teamAPI.getTeamMembers,
+    staleTime: 15 * 60 * 1000, // 15 minutes - team data doesn't change frequently
+    retry: 2,
+  });
+
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  if (error) {
+    return <ErrorState error={error as Error} />;
+  }
+
+  const { team } = data!;
+
+  console.log(team);
 
   return (
     <>
       <h1 className="text-[3.5rem] leading-[1.1] text-left mb-4 pb-4">
         Autophon Team
       </h1>
-      <ToastExamples />
-      {teamCategories.map((category) => (
+      {team.map((category) => (
         <TeamCategory
-          key={category.title}
-          title={category.title}
-          members={category.members}
-        />
-      ))}
-      {teamCategories.map((category) => (
-        <TeamCategory
-          key={category.title}
-          title={category.title}
+          key={category.name}
+          title={category.name}
           members={category.members}
         />
       ))}

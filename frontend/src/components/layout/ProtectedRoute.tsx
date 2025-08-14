@@ -1,24 +1,25 @@
-import { useEffect } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../hooks/useAppDispatch'
-import { verifyToken } from '../../store/authSlice'
+import { useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+
+import { verifyToken } from "../../store/authSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const dispatch = useAppDispatch()
-  const location = useLocation()
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth)
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Always try to verify token on mount if not already authenticated
     // The server will check the HTTP-only cookie
     if (!isAuthenticated) {
-      dispatch(verifyToken())
+      dispatch(verifyToken());
     }
-  }, [dispatch, isAuthenticated])
+  }, [dispatch, isAuthenticated]);
 
   // Show loading while verifying token
   if (isLoading) {
@@ -29,13 +30,13 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
           <p className="mt-2 text-gray-600">Verifying authentication...</p>
         </div>
       </div>
-    )
+    );
   }
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

@@ -157,7 +157,12 @@ api.interceptors.response.use(
 );
 
 // Add TypeScript interface imports
-import type { LanguagesResponse } from "../types/api";
+import type {
+  LanguagesResponse,
+  EnginesResponse,
+  TeamResponse,
+  AppConfig,
+} from "../types/api";
 
 // Auth API interfaces
 export interface LoginRequest {
@@ -255,6 +260,20 @@ export const languagesAPI = {
       .then((response) => response.data),
 };
 
+// Engines API
+export const enginesAPI = {
+  // Get homepage engines (public endpoint, no auth required)
+  getHomepageEngines: (): Promise<EnginesResponse> =>
+    api.get("/engines").then((response) => response.data),
+};
+
+// Team API
+export const teamAPI = {
+  // Get team members (public endpoint, no auth required)
+  getTeamMembers: (): Promise<TeamResponse> =>
+    api.get("/team").then((response) => response.data),
+};
+
 // Captcha API interfaces
 export interface CaptchaResponse {
   image: string; // base64 data URL
@@ -282,6 +301,15 @@ export const captchaAPI = {
     data: CaptchaVerifyRequest
   ): Promise<CaptchaVerifyResponse> => {
     const response = await api.post("/auth/register-captcha", data);
+    return response.data;
+  },
+};
+
+// App configuration API
+export const appConfigAPI = {
+  // Get application configuration
+  getAppConfig: async (): Promise<AppConfig> => {
+    const response = await api.get("/config");
     return response.data;
   },
 };

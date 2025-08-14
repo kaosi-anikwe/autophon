@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useToast } from "../../hooks/useToast";
@@ -8,7 +8,11 @@ import { login, clearError } from "../../store/authSlice";
 import { loginSchema, type LoginFormData } from "../../lib/schemas";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  onForgotPasswordClick?: () => void;
+}
+
+export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
   const dispatch = useAppDispatch();
   const toast = useToast();
   const { isLoading, error } = useAppSelector((state) => state.auth);
@@ -96,9 +100,22 @@ export default function LoginForm() {
           </Link>
         </div>
         <div className="text-left text-sm col-span-5">
-          <Link to="/register" className="text-primary hover:underline">
-            Forgot Password?
-          </Link>
+          {onForgotPasswordClick ? (
+            <button
+              type="button"
+              onClick={onForgotPasswordClick}
+              className="text-primary hover:underline"
+            >
+              Forgot Password?
+            </button>
+          ) : (
+            <Link
+              to="/forgot-password"
+              className="text-primary hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          )}
         </div>
       </div>
     </>

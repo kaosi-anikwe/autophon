@@ -2,7 +2,7 @@ import type { TeamMember } from "@/types/api";
 
 export default function TeamMemberSection({
   name,
-  imaage,
+  image,
   role,
   bio,
 }: TeamMember) {
@@ -12,7 +12,7 @@ export default function TeamMemberSection({
         <div className="card shadow-md w-full relative">
           <img
             className="object-cover w-full h-full rounded relative top-0 left-0"
-            src={imaage}
+            src={`https://new.autophontest.se/${image}`}
             alt={name}
           />
         </div>
@@ -21,7 +21,10 @@ export default function TeamMemberSection({
         <div className="card bg-base-100 shadow-lg border-0 p-3 min-h-full">
           <h3 className="text-[1.75rem] text-left font-bold">{name}</h3>
           <p className="text-base-300 mb-2">{role}</p>
-          <div className="leading-normal">{bio}</div>
+          <div
+            className="leading-normal"
+            dangerouslySetInnerHTML={{ __html: bio }}
+          />
         </div>
       </div>
     </div>

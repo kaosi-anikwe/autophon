@@ -26,10 +26,10 @@ export function Modal({
   if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: "modal-box p-4 w-11/12 max-w-md",
-    md: "modal-box p-4 w-11/12 max-w-2xl",
-    lg: "modal-box p-4 w-11/12 max-w-4xl",
-    xl: "modal-box p-4 w-11/12 max-w-6xl",
+    sm: "relative modal-box p-4 w-11/12 max-w-md bottom-20",
+    md: "relative modal-box p-4 w-11/12 max-w-2xl bottom-20",
+    lg: "relative modal-box p-4 w-11/12 max-w-4xl md:bottom-0 bottom-20",
+    xl: "relative modal-box p-4 w-11/12 max-w-6xl md:bottom-0 bottom-20",
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
