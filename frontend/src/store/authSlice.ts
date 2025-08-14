@@ -162,10 +162,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload;
         state.error = null;
-        // Set global flag to indicate we've had successful auth in this session
-        if (typeof window !== "undefined") {
-          window.__hasAuthenticated = true;
-        }
+        // Don't set __hasAuthenticated for token verification - only for actual login/register
       })
       .addCase(verifyToken.rejected, (state) => {
         state.isLoading = false;
