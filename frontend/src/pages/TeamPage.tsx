@@ -1,3 +1,4 @@
+import { ToastExamples } from "@/components/examples/ToastExamples";
 import TeamCategory from "@/components/team/TeamCategory";
 import type { TeamMember } from "@/types/api";
 
@@ -29,6 +30,7 @@ export function TeamPage() {
       <h1 className="text-[3.5rem] leading-[1.1] text-left mb-4 pb-4">
         Autophon Team
       </h1>
+      <ToastExamples />
       {teamCategories.map((category) => (
         <TeamCategory
           key={category.title}

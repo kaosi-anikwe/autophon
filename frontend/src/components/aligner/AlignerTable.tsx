@@ -1,6 +1,6 @@
 import { CirclePlus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import TranscriptionSelect from "./TranscriptionSelect";
+import TranscriptionSelect from "../modals/TranscriptionSelect";
 import TransChoices from "./TransChoices";
 
 type AlignerTableProps = {

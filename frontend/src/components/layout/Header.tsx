@@ -1,17 +1,11 @@
 import { Moon } from "lucide-react";
-import { logout } from "../../store/authSlice";
 import { Link, useLocation } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
+import { useAppSelector } from "../../hooks/useAppDispatch";
 
 export function Header() {
-  const dispatch = useAppDispatch();
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-
-  const handleLogout = () => {
-    dispatch(logout());
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -32,18 +26,20 @@ export function Header() {
           <div className="flex-1">
             <div className="hidden lg:flex">
               <ul className="menu menu-horizontal px-1 space-x-1">
-                <li>
-                  <Link
-                    to="/history"
-                    className={`${
-                      isActive("/history")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    History
-                  </Link>
-                </li>
+                {isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/history"
+                      className={`${
+                        isActive("/history")
+                          ? "bg-base-300 text-primary-content"
+                          : ""
+                      }  `}
+                    >
+                      History
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <Link
                     to="/about"
@@ -56,18 +52,20 @@ export function Header() {
                     About
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/admin"
-                    className={`${
-                      isActive("/admin")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    Admin
-                  </Link>
-                </li>
+                {isAuthenticated && user?.admin && (
+                  <li>
+                    <Link
+                      to="/admin"
+                      className={`${
+                        isActive("/admin")
+                          ? "bg-base-300 text-primary-content"
+                          : ""
+                      }  `}
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <Link
                     to="/support"
@@ -92,28 +90,32 @@ export function Header() {
                     Team
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/dashboard"
-                    className={`${
-                      isActive("/dashboard")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    Aligner
-                  </Link>
-                </li>
-                <li>
-                  <div className="indicator">
-                    <button disabled className="cursor-not-allowed">
-                      Transcriber
-                    </button>
-                    <span className="badge badge-sm indicator-item text-xs px-2 py-1 bg-secondary text-secondary-content rounded-full">
-                      coming soon
-                    </span>
-                  </div>
-                </li>
+                {isAuthenticated && (
+                  <>
+                    <li>
+                      <Link
+                        to="/dashboard"
+                        className={`${
+                          isActive("/dashboard")
+                            ? "bg-base-300 text-primary-content"
+                            : ""
+                        }  `}
+                      >
+                        Aligner
+                      </Link>
+                    </li>
+                    <li>
+                      <div className="indicator">
+                        <button disabled className="cursor-not-allowed">
+                          Transcriber
+                        </button>
+                        <span className="badge badge-sm indicator-item text-xs px-2 py-1 bg-secondary text-secondary-content rounded-full">
+                          coming soon
+                        </span>
+                      </div>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
@@ -140,18 +142,20 @@ export function Header() {
                 tabIndex={0}
                 className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow right-0"
               >
-                <li>
-                  <Link
-                    to="/history"
-                    className={`${
-                      isActive("/history")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    History
-                  </Link>
-                </li>
+                {isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/history"
+                      className={`${
+                        isActive("/history")
+                          ? "bg-base-300 text-primary-content"
+                          : ""
+                      }  `}
+                    >
+                      History
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <Link
                     to="/about"
@@ -164,18 +168,20 @@ export function Header() {
                     About
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/admin"
-                    className={`${
-                      isActive("/admin")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    Admin
-                  </Link>
-                </li>
+                {isAuthenticated && user?.admin && (
+                  <li>
+                    <Link
+                      to="/admin"
+                      className={`${
+                        isActive("/admin")
+                          ? "bg-base-300 text-primary-content"
+                          : ""
+                      }  `}
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <Link
                     to="/support"
@@ -200,28 +206,32 @@ export function Header() {
                     Team
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/dashboard"
-                    className={`${
-                      isActive("/dashboard")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
-                    }  `}
-                  >
-                    Aligner
-                  </Link>
-                </li>
-                <li>
-                  <div className="indicator">
-                    <button disabled className="cursor-not-allowed">
-                      Transcriber
-                    </button>
-                    <span className="badge badge-sm indicator-item text-xs px-2 py-1 bg-secondary text-secondary-content rounded-full">
-                      soon
-                    </span>
-                  </div>
-                </li>
+                {isAuthenticated && (
+                  <>
+                    <li>
+                      <Link
+                        to="/dashboard"
+                        className={`${
+                          isActive("/dashboard")
+                            ? "bg-base-300 text-primary-content"
+                            : ""
+                        }  `}
+                      >
+                        Aligner
+                      </Link>
+                    </li>
+                    <li>
+                      <div className="indicator">
+                        <button disabled className="cursor-not-allowed">
+                          Transcriber
+                        </button>
+                        <span className="badge badge-sm indicator-item text-xs px-2 py-1 bg-secondary text-secondary-content rounded-full">
+                          soon
+                        </span>
+                      </div>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
 
@@ -248,41 +258,45 @@ export function Header() {
             </div>
 
             {/* User profile */}
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar"
-              >
-                <div className="w-10 rounded-full">
-                  <img src="/favicon.png" alt="Profile Image" />
+            {isAuthenticated && (
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-10 rounded-full">
+                    <img src="/favicon.png" alt="Profile Image" />
+                  </div>
                 </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow-md"
+                >
+                  <li>
+                    <Link to="/profile">Profile</Link>
+                  </li>
+                  <li>
+                    <Link to="/logout">Logout</Link>
+                  </li>
+                </ul>
               </div>
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow-md"
-              >
+            )}
+
+            {!isAuthenticated && (
+              <ul tabIndex={0} className="menu menu-horizontal px-1 space-x-1">
                 <li>
-                  <Link to="/profile">Profile</Link>
+                  <Link to="/login#login" className="btn font-thin">
+                    Login
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/logout">Log out</Link>
+                  <Link to="/register" className="btn btn-primary font-thin">
+                    Sign Up
+                  </Link>
                 </li>
               </ul>
-            </div>
-
-            <ul tabIndex={0} className="menu menu-horizontal px-1 space-x-1">
-              <li>
-                <Link to="/login#login" className="btn font-thin">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="btn btn-primary font-thin">
-                  Sign Up
-                </Link>
-              </li>
-            </ul>
+            )}
           </div>
         </nav>
       </div>

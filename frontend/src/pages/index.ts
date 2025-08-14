@@ -7,3 +7,4 @@ export { AboutPage } from "./AboutPage";
 export { SupportPage } from "./SupportPage";
 export { HistoryPage } from "./HistoryPage";
 export { AdminPage } from "./AdminPage";
+export { LogoutPage } from "./LogoutPage";

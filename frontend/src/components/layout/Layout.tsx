@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { AuthNavigationHandler } from "./AuthNavigationHandler";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import backgroundImage from "../../assets/photo-grid_1f.png";
 
@@ -10,6 +11,7 @@ export function Layout() {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <AuthNavigationHandler />
       <Header />
       <main className="flex-1 pt-16">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 md:pt-16 lg:pt-[70px] relative max-w-[1140px]">

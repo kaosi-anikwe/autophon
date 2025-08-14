@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { useToast } from "../../hooks/useToast";
 import { login, clearError } from "../../store/authSlice";
 import { loginSchema, type LoginFormData } from "../../lib/schemas";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 
 export default function LoginForm() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { isLoading, error, isAuthenticated } = useAppSelector(
-    (state) => state.auth
-  );
+  const toast = useToast();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -23,23 +22,20 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
     // Clear error when component mounts
     dispatch(clearError());
   }, [dispatch]);
 
+  useEffect(() => {
+    // Show error toast when error occurs
+    if (error) {
+      toast.error(error, "Login Failed");
+    }
+  }, [error, toast]);
+
   const onSubmit = async (data: LoginFormData) => {
     dispatch(login(data));
   };
-
-  if (error) {
-    console.log(error);
-  }
 
   return (
     <>

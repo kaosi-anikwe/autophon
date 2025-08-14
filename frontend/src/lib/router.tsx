@@ -12,6 +12,7 @@ import {
   SupportPage,
   HistoryPage,
   AdminPage,
+  LogoutPage,
 } from "../pages";
 
 export const router = createBrowserRouter([
@@ -34,9 +35,9 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: (
-          // <ProtectedRoute>
-          <ProfilePage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
         ),
       },
       {
@@ -53,7 +54,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "history",
-        element: <HistoryPage />,
+        element: (
+          <ProtectedRoute>
+            <HistoryPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "logout",
+        element: <LogoutPage />,
       },
     ],
   },
@@ -64,9 +73,9 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          // <ProtectedRoute>
-          <DashboardPage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
         ),
       },
     ],
@@ -78,9 +87,9 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          // <ProtectedRoute>
-          <AdminPage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
         ),
       },
     ],

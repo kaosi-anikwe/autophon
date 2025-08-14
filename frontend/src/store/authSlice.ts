@@ -1,13 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosError } from "axios";
 
-import { api } from "../lib/api";
-import type {
-  User,
-  LoginRequest,
-  RegisterRequest,
-  AuthResponse,
-} from "../types/api";
+import { authAPI, getErrorMessage } from "../lib/api";
+import type { LoginRequest, RegisterRequest } from "../lib/api";
+
+export interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  title?: string;
+  org?: string;
+  industry?: string;
+  admin: boolean;
+  created_at: string;
+}
 
 interface AuthState {
   user: User | null;
@@ -28,16 +34,11 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginRequest, { rejectWithValue }) => {
     try {
-      const response = await api.post<AuthResponse>("/auth/login", credentials);
-      const { user } = response.data;
-
-      // Tokens are now stored in HTTP-only cookies by the server
-      return { user };
+      const response = await authAPI.login(credentials);
+      return response.user;
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      return rejectWithValue(
-        axiosError.response?.data?.message || "Login failed"
-      );
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -46,31 +47,24 @@ export const register = createAsyncThunk(
   "auth/register",
   async (userData: RegisterRequest, { rejectWithValue }) => {
     try {
-      const response = await api.post<AuthResponse>("/auth/register", userData);
-      const { user } = response.data;
-
-      // Tokens are now stored in HTTP-only cookies by the server
-      return { user };
+      const response = await authAPI.register(userData);
+      return response.user;
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      return rejectWithValue(
-        axiosError.response?.data?.message || "Registration failed"
-      );
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
 export const verifyToken = createAsyncThunk(
-  "auth/verifyToken",
+  "auth/verify",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/auth/verify");
-      return response.data.user;
+      const response = await authAPI.verify();
+      return response.user;
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      return rejectWithValue(
-        axiosError.response?.data?.message || "Token verification failed"
-      );
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -79,14 +73,13 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await api.post("/auth/logout");
+      await authAPI.logout();
       // Server will clear HTTP-only cookies
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      console.error("Logout API call failed:", axiosError);
-      return rejectWithValue(
-        axiosError.response?.data?.message || "Logout failed"
-      );
+      // Even if logout fails on server, we should clear local state
+      console.error("Logout API call failed:", error);
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -102,6 +95,10 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
+      // Clear global flag when auth is cleared
+      if (typeof window !== "undefined") {
+        window.__hasAuthenticated = false;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -114,8 +111,12 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.error = null;
+        // Set global flag to indicate we've had successful auth in this session
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = true;
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -134,8 +135,12 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.error = null;
+        // Set global flag to indicate we've had successful auth in this session
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = true;
+        }
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -157,6 +162,10 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload;
         state.error = null;
+        // Set global flag to indicate we've had successful auth in this session
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = true;
+        }
       })
       .addCase(verifyToken.rejected, (state) => {
         state.isLoading = false;
@@ -170,12 +179,20 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
+        // Clear global flag on logout
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = false;
+        }
       })
       .addCase(logout.rejected, (state) => {
         // Even if logout fails, clear the local state
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
+        // Clear global flag on logout
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = false;
+        }
       });
   },
 });
