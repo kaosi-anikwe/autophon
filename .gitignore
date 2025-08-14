@@ -11,6 +11,7 @@ __pycache__/
 # Build outputs
 frontend/dist/
 frontend/build/
+frontend/package-lock.json
 
 # Database
 *.db
