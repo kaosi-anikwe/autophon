@@ -33,6 +33,7 @@ export default function EngineDropdown({
   const selectedEngine = engines.find((engine) => engine.code === value);
 
   const getEngineIcon = (engineCode: string) => {
+    console.log("getting icon", engineCode);
     return `/ngins/${engineCode}.png`;
   };
 

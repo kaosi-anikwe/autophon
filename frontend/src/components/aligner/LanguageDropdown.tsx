@@ -81,19 +81,19 @@ export default function LanguageDropdown({
       if (!allFilteredLanguages.length) return;
 
       switch (e.key) {
-        case 'ArrowDown':
+        case "ArrowDown":
           e.preventDefault();
-          setSelectedIndex(prev => 
+          setSelectedIndex((prev) =>
             prev < allFilteredLanguages.length - 1 ? prev + 1 : 0
           );
           break;
-        case 'ArrowUp':
+        case "ArrowUp":
           e.preventDefault();
-          setSelectedIndex(prev => 
+          setSelectedIndex((prev) =>
             prev > 0 ? prev - 1 : allFilteredLanguages.length - 1
           );
           break;
-        case 'Enter':
+        case "Enter":
           e.preventDefault();
           if (selectedIndex >= 0 && allFilteredLanguages[selectedIndex]) {
             onChange(allFilteredLanguages[selectedIndex].language_name);
@@ -101,7 +101,7 @@ export default function LanguageDropdown({
             onClose?.();
           }
           break;
-        case 'Escape':
+        case "Escape":
           e.preventDefault();
           onClose?.();
           break;
@@ -109,18 +109,22 @@ export default function LanguageDropdown({
     };
 
     const container = containerRef.current;
-    container.addEventListener('keydown', handleKeyDown);
-    container.focus();
+    container.addEventListener("keydown", handleKeyDown);
+
+    // Only focus container if search input is not focused
+    if (document.activeElement?.tagName !== "INPUT") {
+      container.focus();
+    }
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener("keydown", handleKeyDown);
     };
   }, [allFilteredLanguages, selectedIndex, onChange, onClose, inline]);
 
   // For inline mode, render just the dropdown content
   if (inline) {
     return (
-      <div 
+      <div
         ref={containerRef}
         className="w-full max-h-80 bg-white border border-base-200 rounded-md shadow-lg p-1 z-[100] outline-none"
         tabIndex={0}
@@ -150,7 +154,7 @@ export default function LanguageDropdown({
               onClose?.();
             }}
             className={`flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 cursor-pointer rounded-sm ${
-              selectedIndex === index ? 'bg-blue-100' : ''
+              selectedIndex === index ? "bg-blue-100" : ""
             }`}
           >
             <img
@@ -163,9 +167,7 @@ export default function LanguageDropdown({
             />
             <div className="flex flex-col">
               <span className="text-sm">{language.language_name}</span>
-              <span className="text-xs text-gray-500">
-                {language.alphabet}
-              </span>
+              <span className="text-xs text-gray-500">{language.alphabet}</span>
             </div>
           </div>
         ))}

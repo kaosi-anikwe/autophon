@@ -1,13 +1,12 @@
+import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { Download, FileX, AlertCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 
-import type { Task, Language, Engine } from "@/types/api";
+import { api } from "@/lib/api";
 import LanguageDropdown from "./LanguageDropdown";
-import EngineDropdown from "./EngineDropdown";
 import { useToast } from "@/contexts/ToastContext";
-import { AxiosError } from "axios";
+import type { Task, Language, Engine } from "@/types/api";
 
 type AligerRowProps = {
   task: Task;
@@ -21,10 +20,11 @@ export default function AlignerRow({
   onCheckedChange,
 }: AligerRowProps) {
   const [selectedLanguageName, setSelectedLanguageName] = useState<
-    string | null
-  >(null);
+    string | undefined
+  >(task.language?.language_name);
   const [shouldOpenEngineDropdown, setShouldOpenEngineDropdown] =
     useState(false);
+
   // Determine if task has errors
   const hasPreError = task.pre_error === true;
   const isUploading = task.task_status === "uploading";
@@ -57,7 +57,7 @@ export default function AlignerRow({
       isUploading &&
       ["no_of_tiers", "words", "missing_words"].includes(field)
     ) {
-      return <img src="/spinner.gif" alt="Loading..." className="w-4 h-4" />;
+      return <img src="/spinner.gif" alt="Loading..." className="w-auto h-6" />;
     }
     return value || "N/A";
   };
@@ -96,6 +96,7 @@ export default function AlignerRow({
       {/* Engine dropdown */}
       <td>
         <EngineCell
+          key={`${task.task_id}-${selectedLanguageName || "no-language"}`}
           task={task}
           selectedLanguageName={selectedLanguageName}
           shouldOpen={shouldOpenEngineDropdown}
@@ -119,11 +120,11 @@ export default function AlignerRow({
       <td>
         {isUploading ? (
           <div className="flex items-center gap-2 mx-auto">
-            <img src="/spinner.gif" alt="Uploading..." className="w-4 h-4" />
+            <img src="/spinner.gif" alt="Uploading..." className="w-auto h-6" />
             <span>Uploading</span>
           </div>
         ) : hasPreError ? (
-          <div className="flex items-center gap-2 text-error mx-auto">
+          <div className="flex items-center justify-center gap-2 text-error mx-auto">
             <AlertCircle className="w-4 h-4" />
             <span>Failed</span>
           </div>
@@ -144,12 +145,11 @@ export default function AlignerRow({
             <Download className="w-4 h-4" />
           </a>
         ) : hasPreError ? (
-          <FileX
-            className="w-4 h-4 text-error mx-auto"
-            title="No files available"
-          />
+          <p className="text-center flex justify-around">
+            <FileX className="w-4 h-4 text-error" title="No files available" />
+          </p>
         ) : isUploading ? (
-          <img src="/spinner.gif" alt="Processing..." className="w-4 h-4" />
+          <img src="/spinner.gif" alt="Processing..." className="w-auto h-6" />
         ) : (
           <span className="text-gray-400">Not ready</span>
         )}
@@ -191,30 +191,9 @@ function LanguageCell({
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const handleLanguageChange = async (
-    languageName: string,
-    languageCode?: string
-  ) => {
+  const handleLanguageChange = async (languageName: string) => {
     setIsChangingLanguage(true);
     try {
-      // If languageCode is provided, make the API call directly
-      if (languageCode) {
-        await api.post("/tasks/change-language", {
-          task_id: task.task_id,
-          new_lang: languageCode,
-        });
-
-        const language = languagesData?.find(
-          (lang) => lang.code === languageCode
-        );
-        setSelectedLanguage(languageName);
-        setShowDropdown(false);
-        toast.success(
-          `Language changed to ${language?.display_name || languageName}`
-        );
-        return;
-      }
-
       // Find all languages with this language_name
       const languageOptions = languagesData?.filter(
         (lang) => lang.language_name === languageName
@@ -315,8 +294,8 @@ function LanguageCell({
   if (!languagesData) {
     return (
       <div className="flex items-center gap-2 text-sm rounded border border-base-200 p-1">
-        <div className="w-4 h-4 bg-base-300 rounded animate-pulse"></div>
-        <div className="w-12 h-4 bg-base-300 rounded animate-pulse"></div>
+        <div className="w-4 h-4 bg-base-200 rounded animate-pulse"></div>
+        <div className="w-12 h-4 bg-base-200 rounded animate-pulse"></div>
       </div>
     );
   }
@@ -334,7 +313,7 @@ function LanguageCell({
         onClick={() => !isDisabled && setShowDropdown(!showDropdown)}
       >
         {isChangingLanguage ? (
-          <img src="/spinner.gif" alt="Changing..." className="w-4 h-4" />
+          <img src="/spinner.gif" alt="Changing..." className="w-auto h-6" />
         ) : selectedLanguage ? (
           <img
             src={getLanguageFlag()}
@@ -381,7 +360,7 @@ function EngineCell({
   onDropdownOpened,
 }: {
   task: Task;
-  selectedLanguageName: string | null;
+  selectedLanguageName: string | undefined;
   shouldOpen: boolean;
   onDropdownOpened: () => void;
 }) {
@@ -409,12 +388,10 @@ function EngineCell({
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const { data: enginesData } = useQuery({
-    queryKey: ["engines", task.language?.code],
+  const { data: enginesData } = useQuery<Engine[]>({
+    queryKey: ["engines"],
     queryFn: async () => {
-      const response = await api.get(
-        `/languages/${task.language?.code}/engines`
-      );
+      const response = await api.get(`/engines`);
       return response.data.engines;
     },
     enabled: !!task.language?.code,
@@ -530,18 +507,18 @@ function EngineCell({
 
   // Get engine icon based on the language's associated engine
   const getEngineIcon = (languageCode: string) => {
-    const language = languagesData?.find((lang) => lang.code === languageCode);
-    return `/ngins/${languageCode}.png`;
+    const engine = enginesData?.find((eng) => languageCode.includes(eng.code));
+    return `/ngins/${engine?.code}.png`;
   };
 
-  if (!languagesData) {
+  if (!languagesData && !enginesData) {
     return (
-      <div className="w-16 h-4 bg-base-300 rounded animate-pulse mx-auto"></div>
+      <div className="w-16 h-4 bg-base-200 rounded animate-pulse mx-auto"></div>
     );
   }
 
   const displayOptions = getLanguageDisplayOptions();
-  const currentLanguage = languagesData.find(
+  const currentLanguage = languagesData?.find(
     (lang) => lang.code === task.language?.code
   );
 
@@ -555,10 +532,12 @@ function EngineCell({
         className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded ${
           isDisabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={() => !isDisabled && setShowDropdown(!showDropdown)}
+        onClick={() =>
+          !isDisabled && setShowDropdown((showDropdown) => !showDropdown)
+        }
       >
         {isChangingLanguage ? (
-          <img src="/spinner.gif" alt="Changing..." className="w-4 h-4" />
+          <img src="/spinner.gif" alt="Changing..." className="w-auto h-6" />
         ) : currentLanguage ? (
           <img
             src={getEngineIcon(currentLanguage.code)}
@@ -603,15 +582,11 @@ function EngineCell({
                   src={getEngineIcon(language.code)}
                   alt={language.display_name}
                   className="w-6 h-6 object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
                 />
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">
                     {language.display_name}
                   </span>
-                  <span className="text-xs text-gray-500">{language.code}</span>
                 </div>
               </div>
             ))}
