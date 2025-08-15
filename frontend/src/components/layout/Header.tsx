@@ -266,7 +266,10 @@ export function Header() {
                   className="btn btn-ghost btn-circle avatar"
                 >
                   <div className="w-10 rounded-full">
-                    <img src="/favicon.png" alt="Profile Image" />
+                    <img
+                      src={`https://new.autophontest.se/api/v1/static/profile/${user?.uuid}`}
+                      alt="Profile Image"
+                    />
                   </div>
                 </div>
                 <ul

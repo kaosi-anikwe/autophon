@@ -1,16 +1,16 @@
-import type React from "react";
+import React, { useState, useEffect } from "react";
 
 import TransChoice from "./TransChoice";
-import { useState } from "react";
 
 type TransChoicesProps = {
-  onContinue: () => void;
+  activeTitle?: string | null;
+  onSelectionChange?: (title: string | null) => void;
+  onContinue: (selectedTitle: string | null) => void;
 };
 
 type TransChoiceType = {
   title: string;
   video: string;
-  isActive: boolean;
   instructions: string;
   fileSystem: React.ReactNode;
 };
@@ -19,7 +19,6 @@ const TRANSCHOICES: TransChoiceType[] = [
   {
     title: "Experimental Ling A",
     video: "exp-a",
-    isActive: false,
     instructions:
       "Transcriptions in a master file absent of time stamps - as separate rows with separate audio files for each transcription.",
     fileSystem: (
@@ -37,7 +36,6 @@ const TRANSCHOICES: TransChoiceType[] = [
   {
     title: "Experimental Ling B",
     video: "exp-b",
-    isActive: false,
     instructions:
       "Transcriptions in a master file with start and end time stamps with more than one row per audio file.",
     fileSystem: (
@@ -55,7 +53,6 @@ const TRANSCHOICES: TransChoiceType[] = [
   {
     title: "Computational Ling",
     video: "exp-a",
-    isActive: true,
     instructions:
       "Transcriptions as separate same-name lab and audio files, absent of time stamps.",
     fileSystem: (
@@ -76,7 +73,6 @@ const TRANSCHOICES: TransChoiceType[] = [
   {
     title: "Variationist Ling",
     video: "exp-a",
-    isActive: false,
     instructions:
       "Longer transcription files in TextGrid, eaf, tsv, txt, or xlsx format with same-name audio files.",
     fileSystem: (
@@ -98,29 +94,42 @@ const TRANSCHOICES: TransChoiceType[] = [
   },
 ];
 
-export default function TransChoices({ onContinue }: TransChoicesProps) {
-  const [transChoices, setTransChoices] =
-    useState<TransChoiceType[]>(TRANSCHOICES);
+export default function TransChoices({ 
+  activeTitle = null,
+  onSelectionChange,
+  onContinue 
+}: TransChoicesProps) {
+  const [localActiveTitle, setLocalActiveTitle] = useState<string | null>(activeTitle);
+
+  // Update local state when activeTitle prop changes
+  useEffect(() => {
+    setLocalActiveTitle(activeTitle);
+  }, [activeTitle]);
 
   function handleSelect(title: string) {
-    setTransChoices((prevTrans) => {
-      return prevTrans.map((trans) => ({
-        ...trans,
-        isActive: trans.title === title,
-      }));
-    });
+    const newActiveTitle = localActiveTitle === title ? null : title;
+    setLocalActiveTitle(newActiveTitle);
+    
+    // Notify parent component of the selection change
+    if (onSelectionChange) {
+      onSelectionChange(newActiveTitle);
+    }
+  }
+
+  function handleContinue() {
+    onContinue(localActiveTitle);
   }
 
   return (
     <div className="space-y-6">
       {/* Transcription Mode Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        {/* Experimental Ling A */}
-        {transChoices.map((transChoice) => {
+        {TRANSCHOICES.map((transChoice) => {
           return (
             <TransChoice
               key={transChoice.title}
               {...transChoice}
+              isActive={localActiveTitle === transChoice.title}
               onSelect={() => handleSelect(transChoice.title)}
             >
               {transChoice.fileSystem}
@@ -143,8 +152,8 @@ export default function TransChoices({ onContinue }: TransChoicesProps) {
 
           <button 
             className="btn btn-primary font-thin" 
-            onClick={onContinue}
-            disabled={!transChoices.some(choice => choice.isActive)}
+            onClick={handleContinue}
+            disabled={!localActiveTitle}
           >
             Continue
           </button>

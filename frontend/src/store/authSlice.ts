@@ -2,18 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { authAPI, getErrorMessage } from "../lib/api";
 import type { LoginRequest, RegisterRequest } from "../lib/api";
+import type { User } from "@/types/api";
 
-export interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  title?: string;
-  org?: string;
-  industry?: string;
-  admin: boolean;
-  created_at: string;
-}
+// export interface User {
+//   id: number;
+//   email: string;
+//   first_name: string;
+//   last_name: string;
+//   title?: string;
+//   org?: string;
+//   industry?: string;
+//   admin: boolean;
+//   created_at: string;
+// }
 
 interface AuthState {
   user: User | null;

@@ -93,7 +93,7 @@ function ToastContainer({
   if (toasts.length === 0) return null;
 
   return (
-    <div className="toast toast-top toast-end z-[60] pt-20">
+    <div className="toast toast-top toast-end z-[1000] pt-20">
       {toasts.map((toast) => (
         <ToastItem
           key={toast.id}
@@ -147,7 +147,7 @@ function ToastItem({
     <div className={`alert ${getToastStyles(toast.type)} shadow-lg`}>
       {getIcon(toast.type)}
       <div className="flex-1">
-        {toast.title && <div className="font-bold">{toast.title}</div>}
+        {toast.title && <div className="font-normal">{toast.title}</div>}
         <div className="text-sm">{toast.message}</div>
       </div>
       {toast.action && (
@@ -155,7 +155,10 @@ function ToastItem({
           {toast.action.label}
         </button>
       )}
-      <button className="btn btn-ghost btn-sm btn-circle" onClick={onRemove}>
+      <button
+        className={`btn btn-${toast.type} btn-sm btn-circle`}
+        onClick={onRemove}
+      >
         <X className="w-4 h-4" />
       </button>
     </div>

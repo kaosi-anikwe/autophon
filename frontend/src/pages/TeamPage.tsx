@@ -16,7 +16,7 @@ function LoadingSkeleton() {
           {Array.from({ length: 3 }).map((_, memberIndex) => (
             <div key={memberIndex} className="mb-6">
               <div className="flex gap-4">
-                <div className="w-24 h-24 bg-base-300 rounded animate-pulse"></div>
+                <div className="w-32 h-32 bg-base-300 rounded animate-pulse"></div>
                 <div className="flex-1">
                   <div className="h-6 bg-base-300 rounded w-32 mb-2 animate-pulse"></div>
                   <div className="h-4 bg-base-300 rounded w-24 mb-3 animate-pulse"></div>
@@ -65,8 +65,6 @@ export function TeamPage() {
   }
 
   const { team } = data!;
-
-  console.log(team);
 
   return (
     <>

@@ -11,8 +11,6 @@ type UserProfileProps = {
 export default function UserProfile({ user }: UserProfileProps) {
   const [profileEdit, setProfileEdit] = useState(false);
 
-  console.log(user);
-
   return (
     <>
       <div className="md:col-span-4">
@@ -20,12 +18,14 @@ export default function UserProfile({ user }: UserProfileProps) {
           <div className="avatar mx-auto my-4">
             <div className="w-24 rounded-full">
               <img
-                alt="Person"
-                src="https://img.daisyui.com/images/profile/demo/batperson@192.webp"
+                alt={user?.display_name}
+                src={`https://new.autophontest.se/api/v1/static/profile/${user?.uuid}`}
               />
             </div>
           </div>
-          <h2 className="text-center text-2xl font-bold">Dr Nate Young</h2>
+          <h2 className="text-center text-2xl font-bold">
+            {user?.display_name}
+          </h2>
         </div>
         <div className="card bg-base-100 shadow-lg px-4 py-2 border border-base-200">
           <h2 className="text-center text-2xl font-bold">Account management</h2>
@@ -44,7 +44,7 @@ export default function UserProfile({ user }: UserProfileProps) {
       <div className="md:col-span-8">
         <h2 className="text-2xl font-bold text-left">
           {!profileEdit ? (
-            "Welcome NAME"
+            `Welcome ${user?.display_name}`
           ) : (
             <div className="flex items-center">
               <h3 className="font-bold text-xl mr-2">Edit account details</h3>
@@ -63,29 +63,33 @@ export default function UserProfile({ user }: UserProfileProps) {
               <ul className="list bg-base-100 rounded-box shadow-md">
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Name</p>
-                  <p className="text-lg text-base-300">Dr Nate Y2312010</p>
+                  <p className="text-lg text-base-300">{user?.display_name}</p>
                 </li>
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Email</p>
                   <div className="flex items-center">
-                    <p className="text-lg text-base-300 mr-4">
-                      test@something.com
-                    </p>
-                    <div className="tooltip" data-tip="Email verified">
-                      <BadgeCheck className="text-success mr-4" />
-                    </div>
-                    <p role="button" className="text-accent cursor-pointer">
-                      Verify Email
-                    </p>
+                    <p className="text-lg text-base-300 mr-4">{user?.email}</p>
+                    {user?.verified && (
+                      <div className="tooltip" data-tip="Email verified">
+                        <BadgeCheck className="text-success mr-4" />
+                      </div>
+                    )}
+                    {!user?.verified && (
+                      <p role="button" className="text-accent cursor-pointer">
+                        Verify Email
+                      </p>
+                    )}
                   </div>
                 </li>
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Affiliation</p>
-                  <p className="text-lg text-base-300">No Affiliation</p>
+                  <p className="text-lg text-base-300">
+                    {user?.org || user?.industry || "No affiliation"}
+                  </p>
                 </li>
                 <li className="list-row">
                   <p className="text-lg font-bold mr-8">Unique ID</p>
-                  <p className="text-lg text-base-300">adf89320</p>
+                  <p className="text-lg text-base-300">{user?.uuid}</p>
                 </li>
               </ul>
             </div>

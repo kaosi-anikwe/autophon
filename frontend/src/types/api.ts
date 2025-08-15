@@ -1,17 +1,21 @@
 // User types
 export interface User {
   id: number;
-  uuid: string;
+  uuid?: string;
   email: string;
   first_name: string;
   last_name: string;
   title?: string;
+  edited?: boolean;
   org?: string;
   industry?: string;
+  display_name?: string;
+  profile_image?: string;
+  trans_default?: string;
   admin: boolean;
-  verified: boolean;
-  created_at: string;
-  updated_at: string;
+  verified?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface TeamMember {
@@ -70,21 +74,25 @@ export interface Task {
   user_id?: number;
   task_id: string;
   language_id: number;
-  engine_id: number;
-  status:
+  engine: Engine | null;
+  download_title?: string;
+  no_of_tiers?: number;
+  size?: number;
+  task_status:
     | "uploading"
     | "uploaded"
     | "aligned"
     | "completed"
     | "failed"
     | "cancelled";
+  pre_error?: boolean;
   anonymous: boolean;
   transcription_choice: "var-ling" | "comp-ling" | "exp-a" | "exp-b";
-  language_code: string;
+  language: Language | null;
   task_path: string;
   log_path?: string;
   file_count: number;
-  words_count?: number;
+  words?: number;
   missing_words?: number;
   duration?: number;
   created_at: string;
@@ -93,7 +101,7 @@ export interface Task {
 
 export interface TaskStatus {
   task_id: string;
-  status: Task["status"];
+  status: Task["task_status"];
   progress?: number;
   message?: string;
   estimated_completion?: string;
@@ -119,6 +127,13 @@ export interface LanguageHomepage {
   language_name: string;
   alphabet: string;
   priority: number;
+}
+export interface Language {
+  id: number;
+  code: string;
+  display_name: string;
+  language_name: string;
+  type: string;
 }
 
 export interface LanguagesResponse {

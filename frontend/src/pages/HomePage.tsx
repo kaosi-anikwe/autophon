@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import LoginForm from "@/components/forms/LoginForm";
 import { useAppSelector } from "../hooks/useAppDispatch";
-import AlignerTable from "@/components/aligner/AlignerTable";
+import Aligner from "@/components/aligner/Aligner";
 import ForgotPassword from "@/components/forms/ForgotPassword";
 import { SupportedEngines } from "../components/home/SupportedEngines";
 import { SupportedLanguages } from "../components/home/SupportedLanguages";
@@ -13,7 +13,7 @@ import { useConfig, useAppDegradedState } from "../contexts/AppConfigContext";
 export function HomePage() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const config = useConfig(); // Access app config anywhere!
+  const config = useConfig();
   const { isDegraded } = useAppDegradedState();
 
   return (
@@ -142,29 +142,44 @@ export function HomePage() {
       {/* Anonymous Table Section - only for non-authenticated users and if site is active */}
       {!isAuthenticated && (
         <div className="py-3">
-          <AlignerTable title="Align files here" />
+          <Aligner title="Align files here" />
           <div className="p-3">
-            <p className="text-[#949494] text-sm">
-              * Files under {config?.user_limits.a_size_limit || 100}MB may be aligned without an account. To align
-              batches as large as {config?.user_limits.size_limit || 750} MB and to access advanced features,{" "}
-              <Link
-                to="/register"
-                className="text-[#949494] no-underline border-b-[0.3px] border-dotted border-[#949494] hover:text-primary transition-colors mx-0"
-              >
-                create a free account here.
-              </Link>
-            </p>
-            {config && (
-              <p className="text-[#949494] text-xs mt-2">
-                Supported audio formats: {config.audio_extensions.join(', ')}
-              </p>
+            {config?.user_limits && config.audio_extensions && (
+              <>
+                <p className="text-[#949494] text-sm">
+                  * Files under {config.user_limits.a_size_limit || 100}MB may
+                  be aligned without an account. To align batches as large as{" "}
+                  {config.user_limits.size_limit || 750} MB and to access
+                  advanced features,{" "}
+                  <Link
+                    to="/register"
+                    className="text-[#949494] no-underline border-b-[0.3px] border-dotted border-[#949494] hover:text-primary transition-colors mx-0"
+                  >
+                    create a free account here.
+                  </Link>
+                </p>
+                <p className="text-[#949494] text-xs mt-2">
+                  Supported audio formats: {config.audio_extensions.join(", ")}
+                </p>
+              </>
             )}
             {isDegraded && (
               <div className="alert alert-warning mt-2">
-                <svg className="stroke-current shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+                <svg
+                  className="stroke-current shrink-0 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+                  />
                 </svg>
-                <span className="text-xs">App configuration unavailable - using default limits</span>
+                <span className="text-xs">
+                  App configuration unavailable - using default limits
+                </span>
               </div>
             )}
           </div>
