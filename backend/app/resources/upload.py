@@ -65,7 +65,7 @@ class FileUploadResource(Resource):
                         user_id = jwt_user_id
                         anonymous = False
                         logger.info(f"Authenticated user: {current_user_obj.email}")
-            except Exception:
+            except Exception as e:
                 # No valid JWT token, proceed as anonymous
                 pass
 

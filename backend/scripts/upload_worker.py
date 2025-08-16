@@ -104,7 +104,7 @@ class UploadTaskProcessor:
         for attempt in range(self.config.retry_attempts):
             try:
                 logger.info(f"Processing upload {task.task_id} (attempt {attempt + 1})")
-                self.update_task_status(task, TaskStatus.PROCESSING, pid=os.getpid())
+                self.update_task_status(task, TaskStatus.UPLOADING, pid=os.getpid())
 
                 success = self.process_upload(task)
 
@@ -124,7 +124,7 @@ class UploadTaskProcessor:
                 time.sleep(self.config.retry_delay)
 
         # All attempts failed
-        self.update_task_status(task, TaskStatus.FAILED, pre_error=True)
+        self.update_task_status(task, pre_error=True)
         return False
 
     def process_upload(self, task: Task) -> bool:
@@ -337,7 +337,7 @@ class UploadWorker:
                 task = Task.query.filter_by(task_id=task_id).first()
                 if task:
                     self.processor.update_task_status(
-                        task, TaskStatus.PENDING, cancelled=True
+                        task, TaskStatus.UPLOADING, cancelled=True
                     )
 
         # Shutdown executor

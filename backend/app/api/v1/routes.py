@@ -99,7 +99,7 @@ api.add_resource(UserTasksResource, "/users/<int:user_id>/tasks")
 api.add_resource(LanguageListResource, "/languages")
 api.add_resource(LanguageResource, "/languages/<int:language_id>")
 api.add_resource(LanguageByCodeResource, "/languages/code/<string:code>")
-api.add_resource(LanguageEnginesResource, "/languages/<int:language_id>/engines")
+api.add_resource(LanguageEnginesResource, "/languages/<string:language_code>/engines")
 api.add_resource(PublicLanguageListResource, "/public/languages")
 
 # Engine routes

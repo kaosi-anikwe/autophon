@@ -219,16 +219,10 @@ class LanguageEnginesResource(Resource):
     """Handle language-engine relationships (admin only)"""
 
     @jwt_required()
-    def get(self, language_id):
+    def get(self, language_code):
         """Get engines for a language (admin only)"""
         try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
-
-            if not current_user or not current_user.admin:
-                return {"message": "Admin access required"}, 403
-
-            language = Language.query.filter_by(id=language_id).first()
+            language = Language.query.filter_by(code=language_code).first()
             if not language:
                 return {"message": "Language not found"}, 404
 
@@ -313,11 +307,12 @@ class PublicLanguageListResource(Resource):
 
             # Use homepage schema for consistent public display
             schema = LanguageHomepageSchema(many=True)
+            single_schema = LanguageHomepageSchema()
 
             # Group languages by type for better frontend organization
             grouped_languages = {"nordic": [], "other": []}
             for lang in languages:
-                lang_data = schema.dump(lang)
+                lang_data = single_schema.dump(lang)
                 if lang.type.value in grouped_languages:
                     grouped_languages[lang.type.value].append(lang_data)
                 else:

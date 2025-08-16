@@ -6,7 +6,7 @@ from flask_restful import Resource
 from flask import current_app, request, send_file
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
-from app.models.task import Task, TaskStatus
+from app.models.task import Task, TaskStatus, FileType
 from app.utils.helpers import missing_word_html
 from app.utils.logger import get_logger
 
@@ -270,40 +270,33 @@ class TaskDownloadResource(Resource):
         )
 
     def _get_held_paths(self, task):
-        """Extract held paths from task data"""
-        # This would depend on how held_paths is stored in your Task model
-        # For now, assume it's a JSON field or similar
-        if hasattr(task, "held_paths") and task.held_paths:
-            if isinstance(task.held_paths, list):
-                return task.held_paths
-            # If it's stored as JSON string, parse it
-            import json
-
-            try:
-                return json.loads(task.held_paths)
-            except:
-                return []
-        return []
+        """Extract held paths from task files using proper database relationship"""
+        held_paths = []
+        
+        # Get HELD type files from TaskFile relationship
+        for file in task.files:
+            if file.file_type == FileType.HELD:
+                held_paths.append(file.file_path)
+        
+        return held_paths
 
     def _get_original_filename(self, task, file_path):
-        """Get original filename from task metadata"""
-        # Extract file ID and look up original name
-        file_id = os.path.splitext(os.path.basename(file_path))[0]
-
-        # If task has file_names metadata, use it
-        if hasattr(task, "file_names") and task.file_names:
-            if isinstance(task.file_names, dict):
-                return task.file_names.get(file_id, "upload.TextGrid")
-            # If it's JSON string, parse it
-            import json
-
-            try:
-                file_names = json.loads(task.file_names)
-                return file_names.get(file_id, "upload.TextGrid")
-            except:
-                pass
-
-        return f"{file_id}.TextGrid"
+        """Get original filename from task file names using proper database relationship"""
+        # Extract file key from path
+        file_key = os.path.splitext(os.path.basename(file_path))[0]
+        
+        # Look up original name in TaskFileName relationship
+        for file_name in task.file_names:
+            if file_name.file_key == file_key:
+                return file_name.original_name
+        
+        # Fallback: check if the task file has original_filename
+        for task_file in task.files:
+            if task_file.file_path == file_path and task_file.original_filename:
+                return task_file.original_filename
+        
+        # Final fallback
+        return f"{file_key}.TextGrid"
 
     def _create_textgrid_zip(self, task, held_paths):
         """Create a temporary ZIP file with multiple TextGrid files"""
@@ -422,6 +415,8 @@ class StaticDownloadResource(Resource):
         try:
             if file_type == "guides":
                 return self._download_user_guide(filename)
+            elif file_type == "profile":
+                return self._user_image(filename)
             else:
                 return {"status": "error", "message": "Invalid file type"}, 400
 
@@ -452,3 +447,14 @@ class StaticDownloadResource(Resource):
             download_name=display_name,
             mimetype="application/pdf",
         )
+
+    def _user_image(self, uuid):
+        """Return user profile image"""
+
+        image_path = os.path.join(os.getenv("UPLOADS"), uuid, "profile.png")
+        if not os.path.exists(image_path):
+            from app.models.user import User
+
+            User.profile_image()
+
+        return send_file(image_path, download_name=f"{uuid}.png", mimetype="image/png")

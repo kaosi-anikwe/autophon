@@ -41,3 +41,4 @@ class EngineSimpleSchema(Schema):
     code = fields.Str(dump_only=True)
     name = fields.Str(dump_only=True)
     is_active = fields.Bool(dump_only=True)
+    documentation_link = fields.Str(dump_only=True)
