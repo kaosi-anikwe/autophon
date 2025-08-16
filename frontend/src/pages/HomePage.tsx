@@ -144,12 +144,12 @@ export function HomePage() {
         <div className="py-3">
           <Aligner title="Align files here" />
           <div className="p-3">
-            {config?.user_limits && config.audio_extensions && (
+            {config?.userLimits && config.audioExtensions && (
               <>
                 <p className="text-[#949494] text-sm">
-                  * Files under {config.user_limits.a_size_limit || 100}MB may
-                  be aligned without an account. To align batches as large as{" "}
-                  {config.user_limits.size_limit || 750} MB and to access
+                  * Files under {config.userLimits.a_size_limit || 100}MB may be
+                  aligned without an account. To align batches as large as{" "}
+                  {config.userLimits.size_limit || 750} MB and to access
                   advanced features,{" "}
                   <Link
                     to="/register"
@@ -159,7 +159,7 @@ export function HomePage() {
                   </Link>
                 </p>
                 <p className="text-[#949494] text-xs mt-2">
-                  Supported audio formats: {config.audio_extensions.join(", ")}
+                  Supported audio formats: {config.audioExtensions.join(", ")}
                 </p>
               </>
             )}

@@ -5,7 +5,7 @@ import UserGuides from "@/components/features/UserGuides";
 export function DashboardPage() {
   return (
     <div className="px-8">
-      <Aligner title="Add Files" homepage />
+      <Aligner title="Add Files" homepage={false} />
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4 py-8">
         <div className="col-span-4">
           <UserDict />

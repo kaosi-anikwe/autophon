@@ -36,14 +36,14 @@ export interface TeamResponse {
 
 // App Config types
 export interface AppConfig {
-  user_limits: {
+  userLimits: {
     size_limit: number;
     file_pair_limit: number;
     user_dict_limit: number;
     a_size_limit: number;
     a_upload_limit: number;
   };
-  audio_extensions: string[];
+  audioExtensions: string[];
 }
 
 // Auth types
@@ -76,6 +76,7 @@ export interface Task {
   language_id: number;
   engine: Engine | null;
   download_title?: string;
+  download_date?: string;
   no_of_tiers?: number;
   size?: number;
   task_status:
@@ -87,7 +88,7 @@ export interface Task {
     | "cancelled";
   pre_error?: boolean;
   anonymous: boolean;
-  transcription_choice: "var-ling" | "comp-ling" | "exp-a" | "exp-b";
+  trans_choice: "var-ling" | "comp-ling" | "exp-a" | "exp-b";
   language: Language | null;
   task_path: string;
   log_path?: string;

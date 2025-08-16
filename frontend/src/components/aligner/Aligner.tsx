@@ -183,19 +183,20 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     },
   });
 
-  // Fetch tasks query with real-time updates for uploading tasks
+  // Fetch tasks query with real-time updates for uploading and aligning tasks
   const fetchTasks = useQuery<Task[]>({
     queryKey: ["tasks"],
     staleTime: 2 * 1000, // 2 seconds for real-time feel
     refetchInterval: ({ state }) => {
-      // Check if any tasks are in uploading state
+      // Check if any tasks are in uploading or aligned state
       if (!state?.data || !Array.isArray(state.data)) {
         return 30000; // Default polling if no data or error
       }
-      const hasUploadingTasks = state.data.some(
-        (task) => task.task_status === "uploading"
+      const hasActiveProcessingTasks = state.data.some(
+        (task) =>
+          task.task_status === "uploading" || task.task_status === "aligned"
       );
-      return hasUploadingTasks ? 3000 : 30000; // Poll every 3s if uploading, else every 30s
+      return hasActiveProcessingTasks ? 3000 : 30000; // Poll every 3s if processing, else every 30s
     },
     queryFn: async () => {
       const response = await api.get("/tasks");
@@ -203,7 +204,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     },
   });
 
-  // Prefetch languages data 
+  // Prefetch languages data
   const { data: languagesData } = useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
@@ -293,7 +294,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
             {modalState.isPreprocessing && (
               <ProgressBar
                 title="Processing files..."
-                progress={modalState.preprocessingProgress}
+                progress={parseInt(modalState.preprocessingProgress.toFixed(0))}
                 type="secondary"
               />
             )}
@@ -306,7 +307,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
 
         <p className="text-xs leading-[1.5] text-base-300 text-left py-1">
           A single upload may be no larger than{" "}
-          {config?.user_limits?.size_limit || 750} MB. If your zip folder
+          {config?.userLimits?.size_limit || 750} MB. If your zip folder
           contains hundreds or thousands of small files, the progress bar will
           park itself at 100% for as long as 30 minutes. Do not refresh; rather,
           wait it out, and it will eventually load. We are currently working on
@@ -351,7 +352,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   }
 
   let titleClasses = "text-2xl font-bold flex items-center";
-  if (homepage) titleClasses += " py-8";
+  if (!homepage) titleClasses += " py-8";
 
   return (
     <>
@@ -390,7 +391,11 @@ export default function Aligner({ title, homepage }: AlignerProps) {
             </button>
           </div>
 
-          <AlignerTable tasks={fetchTasks.data} isLoading={fetchTasks.isLoading} />
+          <AlignerTable
+            tasks={fetchTasks.data}
+            homepage={homepage}
+            isLoading={fetchTasks.isLoading}
+          />
         </div>
       </div>
     </>

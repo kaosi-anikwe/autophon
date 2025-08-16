@@ -310,6 +310,6 @@ export const appConfigAPI = {
   // Get application configuration
   getAppConfig: async (): Promise<AppConfig> => {
     const response = await api.get("/config");
-    return response.data;
+    return response.data.data;
   },
 };

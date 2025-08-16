@@ -141,8 +141,8 @@ export default function FileValidator({
     );
     const totalSizeMB = totalSize / (1024 * 1024);
 
-    if (config?.user_limits?.size_limit) {
-      const sizeLimitMB = config.user_limits.size_limit;
+    if (config?.userLimits?.size_limit) {
+      const sizeLimitMB = config.userLimits.size_limit;
       if (totalSizeMB > sizeLimitMB) {
         toast.error(
           `Total file size (${totalSizeMB.toFixed(
@@ -249,9 +249,9 @@ export default function FileValidator({
         </div>
       )}
 
-      {config?.user_limits?.size_limit && (
+      {config?.userLimits?.size_limit && (
         <p className="text-xs text-base-300 mt-2">
-          Maximum total file size: {config.user_limits.size_limit} MB
+          Maximum total file size: {config.userLimits.size_limit} MB
         </p>
       )}
     </div>
