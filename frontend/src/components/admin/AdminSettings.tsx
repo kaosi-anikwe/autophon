@@ -148,10 +148,10 @@ export default function AdminSettings() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[3.5rem] leading-[1.1] text-left mb-2">
+          <h1 className="text-4xl leading-[1.1] text-left mb-2">
             Site Settings
           </h1>
-          <p className="text-lg text-base-content/70">
+          <p className="text-base-content/70">
             Manage site status and blocked emails
           </p>
         </div>
@@ -282,7 +282,7 @@ export default function AdminSettings() {
                 <button
                   type="submit"
                   disabled={updateSiteStatusMutation.isPending}
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary font-thin w-full"
                 >
                   {updateSiteStatusMutation.isPending ? (
                     <>
@@ -414,9 +414,7 @@ export default function AdminSettings() {
                   • Set optional start and end dates for planned maintenance
                 </li>
                 <li>• Customize maintenance message shown to users</li>
-                <li>
-                  • Existing user sessions remain active during maintenance
-                </li>
+                <li>• Existing user are removed during maintenance</li>
               </ul>
             </div>
             <div>
@@ -425,9 +423,12 @@ export default function AdminSettings() {
                 Email Blocking
               </h4>
               <ul className="text-sm text-base-content/70 space-y-1">
-                <li>• Block specific email addresses from registration</li>
-                <li>• Existing users with blocked emails remain active</li>
-                <li>• Track who blocked each email and when</li>
+                <li>
+                  • Block specific email addresses from registration and site
+                  access
+                </li>
+                <li>• Existing users with blocked emails will be logged out</li>
+                <li>• Blocked user accounts will be deleted immediately</li>
                 <li>• Easily unblock emails when needed</li>
               </ul>
             </div>

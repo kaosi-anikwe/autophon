@@ -63,8 +63,8 @@ export default function HistoryTable({
         <div className="relative">
           <div className="max-h-[40rem] overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table className="table">
-              <thead className="table-pin-rows text-center">
-                <tr>
+              <thead className="table-pin-rows text-center bg-neutral text-neutral-content font-thin">
+                <tr className="font-thin">
                   <th className="p-2">Date</th>
                   <th className="p-2">Tiers</th>
                   <th className="p-2">Language</th>
@@ -127,7 +127,7 @@ export default function HistoryTable({
 
           {/* Fixed Totals Row */}
           {totals && (
-            <div className="sticky bottom-0 bg-primary text-primary-content font-thin rounded-b-box">
+            <div className="sticky bottom-0 bg-neutral text-neutral-content font-thin rounded-b-box">
               <div className="overflow-x-auto">
                 <table className="table">
                   <tbody>

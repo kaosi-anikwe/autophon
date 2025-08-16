@@ -32,7 +32,7 @@ export function Header() {
                       to="/history"
                       className={`${
                         isActive("/history")
-                          ? "bg-base-300 text-primary-content"
+                          ? "bg-neutral text-neutral-content"
                           : ""
                       }  `}
                     >
@@ -45,7 +45,7 @@ export function Header() {
                     to="/about"
                     className={`${
                       isActive("/about")
-                        ? "bg-base-300 text-primary-content"
+                        ? "bg-neutral text-neutral-content"
                         : ""
                     }  `}
                   >
@@ -58,7 +58,7 @@ export function Header() {
                       to="/admin"
                       className={`${
                         isActive("/admin")
-                          ? "bg-base-300 text-primary-content"
+                          ? "bg-neutral text-neutral-content"
                           : ""
                       }  `}
                     >
@@ -71,7 +71,7 @@ export function Header() {
                     to="/support"
                     className={`${
                       isActive("/support")
-                        ? "bg-base-300 text-primary-content"
+                        ? "bg-neutral text-neutral-content"
                         : ""
                     }  `}
                   >
@@ -82,9 +82,7 @@ export function Header() {
                   <Link
                     to="/team"
                     className={`${
-                      isActive("/team")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
+                      isActive("/team") ? "bg-neutral text-neutral-content" : ""
                     }  `}
                   >
                     Team
@@ -97,7 +95,7 @@ export function Header() {
                         to="/dashboard"
                         className={`${
                           isActive("/dashboard")
-                            ? "bg-base-300 text-primary-content"
+                            ? "bg-neutral text-neutral-content"
                             : ""
                         }  `}
                       >
@@ -148,7 +146,7 @@ export function Header() {
                       to="/history"
                       className={`${
                         isActive("/history")
-                          ? "bg-base-300 text-primary-content"
+                          ? "bg-neutral text-neutral-content"
                           : ""
                       }  `}
                     >
@@ -161,7 +159,7 @@ export function Header() {
                     to="/about"
                     className={`${
                       isActive("/about")
-                        ? "bg-base-300 text-primary-content"
+                        ? "bg-neutral text-neutral-content"
                         : ""
                     }  `}
                   >
@@ -174,7 +172,7 @@ export function Header() {
                       to="/admin"
                       className={`${
                         isActive("/admin")
-                          ? "bg-base-300 text-primary-content"
+                          ? "bg-neutral text-neutral-content"
                           : ""
                       }  `}
                     >
@@ -187,7 +185,7 @@ export function Header() {
                     to="/support"
                     className={`${
                       isActive("/support")
-                        ? "bg-base-300 text-primary-content"
+                        ? "bg-neutral text-neutral-content"
                         : ""
                     }  `}
                   >
@@ -198,9 +196,7 @@ export function Header() {
                   <Link
                     to="/team"
                     className={`${
-                      isActive("/team")
-                        ? "bg-base-300 text-primary-content"
-                        : ""
+                      isActive("/team") ? "bg-neutral text-neutral-content" : ""
                     }  `}
                   >
                     Team
@@ -213,7 +209,7 @@ export function Header() {
                         to="/dashboard"
                         className={`${
                           isActive("/dashboard")
-                            ? "bg-base-300 text-primary-content"
+                            ? "bg-neutral text-neutral-content"
                             : ""
                         }  `}
                       >

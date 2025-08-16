@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="footer sm:footer-horizontal footer-center bg-primary text-base-100 p-4 py-12">
+    <footer className="footer sm:footer-horizontal footer-center bg-neutral text-neutral-content/60 p-4 py-12">
       <aside>
         <p>
           Copyright © {new Date().getFullYear()}{" "}

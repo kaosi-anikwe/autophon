@@ -8,7 +8,6 @@ import {
   Calendar,
   Loader2,
   FileX,
-  CheckSquare,
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { adminAPI } from "@/lib/api";
@@ -132,10 +131,10 @@ export default function AdminDatabase() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[3.5rem] leading-[1.1] text-left mb-2">
+          <h1 className="text-4xl leading-[1.1] text-left mb-2">
             Database Management
           </h1>
-          <p className="text-lg text-base-content/70">
+          <p className="text-base-content/70">
             Generate reports and download backup files
           </p>
         </div>
@@ -184,7 +183,7 @@ export default function AdminDatabase() {
                 />
                 <label className="label">
                   <span className="label-text-alt">
-                    Only include users created before this date
+                    Only include users created on or before this date
                   </span>
                 </label>
               </div>
@@ -199,11 +198,7 @@ export default function AdminDatabase() {
                   />
                   <div>
                     <div className="label-text font-medium flex items-center gap-2">
-                      <CheckSquare className="w-4 h-4" />
                       Include Deleted Users
-                    </div>
-                    <div className="label-text-alt">
-                      Include users with deleted.com emails
                     </div>
                   </div>
                 </label>
@@ -214,7 +209,7 @@ export default function AdminDatabase() {
             <button
               onClick={handleGenerateUserReport}
               disabled={generateUserReportMutation.isPending}
-              className="btn btn-primary w-full"
+              className="btn btn-primary font-thin w-full"
             >
               {generateUserReportMutation.isPending ? (
                 <>

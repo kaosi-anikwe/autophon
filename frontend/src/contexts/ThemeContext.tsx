@@ -1,11 +1,19 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
-type Theme = 'autophon' | 'autophon-dark';
+type ThemeSetting = "autophon" | "autophon-dark" | "system";
+type ActualTheme = "autophon" | "autophon-dark";
 
 interface ThemeContextType {
-  theme: Theme;
+  theme: ActualTheme;
+  themeSetting: ThemeSetting;
   toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
+  setTheme: (theme: ThemeSetting) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -15,56 +23,85 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => {
+  const getSystemTheme = (): ActualTheme => {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "autophon-dark";
+    }
+    return "autophon";
+  };
+
+  const [themeSetting, setThemeSettingState] = useState<ThemeSetting>(() => {
     // Check localStorage first
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme && (savedTheme === 'autophon' || savedTheme === 'autophon-dark')) {
+    const savedTheme = localStorage.getItem("theme") as ThemeSetting;
+    if (
+      savedTheme &&
+      (savedTheme === "autophon" || savedTheme === "autophon-dark" || savedTheme === "system")
+    ) {
       return savedTheme;
     }
-    
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'autophon-dark';
+
+    return "system";
+  });
+
+  const [theme, setThemeState] = useState<ActualTheme>(() => {
+    if (themeSetting === "system") {
+      return getSystemTheme();
     }
-    
-    return 'autophon';
+    return themeSetting as ActualTheme;
   });
 
   useEffect(() => {
+    // Determine actual theme based on setting
+    if (themeSetting === "system") {
+      setThemeState(getSystemTheme());
+    } else {
+      setThemeState(themeSetting as ActualTheme);
+    }
+
+    // Save theme setting to localStorage
+    localStorage.setItem("theme", themeSetting);
+  }, [themeSetting]);
+
+  useEffect(() => {
     // Apply theme to document
-    document.documentElement.setAttribute('data-theme', theme);
-    
-    // Save to localStorage
-    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   useEffect(() => {
     // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
     const handleChange = (e: MediaQueryListEvent) => {
-      // Only auto-change if no theme is saved in localStorage
-      const savedTheme = localStorage.getItem('theme');
-      if (!savedTheme) {
-        setThemeState(e.matches ? 'autophon-dark' : 'autophon');
+      // Only auto-change if theme setting is "system"
+      if (themeSetting === "system") {
+        setThemeState(e.matches ? "autophon-dark" : "autophon");
       }
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [themeSetting]);
 
   const toggleTheme = () => {
-    setThemeState(prev => prev === 'autophon' ? 'autophon-dark' : 'autophon');
+    if (themeSetting === "system") {
+      setThemeSettingState(theme === "autophon" ? "autophon-dark" : "autophon");
+    } else {
+      setThemeSettingState((prev) =>
+        prev === "autophon" ? "autophon-dark" : "autophon"
+      );
+    }
   };
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
+  const setTheme = (newTheme: ThemeSetting) => {
+    setThemeSettingState(newTheme);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, themeSetting, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -73,7 +110,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 }

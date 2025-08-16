@@ -145,16 +145,16 @@ export default function AdminUsers() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[3.5rem] leading-[1.1] text-left mb-2">
+          <h1 className="text-4xl leading-[1.1] text-left mb-2">
             User Management
           </h1>
-          <p className="text-lg text-base-content/70">
+          <p className="text-base-content/70">
             Manage user accounts and permissions
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Users className="w-6 h-6 text-primary" />
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-lg font-bold text-primary">
             {filteredUsers.length} users
           </span>
         </div>
@@ -273,12 +273,12 @@ export default function AdminUsers() {
                           <div className="font-bold flex items-center gap-2">
                             {user.display_name}
                             {isCurrentUserRow && (
-                              <span className="badge badge-primary badge-sm">
+                              <span className="badge badge-primary font-thin badge-sm">
                                 You
                               </span>
                             )}
                             {isDeleted && (
-                              <span className="badge badge-error badge-sm flex items-center gap-1">
+                              <span className="badge badge-error font-thin badge-sm flex items-center gap-1">
                                 <UserMinus className="w-3 h-3" />
                                 Deleted
                               </span>

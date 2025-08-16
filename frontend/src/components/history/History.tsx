@@ -101,7 +101,7 @@ export default function History() {
                   key={month}
                   className={`list-row grid-cols-1 text-center after:bg-base-200 after:border-b cursor-pointer hover:bg-base-200 ${
                     selectedMonth === month
-                      ? "bg-primary text-primary-content"
+                      ? "bg-neutral text-neutral-content"
                       : ""
                   }`}
                   onClick={() => handleMonthClick(month)}
@@ -115,14 +115,18 @@ export default function History() {
       </div>
       <div className="md:col-span-10 space-y-6">
         <div className="card shadow-lg bg-base-100 space-y-4 px-2">
-          <HistoryTable tasks={historyTasks} totals={totals} isLoading={isLoading} />
+          <HistoryTable
+            tasks={historyTasks}
+            totals={totals}
+            isLoading={isLoading}
+          />
         </div>
-        <div className="text-right">
+        <div className="text-right mr-8">
           <button
             className={`btn font-thin ${
               !historyTasks || historyTasks.length === 0
                 ? "btn-disabled"
-                : "btn-primary"
+                : "btn-neutral"
             }`}
             onClick={handleDownloadHistory}
             disabled={!historyTasks || historyTasks.length === 0}

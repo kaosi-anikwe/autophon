@@ -77,10 +77,10 @@ export default function AdminDashboard() {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[3.5rem] leading-[1.1] text-left mb-2">
+          <h1 className="text-4xl leading-[1.1] text-left mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-lg text-base-content/70">
+          <p className="text-base-content/70">
             System overview for {formatDate(dashboardStats.date)}
           </p>
         </div>
