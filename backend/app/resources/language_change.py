@@ -1,9 +1,9 @@
 import os
 import shutil
-import textgrid
 import traceback
 import subprocess
 import charset_normalizer
+from praatio import textgrid
 from datetime import datetime
 from app.utils.datetime_helpers import utc_now
 from dotenv import load_dotenv
@@ -109,39 +109,25 @@ class LanguageChangeResource(Resource):
 
     def _get_held_paths(self, task):
         """Extract held paths from task - adapt based on how they're stored"""
-        # Check if task has files relationship
-        if hasattr(task, "files") and task.files:
-            # Get TextGrid files from task files
-            textgrid_paths = []
-            for file in task.files:
-                if file.file_type.value == "textgrid" or file.file_path.endswith(
-                    ".TextGrid"
-                ):
-                    textgrid_paths.append(file.file_path)
-            return textgrid_paths
-
-        # Fallback: check if held_paths is stored as JSON string
-        if hasattr(task, "held_paths") and task.held_paths:
-            try:
-                import json
-
-                held_paths = json.loads(task.held_paths)
-                if isinstance(held_paths, list):
-                    return held_paths
-            except:
-                pass
-
-        # Last resort: scan task directory for TextGrid files
-        task_dir = os.path.join(UPLOADS, task.task_path) if task.task_path else None
-        if task_dir and os.path.exists(task_dir):
-            textgrid_files = []
-            for root, dirs, files in os.walk(task_dir):
-                for file in files:
-                    if file.endswith(".TextGrid"):
-                        textgrid_files.append(os.path.join(root, file))
-            return textgrid_files
-
-        return []
+        from app.models.task import FileType
+        
+        textgrid_paths = []
+        
+        # Get HELD type files from TaskFile relationship
+        for file in task.files:
+            if file.file_type == FileType.HELD:
+                textgrid_paths.append(file.file_path)
+        
+        # Fallback: scan task directory for TextGrid files if no DB records
+        if not textgrid_paths:
+            task_dir = os.path.join(UPLOADS, task.task_path) if task.task_path else None
+            if task_dir and os.path.exists(task_dir):
+                for root, dirs, files in os.walk(task_dir):
+                    for file in files:
+                        if file.endswith(".TextGrid"):
+                            textgrid_paths.append(os.path.join(root, file))
+        
+        return textgrid_paths
 
     def _process_language_change(self, task, new_lang, user_id, held_paths):
         """Process the language change for all TextGrid files"""
@@ -170,7 +156,7 @@ class LanguageChangeResource(Resource):
 
             except Exception as e:
                 current_app.logger.error(f"Error processing TextGrid {tg_path}: {e}")
-                continue
+                raise
 
         # Update task in database
         task.lang = new_lang

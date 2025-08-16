@@ -24,6 +24,7 @@ class Config:
     JWT_COOKIE_SECURE = True  # Secure cookies for HTTPS
     JWT_COOKIE_HTTPONLY = True
     JWT_COOKIE_SAMESITE = "None"  # Same-origin setup
+    JWT_COOKIE_CSRF_PROTECT = False
 
     # CORS configuration
     CORS_ORIGINS = os.getenv("CORS_ORIGINS", "https://new.autophontest.se").split(",")

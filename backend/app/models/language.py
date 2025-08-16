@@ -21,7 +21,7 @@ class Language(db.Model, TimestampMixin):
     alphabet = db.Column(db.String(100), nullable=False)
     priority = db.Column(db.Integer, nullable=False, default=99)
     homepage = db.Column(db.Boolean, default=False)
-    is_active = db.Column(db.Boolean, default=True)
+    is_active = db.Column(db.Boolean, default=False)
 
     # Self-referencing many-to-many for alternatives
     alternatives = db.relationship(

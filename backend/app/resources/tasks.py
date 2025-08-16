@@ -9,6 +9,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models.user import User
 from app.models.language import Language
+from app.utils.datetime_helpers import utc_now
 from app.utils.logger import get_logger, log_exception
 from app.models.task import Task, TaskFile, TaskFileName
 
@@ -47,9 +48,9 @@ class TaskListResource(Resource):
 
             # Non-admin users can only see their own tasks
             if not current_user.admin:
-                query = query.filter_by(user_id=current_user_id)
+                query = query.filter_by(user_id=current_user_id, deleted=None)
             elif user_id:
-                query = query.filter_by(user_id=user_id)
+                query = query.filter_by(user_id=user_id, deleted=None)
 
             # Apply filters
             if status:
@@ -74,7 +75,7 @@ class TaskListResource(Resource):
 
             tasks = query.all()
 
-            schema = TaskSimpleSchema(many=True)
+            schema = TaskSchema(many=True)
             return {"tasks": schema.dump(tasks), "count": len(tasks)}, 200
 
         except Exception as e:
@@ -383,7 +384,7 @@ class TaskBulkDeleteResource(Resource):
     """Handle bulk deletion of tasks"""
 
     @jwt_required()
-    def delete(self):
+    def post(self):
         """Delete multiple tasks"""
         try:
             current_user_id = int(get_jwt_identity())
@@ -427,7 +428,8 @@ class TaskBulkDeleteResource(Resource):
                     permission_denied.append(task.task_id)
                 else:
                     try:
-                        task.delete()
+                        task.deleted = utc_now()
+                        task.update()
                         deleted_tasks.append(task.task_id)
                     except Exception as e:
                         # If individual deletion fails, continue with others

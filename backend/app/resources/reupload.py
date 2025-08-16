@@ -157,21 +157,7 @@ class TaskReuploadResource(Resource):
                 if file.file_type == FileType.HELD:
                     held_paths.append(file.file_path)
 
-        # Fallback: check if held_paths is stored as JSON string
-        if not held_paths and hasattr(task, "held_paths") and task.held_paths:
-            try:
-                import json
-
-                stored_paths = json.loads(task.held_paths)
-                if isinstance(stored_paths, list):
-                    # Verify paths exist
-                    for path in stored_paths:
-                        if os.path.exists(path):
-                            held_paths.append(path)
-            except:
-                pass
-
-        # Last resort: look for held files in standard location
+        # Fallback: look for held files in standard location if no DB records
         if not held_paths:
             held_dir = os.path.join(UPLOADS, "held", task.task_id)
             if os.path.exists(held_dir):
@@ -380,21 +366,7 @@ class TaskReuploadInfoResource(Resource):
                 if file.file_type == FileType.HELD:
                     held_paths.append(file.file_path)
 
-        # Fallback: check if held_paths is stored as JSON string
-        if not held_paths and hasattr(task, "held_paths") and task.held_paths:
-            try:
-                import json
-
-                stored_paths = json.loads(task.held_paths)
-                if isinstance(stored_paths, list):
-                    # Verify paths exist
-                    for path in stored_paths:
-                        if os.path.exists(path):
-                            held_paths.append(path)
-            except:
-                pass
-
-        # Last resort: look for held files in standard location
+        # Fallback: look for held files in standard location if no DB records
         if not held_paths:
             held_dir = os.path.join(UPLOADS, "held", task.task_id)
             if os.path.exists(held_dir):

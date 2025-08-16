@@ -18,7 +18,6 @@ from app.schemas import (
 class EngineListResource(Resource):
     """Handle operations on engine collection"""
 
-    @jwt_required()
     def get(self):
         """Get list of engines with optional filtering"""
         try:

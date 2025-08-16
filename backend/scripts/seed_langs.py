@@ -40,6 +40,7 @@ def seed_from_json(json_file):
                 alphabet=lang_data["alphabet"],
                 priority=lang_data["priority"],
                 homepage=lang_data["homepage"],
+                is_active=lang_data["type"] != "future",
             )
 
             # Associate with engine

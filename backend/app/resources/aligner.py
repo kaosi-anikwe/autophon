@@ -352,24 +352,17 @@ class AlignTaskResource(Resource):
 
     def _calculate_duration(self, task):
         """Calculate estimated alignment duration based on task properties"""
-        # Get held_paths count - this would depend on how it's stored in your Task model
-        held_paths_count = 1  # Default assumption
-
-        # If you store held_paths as JSON or have a relationship, adjust accordingly
-        if hasattr(task, "held_paths") and task.held_paths:
-            if isinstance(task.held_paths, list):
-                held_paths_count = len(task.held_paths)
-            else:
-                # If stored as JSON string, parse it
-                try:
-                    import json
-
-                    held_paths = json.loads(task.held_paths)
-                    held_paths_count = (
-                        len(held_paths) if isinstance(held_paths, list) else 1
-                    )
-                except:
-                    held_paths_count = 1
+        # Get held_paths count using proper database relationship
+        from app.models.task import FileType
+        
+        held_paths_count = 0
+        for file in task.files:
+            if file.file_type == FileType.HELD:
+                held_paths_count += 1
+        
+        # Default to 1 if no held files found
+        if held_paths_count == 0:
+            held_paths_count = 1
 
         # Calculate duration based on logic from the original route
         if held_paths_count > 1:
