@@ -53,16 +53,22 @@ export const router = createBrowserRouter([
         element: <SupportPage />,
       },
       {
-        path: "history",
+        path: "logout",
+        element: <LogoutPage />,
+      },
+    ],
+  },
+  {
+    path: "/history",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
         element: (
           <ProtectedRoute>
             <HistoryPage />
           </ProtectedRoute>
         ),
-      },
-      {
-        path: "logout",
-        element: <LogoutPage />,
       },
     ],
   },

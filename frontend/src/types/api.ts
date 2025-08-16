@@ -91,6 +91,7 @@ export interface Task {
   trans_choice: "var-ling" | "comp-ling" | "exp-a" | "exp-b";
   language: Language | null;
   task_path: string;
+  deleted: string | null;
   log_path?: string;
   file_count: number;
   words?: number;
@@ -184,4 +185,12 @@ export interface PaginatedResponse<T> {
     total: number;
     pages: number;
   };
+}
+
+export interface HistoryTotals {
+  task_count: number;
+  file_count: number;
+  total_size: number;
+  total_words: number;
+  language_counts: Record<string, number>;
 }

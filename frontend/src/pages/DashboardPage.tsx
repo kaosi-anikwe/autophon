@@ -12,7 +12,7 @@ export function DashboardPage() {
         </div>
         <div className="col-span-4 col-start-9">
           <UserGuides>
-            <h3 className="text-lg font-bold text-center mb-0">User Guides</h3>
+            <h3 className="text-lg font-bold text-center mb-2">User Guides</h3>
           </UserGuides>
         </div>
       </div>
