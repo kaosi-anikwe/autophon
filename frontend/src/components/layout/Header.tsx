@@ -1,7 +1,7 @@
-import { Moon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "../../hooks/useAppDispatch";
+import { ThemeDropdown } from "../ui/ThemeToggle";
 
 export function Header() {
   const location = useLocation();
@@ -236,26 +236,7 @@ export function Header() {
             </div>
 
             {/* Theme toggle */}
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle mr-6"
-              >
-                <Moon className="h-4 w-4" />
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-              >
-                <li>
-                  <a>Dark Theme</a>
-                </li>
-                <li>
-                  <a>System default</a>
-                </li>
-              </ul>
-            </div>
+            <ThemeDropdown className="mr-6" />
 
             {/* User profile */}
             {isAuthenticated && (

@@ -194,3 +194,90 @@ export interface HistoryTotals {
   total_words: number;
   language_counts: Record<string, number>;
 }
+
+export interface AdminDashboardStats {
+  total_users: number;
+  total_file_size: {
+    size_mb: number;
+    display: string;
+  };
+  currently_logged_in: number;
+  tasks_processed_today: number;
+  additional_stats: {
+    total_tasks_all_time: number;
+    new_users_today: number;
+    tasks_today_by_status: {
+      completed: number;
+      pending: number;
+      failed: number;
+      processing: number;
+    };
+  };
+  generated_at: string;
+  date: string;
+}
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  display_name: string;
+  title?: string;
+  org?: string;
+  industry?: string;
+  admin: boolean;
+  verified: boolean;
+  created_at: string;
+  last_login?: string;
+  uuid: string;
+}
+
+export interface UserActionRequest {
+  email: string;
+  action: "verify" | "make_admin" | "block" | "delete";
+}
+
+export interface UserActionResponse {
+  message: string;
+  action: string;
+  success: boolean;
+  user_email: string;
+  user_logged_out?: boolean;
+  already_blocked?: boolean;
+}
+
+export interface GenerateUserReportRequest {
+  user_limit?: string; // Date in YYYY-MM-DD format
+  include_deleted: boolean;
+}
+
+export interface HistoryFile {
+  filename: string;
+  size: number;
+  date: string;
+  type: "xlsx" | "zip";
+}
+
+export interface DownloadHistoryFileRequest {
+  filename: string;
+}
+
+export interface SiteStatus {
+  active: boolean;
+  start_date?: string;
+  end_date?: string;
+  inactive_message?: string;
+}
+
+export interface UpdateSiteStatusRequest {
+  active: boolean;
+  start_date?: string;
+  end_date?: string;
+  inactive_message?: string;
+}
+
+export interface BlockedEmailAction {
+  email: string;
+  action: "add" | "remove";
+}

@@ -173,7 +173,7 @@ export function AboutPage() {
           <div className="card bg-base-100 shadow-lg border-0 p-3 h-full">
             <TextBlock title="Video demo">
               <video className="w-auto h-auto my-4 py-2" controls>
-                <source src="/autophondemo.mp4" type="video/mp4" />
+                <source src="/demo/autophondemo.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </TextBlock>

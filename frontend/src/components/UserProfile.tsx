@@ -1,8 +1,12 @@
-import { useState } from "react";
-import { BadgeCheck, SquarePen, CircleX } from "lucide-react";
+import { useState, useEffect } from "react";
+import { BadgeCheck, SquarePen, CircleX, Loader2 } from "lucide-react";
 
 import type { User } from "@/types/api";
 import EditProfileForm from "@/components/forms/EditProfileForm";
+import DeleteAccountModal from "@/components/modals/DeleteAccountModal";
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+import { sendEmailVerification, clearVerificationError } from "@/store/authSlice";
+import { useToast } from "@/contexts/ToastContext";
 
 type UserProfileProps = {
   user: User | null;
@@ -10,6 +14,31 @@ type UserProfileProps = {
 
 export default function UserProfile({ user }: UserProfileProps) {
   const [profileEdit, setProfileEdit] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const toast = useToast();
+  const { verificationLoading, verificationError } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    // Clear verification errors when component mounts
+    dispatch(clearVerificationError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Show verification error toast
+    if (verificationError) {
+      toast.error(verificationError, "Verification Failed");
+    }
+  }, [verificationError, toast]);
+
+  const handleVerifyEmail = async () => {
+    try {
+      await dispatch(sendEmailVerification()).unwrap();
+      toast.success("Verification email sent! Please check your inbox and follow the instructions.", "Email Sent");
+    } catch (error) {
+      // Error is already handled by the effect above
+    }
+  };
 
   return (
     <>
@@ -32,7 +61,11 @@ export default function UserProfile({ user }: UserProfileProps) {
           <p className="py-2">
             Click the button below to permanently delete your account.
           </p>
-          <button type="button" className="btn btn-accent font-thin my-2">
+          <button 
+            type="button" 
+            className="btn btn-accent font-thin my-2"
+            onClick={() => setShowDeleteModal(true)}
+          >
             Delete account
           </button>
           <p className="text-base-300">
@@ -75,9 +108,20 @@ export default function UserProfile({ user }: UserProfileProps) {
                       </div>
                     )}
                     {!user?.verified && (
-                      <p role="button" className="text-accent cursor-pointer">
-                        Verify Email
-                      </p>
+                      <button 
+                        onClick={handleVerifyEmail}
+                        disabled={verificationLoading}
+                        className="text-accent cursor-pointer hover:text-accent-focus disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                      >
+                        {verificationLoading ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Verify Email"
+                        )}
+                      </button>
                     )}
                   </div>
                 </li>
@@ -102,8 +146,16 @@ export default function UserProfile({ user }: UserProfileProps) {
             </div>
           </>
         )}
-        {profileEdit && <EditProfileForm />}
+        {profileEdit && (
+          <EditProfileForm onSuccess={() => setProfileEdit(false)} />
+        )}
       </div>
+
+      {/* Delete Account Modal */}
+      <DeleteAccountModal 
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+      />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
+import type { User } from "../types/api";
 
 // Extend AxiosRequestConfig to include retry flag
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
@@ -162,6 +163,16 @@ import type {
   EnginesResponse,
   TeamResponse,
   AppConfig,
+  AdminDashboardStats,
+  AdminUser,
+  UserActionRequest,
+  UserActionResponse,
+  GenerateUserReportRequest,
+  HistoryFile,
+  DownloadHistoryFileRequest,
+  SiteStatus,
+  UpdateSiteStatusRequest,
+  BlockedEmailAction,
 } from "../types/api";
 
 // Auth API interfaces
@@ -301,6 +312,127 @@ export const captchaAPI = {
     data: CaptchaVerifyRequest
   ): Promise<CaptchaVerifyResponse> => {
     const response = await api.post("/auth/register-captcha", data);
+    return response.data;
+  },
+};
+
+// Profile API interfaces
+export interface UpdateProfileRequest {
+  first_name?: string;
+  last_name?: string;
+  title?: string;
+  email?: string;
+  org?: string;
+  industry?: string;
+}
+
+// Email verification interfaces
+export interface VerifyEmailResponse {
+  message: string;
+}
+
+// Profile API
+export const profileAPI = {
+  // Get user profile
+  getProfile: async (): Promise<{ user: User }> => {
+    const response = await api.get("/profile");
+    return response.data;
+  },
+
+  // Update user profile
+  updateProfile: async (
+    data: UpdateProfileRequest
+  ): Promise<{ user: User }> => {
+    const response = await api.put("/profile", data);
+    return response.data;
+  },
+
+  // Send email verification
+  sendEmailVerification: async (): Promise<VerifyEmailResponse> => {
+    const response = await api.post("/auth/send-verification");
+    return response.data;
+  },
+
+  // Delete user profile (self-deletion)
+  deleteProfile: async (): Promise<{ message: string }> => {
+    const response = await api.delete("/profile");
+    return response.data;
+  },
+};
+
+// Admin API
+export const adminAPI = {
+  // Get admin dashboard statistics
+  getDashboardStats: async (): Promise<AdminDashboardStats> => {
+    const response = await api.get("/admin/dashboard");
+    return response.data;
+  },
+
+  // Get all users for admin management
+  getUsers: async (): Promise<AdminUser[]> => {
+    const response = await api.get("/admin/users");
+    return response.data.users;
+  },
+
+  // Perform user action (verify, make_admin, block, delete)
+  performUserAction: async (
+    actionData: UserActionRequest
+  ): Promise<UserActionResponse> => {
+    const response = await api.post("/admin/user-actions", actionData);
+    return response.data;
+  },
+
+  // Generate user report Excel file
+  generateUserReport: async (
+    data: GenerateUserReportRequest
+  ): Promise<Blob> => {
+    const response = await api.post("/admin/downloads/users", data, {
+      responseType: "blob",
+    });
+    return response.data;
+  },
+
+  // Get list of available history spreadsheets
+  getHistorySpreadsheets: async (): Promise<HistoryFile[]> => {
+    const response = await api.get("/admin/downloads/history");
+    return response.data.spreadsheets;
+  },
+
+  // Download specific history file
+  downloadHistoryFile: async (
+    data: DownloadHistoryFileRequest
+  ): Promise<Blob> => {
+    const response = await api.post("/admin/downloads/history", data, {
+      responseType: "blob",
+    });
+    return response.data;
+  },
+
+  // Get current site status
+  getSiteStatus: async (): Promise<SiteStatus> => {
+    const response = await api.get("/admin/site-status");
+    return response.data;
+  },
+
+  // Update site status
+  updateSiteStatus: async (
+    data: UpdateSiteStatusRequest
+  ): Promise<{ message: string }> => {
+    const response = await api.put("/admin/site-status", data);
+    return response.data;
+  },
+
+  // Get blocked emails list
+  getBlockedEmails: async (): Promise<string[]> => {
+    const response = await api.get("/admin/blocked-emails");
+    return response.data.emails;
+  },
+
+  // Add or remove blocked email
+  manageBlockedEmail: async (
+    data: BlockedEmailAction
+  ): Promise<{ message: string }> => {
+    const response = await api.post("/admin/blocked-emails", data);
     return response.data;
   },
 };

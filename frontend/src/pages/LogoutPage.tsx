@@ -32,7 +32,7 @@ export function LogoutPage() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <div className="loading loading-spinner loading-lg"></div>
-        <p className="mb-4 text-base-content">Logging out...</p>
+        <p className="mb-32 text-base-content">Logging out...</p>
       </div>
     </div>
   );

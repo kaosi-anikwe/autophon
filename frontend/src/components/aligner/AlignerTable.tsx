@@ -157,7 +157,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center">
                 <p className="my-auto text-center mt-[0.15rem]">Name</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     Each alignment batch is given a dummy name of "yyyy/mm/dd -
                     hh:mm:ss" using Greenwich Mean Time. Only a record of the
@@ -172,7 +172,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Language</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     Transcriptions are run through language-detection software,
                     and a language is suggested. For languages with
@@ -191,7 +191,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Engine</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     This is the forced aligner engine that drives the actual
                     alignment. These are either facilitated by Hidden Markov
@@ -207,7 +207,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Tiers</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     If a single-tier file is submitted, the output tiers will be
                     labeled "trans", "word", and "phone" for transcription,
@@ -225,7 +225,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Size MB</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     No more than {sizeLimit} can be uploaded at any given time.
                     This helps keep Autophon lean and – most important of all –
@@ -240,7 +240,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Words</p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     This is calculated so we can make a case to funders that
                     "Autophon aligned so and so many words in 2023". It might
@@ -257,7 +257,7 @@ export default function AlignerTable({
                 <p className="my-auto text-center mt-[0.15rem]">
                   Missing Words
                 </p>
-                <div className="tooltip my-auto z-[9999]">
+                <div className="tooltip my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     Autophon bases its phonetic alignments from pre-existing
                     pronunciation dictionaries (see user guide). Any words from
@@ -277,7 +277,7 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Last status</p>
-                <div className="tooltip tooltip-bottom my-auto z-[9999]">
+                <div className="tooltip tooltip-bottom my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     This shows the status of your upload. "Align" indicates that
                     the file is ready for alignment. "Completed" indicates it
@@ -299,7 +299,7 @@ export default function AlignerTable({
             {/* Download */}
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
-                <div className="tooltip tooltip-left my-auto z-[9999]">
+                <div className="tooltip tooltip-left my-auto z-[100]">
                   <div className="tooltip-content font-thin">
                     Completed alignments download as zip files, within which the
                     ASCII-based phones are in one folder and the IPA phones in

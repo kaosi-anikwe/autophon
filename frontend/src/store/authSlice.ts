@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { authAPI, getErrorMessage } from "../lib/api";
-import type { LoginRequest, RegisterRequest } from "../lib/api";
+import { authAPI, profileAPI, getErrorMessage } from "../lib/api";
+import type { LoginRequest, RegisterRequest, UpdateProfileRequest } from "../lib/api";
 import type { User } from "@/types/api";
 
 // export interface User {
@@ -21,6 +21,13 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  verificationLoading: boolean;
+  verificationError: string | null;
+  resetPasswordLoading: boolean;
+  resetPasswordError: string | null;
+  resetPasswordSuccess: boolean;
+  deleteAccountLoading: boolean;
+  deleteAccountError: string | null;
 }
 
 const initialState: AuthState = {
@@ -28,6 +35,13 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  verificationLoading: false,
+  verificationError: null,
+  resetPasswordLoading: false,
+  resetPasswordError: null,
+  resetPasswordSuccess: false,
+  deleteAccountLoading: false,
+  deleteAccountError: null,
 };
 
 // Async thunks for auth actions
@@ -85,6 +99,58 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (profileData: UpdateProfileRequest, { rejectWithValue }) => {
+    try {
+      const response = await profileAPI.updateProfile(profileData);
+      return response.user;
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const sendEmailVerification = createAsyncThunk(
+  "auth/sendEmailVerification",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await profileAPI.sendEmailVerification();
+      return response.message;
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      await authAPI.resetPassword(email);
+      return email;
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const deleteAccount = createAsyncThunk(
+  "auth/deleteAccount",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await profileAPI.deleteProfile();
+      return response.message;
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -92,10 +158,25 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    clearVerificationError: (state) => {
+      state.verificationError = null;
+    },
+    clearResetPasswordState: (state) => {
+      state.resetPasswordLoading = false;
+      state.resetPasswordError = null;
+      state.resetPasswordSuccess = false;
+    },
     clearAuth: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
+      state.verificationLoading = false;
+      state.verificationError = null;
+      state.resetPasswordLoading = false;
+      state.resetPasswordError = null;
+      state.resetPasswordSuccess = false;
+      state.deleteAccountLoading = false;
+      state.deleteAccountError = null;
       // Clear global flag when auth is cleared
       if (typeof window !== "undefined") {
         window.__hasAuthenticated = false;
@@ -192,8 +273,97 @@ const authSlice = createSlice({
           window.__hasAuthenticated = false;
         }
       });
+
+    // Update Profile
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Profile update failed";
+      });
+
+    // Send Email Verification
+    builder
+      .addCase(sendEmailVerification.pending, (state) => {
+        state.verificationLoading = true;
+        state.verificationError = null;
+      })
+      .addCase(sendEmailVerification.fulfilled, (state) => {
+        state.verificationLoading = false;
+        state.verificationError = null;
+      })
+      .addCase(sendEmailVerification.rejected, (state, action) => {
+        state.verificationLoading = false;
+        state.verificationError =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Email verification failed";
+      });
+
+    // Reset Password
+    builder
+      .addCase(resetPassword.pending, (state) => {
+        state.resetPasswordLoading = true;
+        state.resetPasswordError = null;
+        state.resetPasswordSuccess = false;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.resetPasswordLoading = false;
+        state.resetPasswordError = null;
+        state.resetPasswordSuccess = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.resetPasswordLoading = false;
+        state.resetPasswordError =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Password reset failed";
+        state.resetPasswordSuccess = false;
+      });
+
+    // Delete Account
+    builder
+      .addCase(deleteAccount.pending, (state) => {
+        state.deleteAccountLoading = true;
+        state.deleteAccountError = null;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        // Account deleted successfully - clear all user state
+        state.deleteAccountLoading = false;
+        state.deleteAccountError = null;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = null;
+        state.verificationLoading = false;
+        state.verificationError = null;
+        state.resetPasswordLoading = false;
+        state.resetPasswordError = null;
+        state.resetPasswordSuccess = false;
+        // Clear global flag
+        if (typeof window !== "undefined") {
+          window.__hasAuthenticated = false;
+        }
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
+        state.deleteAccountLoading = false;
+        state.deleteAccountError =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Account deletion failed";
+      });
   },
 });
 
-export const { clearError, clearAuth } = authSlice.actions;
+export const { clearError, clearVerificationError, clearResetPasswordState, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@plugin "daisyui" {
-  themes: false;
-}
+@plugin "daisyui";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -21,39 +19,73 @@
   font-style: normal;
 }
 
-@plugin "daisyui/theme" {
-  name: "autophon";
-  default: true;
-  prefersdark: false;
-  color-scheme: "light";
-  --color-base-100: #ffffff;
-  --color-base-200: #dddddd;
-  --color-base-300: #777777;
-  --color-base-content: #222222;
-  --color-primary: #666666;
-  --color-primary-content: #fff;
-  --color-secondary: #336699;
-  --color-secondary-content: #fff;
-  --color-accent: #eb6864;
-  --color-accent-content: #fff;
-  --color-neutral: #666666;
-  --color-neutral-content: #fff;
-  --color-info: oklch(74% 0.16 232.661);
-  --color-info-content: oklch(29% 0.066 243.157);
-  --color-success: oklch(84% 0.238 128.85);
-  --color-success-content: oklch(27% 0.072 132.109);
-  --color-warning: oklch(75% 0.183 55.934);
-  --color-warning-content: oklch(26% 0.079 36.259);
-  --color-error: #eb6864;
-  --color-error-content: #fff;
-  --radius-selector: 0.25rem;
-  --radius-field: 0.25rem;
-  --radius-box: 0.25rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 2px;
-  --depth: 1;
-  --noise: 0;
+/* Custom DaisyUI Themes */
+[data-theme="autophon"] {
+  color-scheme: light;
+  --p: 60 1% 40%; /* primary: #666666 */
+  --pc: 0 0% 100%; /* primary-content: #fff */
+  --s: 210 50% 40%; /* secondary: #336699 */
+  --sc: 0 0% 100%; /* secondary-content: #fff */
+  --a: 4 62% 65%; /* accent: #eb6864 */
+  --ac: 0 0% 100%; /* accent-content: #fff */
+  --n: 60 1% 40%; /* neutral: #666666 */
+  --nc: 0 0% 100%; /* neutral-content: #fff */
+  --b1: 0 0% 100%; /* base-100: #ffffff */
+  --b2: 0 0% 87%; /* base-200: #dddddd */
+  --b3: 0 0% 47%; /* base-300: #777777 */
+  --bc: 0 0% 13%; /* base-content: #222222 */
+  --in: 232 74% 61%; /* info */
+  --inc: 243 29% 29%; /* info-content */
+  --su: 129 84% 64%; /* success */
+  --suc: 132 27% 27%; /* success-content */
+  --wa: 56 75% 61%; /* warning */
+  --wac: 36 26% 26%; /* warning-content */
+  --er: 4 62% 65%; /* error: #eb6864 */
+  --erc: 0 0% 100%; /* error-content: #fff */
+  --rounded-box: 0.25rem;
+  --rounded-btn: 0.25rem;
+  --rounded-badge: 0.25rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --border-btn: 2px;
+  --tab-border: 2px;
+  --tab-radius: 0.25rem;
+}
+
+[data-theme="autophon-dark"] {
+  color-scheme: dark;
+  --p: 240 3% 67%; /* primary: #9999aa */
+  --pc: 0 0% 10%; /* primary-content: #1a1a1a */
+  --s: 210 42% 56%; /* secondary: #5599cc */
+  --sc: 210 63% 13%; /* secondary-content: #0f1419 */
+  --a: 4 100% 72%; /* accent: #ff7a75 */
+  --ac: 0 0% 10%; /* accent-content: #1a1a1a */
+  --n: 0 0% 60%; /* neutral: #999999 */
+  --nc: 0 0% 10%; /* neutral-content: #1a1a1a */
+  --b1: 0 0% 10%; /* base-100: #1a1a1a */
+  --b2: 0 0% 18%; /* base-200: #2d2d2d */
+  --b3: 0 0% 25%; /* base-300: #404040 */
+  --bc: 0 0% 90%; /* base-content: #e5e5e5 */
+  --in: 232 74% 61%; /* info */
+  --inc: 243 15% 15%; /* info-content */
+  --su: 129 70% 58%; /* success */
+  --suc: 132 15% 15%; /* success-content */
+  --wa: 56 80% 67%; /* warning */
+  --wac: 36 15% 15%; /* warning-content */
+  --er: 4 100% 72%; /* error: #ff7a75 */
+  --erc: 0 0% 10%; /* error-content: #1a1a1a */
+  --rounded-box: 0.25rem;
+  --rounded-btn: 0.25rem;
+  --rounded-badge: 0.25rem;
+  --animation-btn: 0.25s;
+  --animation-input: 0.2s;
+  --btn-text-case: uppercase;
+  --btn-focus-scale: 0.95;
+  --border-btn: 2px;
+  --tab-border: 2px;
+  --tab-radius: 0.25rem;
 }
 
 @layer base {
@@ -63,4 +95,17 @@
   .font-cascadia {
     font-family: "Cascadia Code", monospace !important;
   }
+
+  /* Smooth transitions for theme switching */
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease;
+  }
 }
+
+/* Optional: Auto theme switching based on system preference */
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+} */

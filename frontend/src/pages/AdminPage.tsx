@@ -10,9 +10,11 @@ import {
   Activity,
 } from "lucide-react";
 
-import Dashboard from "@/components/admin/Dashboard";
-import UserManagement from "@/components/admin/UserManagement";
-import AdminDatabase from "@/components/admin/Database";
+// import Dashboard from "@/components/admin/Dashboard";
+import AdminDashboard from "@/components/admin/AdminDashboard";
+import AdminUsers from "@/components/admin/AdminUsers";
+import AdminDatabase from "@/components/admin/AdminDatabase";
+import AdminSettings from "@/components/admin/AdminSettings";
 
 export function AdminPage() {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -30,16 +32,16 @@ export function AdminPage() {
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard":
-        return <Dashboard />;
+        return <AdminDashboard />;
 
       case "users":
-        return <UserManagement />;
+        return <AdminUsers />;
 
       case "database":
         return <AdminDatabase />;
 
       case "settings":
-        return <Settings />;
+        return <AdminSettings />;
 
       default:
         return (
