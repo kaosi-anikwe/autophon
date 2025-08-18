@@ -132,10 +132,15 @@ export default function HistoryTable({
               <div className="flex items-center justify-between bg-neutral text-neutral-content px-6 py-4 rounded-t-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                  <h2 className="text-xl font-bold tracking-wide">MONTHLY ANALYTICS</h2>
+                  <h2 className="text-xl font-bold tracking-wide">
+                    MONTHLY ANALYTICS
+                  </h2>
                 </div>
                 <div className="text-sm opacity-80 font-mono">
-                  {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </div>
               </div>
 
@@ -146,9 +151,15 @@ export default function HistoryTable({
                   <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="relative">
-                      <div className="text-primary/60 text-sm font-medium uppercase tracking-wider mb-2">Tasks Completed</div>
-                      <div className="text-3xl font-black text-primary mb-1">{totals.task_count}</div>
-                      <div className="text-xs text-base-content/60">alignment jobs</div>
+                      <div className="text-primary/60 text-sm font-medium uppercase tracking-wider mb-2">
+                        Tasks Completed
+                      </div>
+                      <div className="text-3xl font-black text-primary mb-1">
+                        {totals.task_count}
+                      </div>
+                      <div className="text-xs text-base-content/60">
+                        alignment jobs
+                      </div>
                     </div>
                   </div>
 
@@ -156,9 +167,15 @@ export default function HistoryTable({
                   <div className="relative overflow-hidden bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="relative">
-                      <div className="text-secondary/60 text-sm font-medium uppercase tracking-wider mb-2">Total Files</div>
-                      <div className="text-3xl font-black text-secondary mb-1">{totals.file_count}</div>
-                      <div className="text-xs text-base-content/60">audio files processed</div>
+                      <div className="text-secondary/60 text-sm font-medium uppercase tracking-wider mb-2">
+                        Total Files
+                      </div>
+                      <div className="text-3xl font-black text-secondary mb-1">
+                        {totals.file_count}
+                      </div>
+                      <div className="text-xs text-base-content/60">
+                        audio files processed
+                      </div>
                     </div>
                   </div>
 
@@ -166,9 +183,15 @@ export default function HistoryTable({
                   <div className="relative overflow-hidden bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-accent/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="relative">
-                      <div className="text-accent/60 text-sm font-medium uppercase tracking-wider mb-2">Data Volume</div>
-                      <div className="text-3xl font-black text-accent mb-1">{totals.total_size.toFixed(1)}</div>
-                      <div className="text-xs text-base-content/60">megabytes total</div>
+                      <div className="text-accent/60 text-sm font-medium uppercase tracking-wider mb-2">
+                        Data Volume
+                      </div>
+                      <div className="text-3xl font-black text-accent mb-1">
+                        {totals.total_size.toFixed(1)}
+                      </div>
+                      <div className="text-xs text-base-content/60">
+                        megabytes total
+                      </div>
                     </div>
                   </div>
 
@@ -176,9 +199,15 @@ export default function HistoryTable({
                   <div className="relative overflow-hidden bg-gradient-to-br from-info/10 to-info/5 border border-info/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-info/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="relative">
-                      <div className="text-info/60 text-sm font-medium uppercase tracking-wider mb-2">Words Aligned</div>
-                      <div className="text-3xl font-black text-info mb-1">{totals.total_words.toLocaleString()}</div>
-                      <div className="text-xs text-base-content/60">phonetic segments</div>
+                      <div className="text-info/60 text-sm font-medium uppercase tracking-wider mb-2">
+                        Words Aligned
+                      </div>
+                      <div className="text-3xl font-black text-info mb-1">
+                        {totals.total_words.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-base-content/60">
+                        phonetic segments
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -193,19 +222,31 @@ export default function HistoryTable({
                       Language Distribution
                     </h3>
                     <div className="w-full bg-base-200 rounded-full h-1">
-                      <div className="bg-gradient-to-r from-primary via-secondary to-accent h-1 rounded-full" style={{width: '100%'}}></div>
+                      <div
+                        className="bg-gradient-to-r from-primary via-secondary to-accent h-1 rounded-full"
+                        style={{ width: "100%" }}
+                      ></div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-                    {Object.entries(totals.language_counts).map(([lang, count]) => {
-                      return (
-                        <div key={lang} className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-center hover:shadow-md transition-all duration-200">
-                          <div className="text-primary font-bold text-lg">{count}</div>
-                          <div className="text-xs text-base-content/70 uppercase tracking-wide font-medium mt-1">{lang}</div>
-                        </div>
-                      );
-                    })}
+                    {Object.entries(totals.language_counts).map(
+                      ([lang, count]) => {
+                        return (
+                          <div
+                            key={lang}
+                            className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-center hover:shadow-md transition-all duration-200"
+                          >
+                            <div className="text-primary font-bold text-lg">
+                              {count}
+                            </div>
+                            <div className="text-xs text-base-content/70 uppercase tracking-wide font-medium mt-1">
+                              {lang}
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               )}

@@ -5,7 +5,10 @@ import type { User } from "@/types/api";
 import EditProfileForm from "@/components/forms/EditProfileForm";
 import DeleteAccountModal from "@/components/modals/DeleteAccountModal";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
-import { sendEmailVerification, clearVerificationError } from "@/store/authSlice";
+import {
+  sendEmailVerification,
+  clearVerificationError,
+} from "@/store/authSlice";
 import { useToast } from "@/contexts/ToastContext";
 
 type UserProfileProps = {
@@ -17,7 +20,9 @@ export default function UserProfile({ user }: UserProfileProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const dispatch = useAppDispatch();
   const toast = useToast();
-  const { verificationLoading, verificationError } = useAppSelector((state) => state.auth);
+  const { verificationLoading, verificationError } = useAppSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     // Clear verification errors when component mounts
@@ -34,9 +39,13 @@ export default function UserProfile({ user }: UserProfileProps) {
   const handleVerifyEmail = async () => {
     try {
       await dispatch(sendEmailVerification()).unwrap();
-      toast.success("Verification email sent! Please check your inbox and follow the instructions.", "Email Sent");
+      toast.success(
+        "Verification email sent! Please check your inbox and follow the instructions.",
+        "Email Sent"
+      );
     } catch (error) {
       // Error is already handled by the effect above
+      console.log(error);
     }
   };
 
@@ -61,8 +70,8 @@ export default function UserProfile({ user }: UserProfileProps) {
           <p className="py-2">
             Click the button below to permanently delete your account.
           </p>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn btn-accent font-thin my-2"
             onClick={() => setShowDeleteModal(true)}
           >
@@ -96,19 +105,23 @@ export default function UserProfile({ user }: UserProfileProps) {
               <ul className="list bg-base-100 rounded-box shadow-md">
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Name</p>
-                  <p className="text-lg text-base-300">{user?.display_name}</p>
+                  <p className="text-lg text-primary/80">
+                    {user?.display_name}
+                  </p>
                 </li>
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Email</p>
                   <div className="flex items-center">
-                    <p className="text-lg text-base-300 mr-4">{user?.email}</p>
+                    <p className="text-lg text-primary/80 mr-4">
+                      {user?.email}
+                    </p>
                     {user?.verified && (
                       <div className="tooltip" data-tip="Email verified">
                         <BadgeCheck className="text-success mr-4" />
                       </div>
                     )}
                     {!user?.verified && (
-                      <button 
+                      <button
                         onClick={handleVerifyEmail}
                         disabled={verificationLoading}
                         className="text-accent cursor-pointer hover:text-accent-focus disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
@@ -127,13 +140,13 @@ export default function UserProfile({ user }: UserProfileProps) {
                 </li>
                 <li className="list-row after:bg-base-200 after:border-b">
                   <p className="text-lg font-bold mr-8">Affiliation</p>
-                  <p className="text-lg text-base-300">
+                  <p className="text-lg text-primary/80">
                     {user?.org || user?.industry || "No affiliation"}
                   </p>
                 </li>
                 <li className="list-row">
                   <p className="text-lg font-bold mr-8">Unique ID</p>
-                  <p className="text-lg text-base-300">{user?.uuid}</p>
+                  <p className="text-lg text-primary/80">{user?.uuid}</p>
                 </li>
               </ul>
             </div>
@@ -152,7 +165,7 @@ export default function UserProfile({ user }: UserProfileProps) {
       </div>
 
       {/* Delete Account Modal */}
-      <DeleteAccountModal 
+      <DeleteAccountModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
       />

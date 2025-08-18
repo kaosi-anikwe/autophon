@@ -417,7 +417,7 @@ export default function RegisterForm() {
                     }
                     className="input w-full border-primary/30 focus:border-primary pl-10"
                   />
-                  <div className="absolute left-3 top-3/4 transform -translate-y-1/2 text-base-content/40">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40">
                     {isFreeformOrg ? (
                       <Building size={18} />
                     ) : (
@@ -543,7 +543,7 @@ export default function RegisterForm() {
         </div>
         <div className="col-span-11">
           <label htmlFor="agreeToTerms" className="cursor-pointer">
-            <p className="text-base-300 text-sm leading-0">
+            <p className="text-base-content/80 text-sm">
               I agree to cite Autophon in any research outputs in accordance
               with the "How to cite" section in the below language-specific user
               guides:

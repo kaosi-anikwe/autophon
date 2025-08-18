@@ -118,7 +118,7 @@ export default function UserGuides({ children }: UserGuideProps) {
             }
           }}
         />
-        <Search className="absolute left-3 top-2/3 transform -translate-y-1/2 w-4 h-4 text-base-content/40" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-base-content/40" />
       </div>
 
       {/* Dropdown Suggestions */}
