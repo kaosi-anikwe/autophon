@@ -1,3 +1,4 @@
+from typing import List
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
@@ -16,6 +17,7 @@ from flask_jwt_extended import (
 
 from app.extensions import db
 from app.models.user import User
+from app.models.task import Task
 from app.models.token_blacklist import TokenBlacklist
 from app.schemas import UserCreateSchema, UserLoginSchema, UserSchema, UserUpdateSchema
 from app.utils.logger import (
@@ -46,9 +48,21 @@ class Register(Resource):
             # Hash password
             password_hash = generate_password_hash(data.pop("password"))
 
+            # Convert anonymous user
+            user_uuid = request.cookies.get("user_id")
+            data["uuid"] = user_uuid
+
             # Create user
             user = User(**data, password_hash=password_hash)
             user.insert()
+
+            tasks: List[Task] = Task.query.filter_by(user_uuid=user_uuid).all()
+            for task in tasks:
+                task.user_id = user.id
+                task.update()
+            
+            # Remove anonymous user_id
+            request.cookies.clear()
 
             # Send verification email automatically
             try:

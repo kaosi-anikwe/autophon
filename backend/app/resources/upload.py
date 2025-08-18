@@ -26,21 +26,18 @@ UPLOADS = os.getenv("UPLOADS")
 def get_daily_task_count_from_db(user_uuid, current_day):
     """Get actual task count from database for a specific day"""
     from app.models.task import Task
-    
+
     # Convert current_day (YYMMDD) to date range
     year = 2000 + int(current_day[:2])
     month = int(current_day[2:4])
     day = int(current_day[4:6])
-    
+
     today_start = datetime(year, month, day, 0, 0, 0, tzinfo=timezone.utc)
     today_end = datetime(year, month, day, 23, 59, 59, 999999, tzinfo=timezone.utc)
-    
+
     return Task.query.filter(
-        and_(
-            Task.created_at >= today_start,
-            Task.created_at <= today_end
-        ),
-        Task.user_uuid == user_uuid
+        and_(Task.created_at >= today_start, Task.created_at <= today_end),
+        Task.user_uuid == user_uuid,
     ).count()
 
 
@@ -51,31 +48,41 @@ def sync_session_with_database(session, user_uuid, current_day):
     return actual_count
 
 
-def check_anonymous_limit(session, user_uuid, current_day, app, trans_choice, num_tasks=1):
+def check_anonymous_limit(
+    session, user_uuid, current_day, app, trans_choice, num_tasks=1
+):
     """Check and validate anonymous user daily limits using database as source of truth"""
     daily_limit = app.user_limits.get("a_upload_limit", 10)
     # Get actual count from database
     current_tasks = sync_session_with_database(session, user_uuid, current_day)
-    
+
     if trans_choice in ["exp-a", "comp-ling"]:
         # Batch mode: count as 1 task regardless of files
         if current_tasks >= int(daily_limit):
-            return False, "You have reached your daily limit. Sign up to increase limits."
+            return (
+                False,
+                "You have reached your daily limit. Sign up to increase limits.",
+            )
     else:
         # Individual mode: check if we can create num_tasks
         if current_tasks + num_tasks > int(daily_limit):
-            return False, "You have reached your daily limit. Sign up to increase limits."
-    
+            return (
+                False,
+                "You have reached your daily limit. Sign up to increase limits.",
+            )
+
     return True, None
-
-
 
 
 def cleanup_old_session_data(session, user_uuid, current_day):
     """Remove old session data to prevent memory bloat"""
     uploads = session[user_uuid]["uploads"]
     # Keep only current day and previous day data
-    keys_to_remove = [key for key in uploads.keys() if key != current_day and abs(int(current_day) - int(key)) > 1]
+    keys_to_remove = [
+        key
+        for key in uploads.keys()
+        if key != current_day and abs(int(current_day) - int(key)) > 1
+    ]
     for key in keys_to_remove:
         del uploads[key]
 
@@ -139,7 +146,7 @@ class FileUploadResource(Resource):
 
                     if not session[user_uuid]["uploads"].get(current_day):
                         session[user_uuid]["uploads"][current_day] = 0
-                        
+
                     # Clean up old session data
                     cleanup_old_session_data(session, user_uuid, current_day)
                 else:
@@ -255,13 +262,22 @@ class FileUploadResource(Resource):
 
                 # Apply anonymous user limits before task creation
                 if anonymous:
-                    num_tasks = 1 if trans_choice in ["exp-a", "comp-ling"] else len(grouped_files)
+                    num_tasks = (
+                        1
+                        if trans_choice in ["exp-a", "comp-ling"]
+                        else len(grouped_files)
+                    )
                     can_proceed, error_msg = check_anonymous_limit(
-                        session, user_uuid, current_day, current_app, trans_choice, num_tasks
+                        session,
+                        user_uuid,
+                        current_day,
+                        current_app,
+                        trans_choice,
+                        num_tasks,
                     )
                     if not can_proceed:
                         return {"success": False, "message": error_msg}, 429
-                    
+
                     # For individual mode, limit files if needed
                     if trans_choice not in ["exp-a", "comp-ling"]:
                         daily_limit = current_app.user_limits.get("a_upload_limit", 10)
@@ -348,8 +364,10 @@ class FileUploadResource(Resource):
                 if anonymous:
                     response = make_response(response_data)
                     # Get actual total tasks from database (after current upload)
-                    total_daily_tasks = sync_session_with_database(session, user_uuid, current_day)
-                    
+                    total_daily_tasks = sync_session_with_database(
+                        session, user_uuid, current_day
+                    )
+
                     # Set consistent cookie names for client-side validation
                     response.set_cookie(
                         "task_count", str(total_daily_tasks), max_age=86400  # 24 hours
@@ -363,10 +381,9 @@ class FileUploadResource(Resource):
                             user_uuid,
                             max_age=2592000,  # 30 days
                         )
-                    logger.info(f"SESSION: {session}")
                     return response
 
-                return response_data, 201            
+                return response_data, 201
 
             except OSError as e:
                 if "File name too long" in str(e):

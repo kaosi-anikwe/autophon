@@ -321,15 +321,20 @@ class TaskProcessor:
         """Update task status with additional fields"""
         try:
             with app.app_context():
-                task = Task.query.filter_by(task_id=task.task_id).first()
-                if task:
-                    task.task_status = status
+                task_obj = Task.query.filter_by(task_id=task.task_id).first()
+                if task_obj:
+                    task_obj.task_status = status
                     for key, value in kwargs.items():
-                        setattr(task, key, value)
-                    task.update()
+                        setattr(task_obj, key, value)
+                    task_obj.update()
                     logger.info(f"Task {task.task_id} status updated to {status.value}")
+                    return True
+                else:
+                    logger.error(f"Task {task.task_id} not found in database")
+                    return False
         except Exception as e:
-            logger.error(f"Failed to update task status: {e}")
+            logger.error(f"Failed to update task status for {task.task_id}: {e}")
+            return False
 
     def cleanup_task_files(self, task: Task):
         """Clean up task files after processing with improved error handling"""
@@ -439,7 +444,10 @@ class TaskProcessor:
                 time.sleep(self.config.retry_delay * (attempt + 1))
 
         # All attempts failed
-        self.update_task_status(task, TaskStatus.FAILED)
+        status_updated = self.update_task_status(task, TaskStatus.FAILED)
+        if not status_updated:
+            logger.critical(f"Failed to update task {task.task_id} to FAILED status - this may cause infinite retry loop!")
+        logger.error(f"Alignment task {task.task_id} failed after {self.config.retry_attempts} attempts")
         return False
 
     def align_task(self, task: Task) -> bool:
@@ -1416,7 +1424,7 @@ class AlignmentWorker:
                 task = Task.query.filter_by(task_id=task_id).first()
                 if task:
                     self.processor.update_task_status(
-                        task, TaskStatus.UPLOADED, cancelled=True
+                        task, TaskStatus.CANCELLED, cancelled=True
                     )
 
         # Shutdown executor
@@ -1428,6 +1436,8 @@ class AlignmentWorker:
         """Get tasks that need processing"""
         try:
             with app.app_context():
+                from datetime import datetime, timezone, timedelta
+                
                 tasks = (
                     Task.query.filter(
                         Task.task_status == TaskStatus.ALIGNED,
@@ -1438,10 +1448,31 @@ class AlignmentWorker:
                     .all()
                 )
 
-                # Filter out tasks already being processed
-                available_tasks = [
-                    t for t in tasks if t.task_id not in self.active_tasks
-                ]
+                # Filter out tasks already being processed and apply timeout safeguard
+                available_tasks = []
+                for task in tasks:
+                    if task.task_id in self.active_tasks:
+                        continue
+                    
+                    # Safeguard: Skip tasks that have been in ALIGNED status for too long
+                    # This prevents infinite retry loops if status updates fail
+                    if hasattr(task, 'updated_at') and task.updated_at:
+                        # Handle timezone-aware/naive datetime comparison
+                        if task.updated_at.tzinfo is None:
+                            # Database datetime is naive, assume UTC
+                            task_updated_utc = task.updated_at.replace(tzinfo=timezone.utc)
+                        else:
+                            # Database datetime is already timezone-aware
+                            task_updated_utc = task.updated_at
+                        
+                        time_in_aligned = datetime.now(timezone.utc) - task_updated_utc
+                        if time_in_aligned > timedelta(hours=2):  # 2 hour timeout for alignment
+                            logger.warning(f"Task {task.task_id} stuck in ALIGNED for {time_in_aligned} - marking as failed")
+                            self.processor.update_task_status(task, TaskStatus.FAILED, 
+                                                            error_msg="Timeout: stuck in aligned status")
+                            continue
+                    
+                    available_tasks.append(task)
 
                 return available_tasks
         except Exception as e:

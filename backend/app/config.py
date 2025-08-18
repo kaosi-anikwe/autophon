@@ -33,7 +33,7 @@ class Config:
     # Configure session
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = True  # For HTTPS
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = "Lax"
 
 
 class DevelopmentConfig(Config):

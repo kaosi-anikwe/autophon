@@ -53,13 +53,12 @@ class TaskListResource(Resource):
                     "success": False,
                     "message": "Auth required via cookies: JWT or user_uuid.",
                 }, 400
-            
+
             # Get query parameters
             status = request.args.get("status")
             language_id = request.args.get("language_id")
             engine_id = request.args.get("engine_id")
             limit = request.args.get("limit", type=int)
-
 
             query = Task.query
 
@@ -416,7 +415,7 @@ class TaskBulkDeleteResource(Resource):
             except Exception as e:
                 # No valid JWT, proceed as anonymous
                 pass
-            
+
             if not current_user:
                 user_uuid = request.cookies.get("user_id")
 
@@ -461,7 +460,7 @@ class TaskBulkDeleteResource(Resource):
                     if not current_user.admin and task.user_uuid != user_uuid:
                         permission_denied.append(task.task_id)
                 elif task.user_uuid != user_uuid:
-                        permission_denied.append(task.task_id)
+                    permission_denied.append(task.task_id)
                 else:
                     try:
                         task.deleted = utc_now()
@@ -696,7 +695,11 @@ class TaskMonthlyReportResource(Resource):
             if not os.path.exists(pdf_path):
                 return {"message": "Failed to generate PDF report"}, 500
 
-            return send_file(pdf_path, as_attachment=True)
+            return send_file(
+                pdf_path,
+                as_attachment=True,
+                download_name=f"Autophon_{month}_{year}.pdf",
+            )
 
         except Exception as e:
             log_exception(logger, "Error generating monthly report")

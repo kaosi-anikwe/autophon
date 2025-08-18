@@ -2,39 +2,16 @@ import { useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Building } from "lucide-react";
+import { Search, Building, Loader2 } from "lucide-react";
 
 import { registerSchema, type RegisterFormData } from "../../lib/schemas";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 import { register as registerUser, clearError } from "../../store/authSlice";
 import { useToast } from "../../hooks/useToast";
+import { useOrganizations } from "../../hooks/useOrganizations";
 import UserGuides from "../features/UserGuides";
 import Captcha from "../features/Captcha";
 import { PrivacyAgreementModal } from "../modals/PrivacyAgreementModal";
-
-// Dummy organizations array - replace with real data later
-const ORGANIZATIONS = [
-  "Harvard University",
-  "Stanford University",
-  "Massachusetts Institute of Technology",
-  "University of California, Berkeley",
-  "Oxford University",
-  "Cambridge University",
-  "Carnegie Mellon University",
-  "University of Toronto",
-  "University of Washington",
-  "Yale University",
-  "Princeton University",
-  "California Institute of Technology",
-  "University of Pennsylvania",
-  "Columbia University",
-  "Cornell University",
-  "University of Michigan",
-  "Johns Hopkins University",
-  "University of Chicago",
-  "Northwestern University",
-  "Duke University",
-];
 
 export default function RegisterForm() {
   const [captchaVerified, setCaptchaVerified] = useState(false);
@@ -52,6 +29,17 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const toast = useToast();
   const { error, isAuthenticated } = useAppSelector((state) => state.auth);
+
+  // Use the organizations hook for autocomplete
+  const { 
+    organizations, 
+    isLoading: orgLoading, 
+    searchOrganizations 
+  } = useOrganizations({
+    minQueryLength: 2,
+    debounceMs: 300,
+    maxResults: 5
+  });
 
   const {
     register,
@@ -111,17 +99,18 @@ export default function RegisterForm() {
     }
   }, [affiliation, setValue]);
 
-  // Filter organizations based on search term
-  const filteredOrganizations = ORGANIZATIONS.filter((org) =>
-    org.toLowerCase().includes(orgSearchTerm.toLowerCase())
-  ).slice(0, 5); // Limit to 5 suggestions
-
   // Handle organization input change
   const handleOrgInputChange = (value: string) => {
     setOrgSearchTerm(value);
     setValue("org", value);
-    if (!isFreeformOrg && value.length > 0) {
-      setShowOrgSuggestions(true);
+    
+    if (!isFreeformOrg) {
+      if (value.length >= 2) {
+        searchOrganizations(value);
+        setShowOrgSuggestions(true);
+      } else {
+        setShowOrgSuggestions(false);
+      }
     } else {
       setShowOrgSuggestions(false);
     }
@@ -402,11 +391,11 @@ export default function RegisterForm() {
                     id="org"
                     value={orgSearchTerm}
                     onChange={(e) => handleOrgInputChange(e.target.value)}
-                    onFocus={() =>
-                      !isFreeformOrg &&
-                      orgSearchTerm.length > 0 &&
-                      setShowOrgSuggestions(true)
-                    }
+                    onFocus={() => {
+                      if (!isFreeformOrg && orgSearchTerm.length >= 2) {
+                        setShowOrgSuggestions(true);
+                      }
+                    }}
                     onBlur={() =>
                       setTimeout(() => setShowOrgSuggestions(false), 200)
                     }
@@ -427,11 +416,15 @@ export default function RegisterForm() {
                 </div>
 
                 {/* Autocomplete dropdown */}
-                {showOrgSuggestions &&
-                  !isFreeformOrg &&
-                  filteredOrganizations.length > 0 && (
-                    <div className="absolute z-10 w-full bg-base-100 border border-base-300 rounded-lg shadow-lg mt-1 max-h-40 overflow-y-auto">
-                      {filteredOrganizations.map((org, index) => (
+                {showOrgSuggestions && !isFreeformOrg && (
+                  <div className="absolute z-10 w-full bg-base-100 border border-base-300 rounded-lg shadow-lg mt-1 max-h-40 overflow-y-auto">
+                    {orgLoading ? (
+                      <div className="px-4 py-3 flex items-center space-x-2 text-base-content/60">
+                        <Loader2 size={16} className="animate-spin" />
+                        <span className="text-sm">Searching organizations...</span>
+                      </div>
+                    ) : organizations.length > 0 ? (
+                      organizations.map((org, index) => (
                         <button
                           key={index}
                           type="button"
@@ -441,19 +434,18 @@ export default function RegisterForm() {
                           <Building size={16} className="text-primary/60" />
                           <span>{org}</span>
                         </button>
-                      ))}
-                    </div>
-                  )}
-
-                {/* No results message */}
-                {showOrgSuggestions &&
-                  !isFreeformOrg &&
-                  orgSearchTerm.length > 0 &&
-                  filteredOrganizations.length === 0 && (
-                    <div className="absolute z-10 w-full bg-base-100 border border-base-300 rounded-lg shadow-lg mt-1 px-4 py-2 text-base-content/60 text-sm">
-                      No organizations found. Try the manual entry option below.
-                    </div>
-                  )}
+                      ))
+                    ) : orgSearchTerm.length >= 2 ? (
+                      <div className="px-4 py-2 text-base-content/60 text-sm">
+                        No organizations found. Try the manual entry option below.
+                      </div>
+                    ) : (
+                      <div className="px-4 py-2 text-base-content/60 text-sm">
+                        Type at least 2 characters to search...
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </label>
 

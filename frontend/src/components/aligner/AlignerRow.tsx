@@ -48,7 +48,7 @@ export default function AlignerRow({
 
   // Determine if task has errors
   const hasPreError = task.pre_error === true;
-  const isUploading = task.task_status === "uploading";
+  const isUploading = task.task_status === "uploading" && !task.pre_error;
 
   // Countdown timer effect
   useEffect(() => {
