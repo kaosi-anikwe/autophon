@@ -11,4 +11,17 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+    hmr: {
+      host: 'new.autophontest.se',
+      port: 3000,
+      clientPort: 3000,
+      protocol: 'wss',
+    },
+    watch: {
+      usePolling: true,
+    },
+  },
 });

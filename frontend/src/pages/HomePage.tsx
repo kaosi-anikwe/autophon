@@ -142,7 +142,7 @@ export function HomePage() {
       {/* Anonymous Table Section - only for non-authenticated users and if site is active */}
       {!isAuthenticated && (
         <div className="py-3">
-          <Aligner title="Align files here" />
+          <Aligner title="Align files here" homepage />
           <div className="p-3">
             {config?.userLimits && config.audioExtensions && (
               <>

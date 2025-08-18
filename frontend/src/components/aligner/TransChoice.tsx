@@ -19,9 +19,9 @@ export default function TransChoice({
 }: TransChoiceProps) {
   const cardClasses = `card ${
     isActive
-      ? "bg-neutral shadow-secondary shadow-xl"
+      ? "bg-neutral shadow-secondary shadow-lg"
       : "bg-neutral/60 hover:bg-neutral/70"
-  } text-neutral-content h-full cursor-pointer hover:shadow-secondary hover:shadow-2xl duration-300 transition-all ease-in-out`;
+  } text-neutral-content h-full cursor-pointer hover:shadow-secondary hover:shadow-lg duration-300 transition-all ease-in-out`;
 
   return (
     <div className={cardClasses} onClick={onSelect}>

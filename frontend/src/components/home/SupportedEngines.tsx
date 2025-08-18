@@ -36,12 +36,12 @@ function EngineItem({ engine }: EngineItemProps) {
             href={engine.documentation_link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-base-content flex items-center font-normal text-lg hover:text-primary transition-colors"
+            className="text-base-content flex items-center font-normal hover:text-primary transition-colors"
           >
             <EngineContent />
           </a>
         ) : (
-          <div className="text-base-content flex items-center font-normal text-lg">
+          <div className="text-base-content flex items-center font-normal">
             <EngineContent />
           </div>
         )}

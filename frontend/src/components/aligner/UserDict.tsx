@@ -7,6 +7,7 @@ import { useToast } from "@/contexts/ToastContext";
 import type { Dictionary, LanguageHomepage, User } from "../../types/api";
 import { languagesAPI, dictionaryAPI } from "../../lib/api";
 import { DictUploadModal } from "../modals/DictUploadModal";
+import { Modal } from "../ui/Modal";
 
 interface UserDictProps {
   user: User;
@@ -17,7 +18,7 @@ export default function UserDict({ user }: UserDictProps) {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showVideo, setShowVideo] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const [videoOffset, setVideoOffset] = useState(-75);
+  const [videoOffset, setVideoOffset] = useState(-15);
   const [selectedLanguage, setSelectedLanguage] =
     useState<LanguageHomepage | null>(null);
   const [selectedDictionary, setSelectedDictionary] =
@@ -36,7 +37,9 @@ export default function UserDict({ user }: UserDictProps) {
   const [isEditable, setIsEditable] = useState(false);
   const [invalidPhones, setInvalidPhones] = useState(false);
   const [contentKey, setContentKey] = useState(0); // Force re-render key
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const modalVideoRef = useRef<HTMLVideoElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dictContentRef = useRef<HTMLDivElement>(null);
@@ -197,7 +200,7 @@ export default function UserDict({ user }: UserDictProps) {
         // At start (0s): dictionary open and centered (offset = 0px)
         // At end (6s): dictionary closed and centered (offset = -75px)
         const progress = currentTime / 6;
-        const offset = 0 + -75 * progress;
+        const offset = 0 + -15 * progress;
         setVideoOffset(offset);
 
         if (currentTime >= 6) {
@@ -211,7 +214,7 @@ export default function UserDict({ user }: UserDictProps) {
           setShowDropdown(false);
           setSelectedIndex(-1);
           setIsEditable(false); // Reset editable state
-          setVideoOffset(-75); // Reset to closed centered position
+          setVideoOffset(-15); // Reset to closed centered position
           video.currentTime = 0;
           video.pause();
 
@@ -229,7 +232,7 @@ export default function UserDict({ user }: UserDictProps) {
         // At start (0s): dictionary closed and centered (offset = -75px)
         // At 5s: dictionary open and centered (offset = 0px)
         const progress = Math.min(currentTime / 5, 1);
-        const offset = -75 + 75 * progress;
+        const offset = -15 + 15 * progress;
         setVideoOffset(offset);
       }
 
@@ -465,6 +468,25 @@ export default function UserDict({ user }: UserDictProps) {
     }
   };
 
+  const handleInfoClick = () => {
+    setShowVideoModal(true);
+  };
+
+  const handleCloseVideoModal = () => {
+    if (modalVideoRef.current) {
+      modalVideoRef.current.pause();
+      modalVideoRef.current.currentTime = 0;
+    }
+    setShowVideoModal(false);
+  };
+
+  useEffect(() => {
+    if (showVideoModal && modalVideoRef.current) {
+      modalVideoRef.current.currentTime = 0;
+      modalVideoRef.current.play();
+    }
+  }, [showVideoModal]);
+
   return (
     <div
       className={`card shadow-lg space-y-4 bg-base-100 border border-base-200 p-4 transition-all duration-500 ease-in-out ${
@@ -474,7 +496,10 @@ export default function UserDict({ user }: UserDictProps) {
       <div className="flex flex-col items-center space-y-4">
         <div className="flex items-center">
           <h3 className="text-lg font-bold mr-4">Your Custom Pronunciations</h3>
-          <Info className="w-5 h-5 cursor-pointer" />
+          <Info
+            className="w-5 h-5 cursor-pointer hover:text-primary transition-colors"
+            onClick={handleInfoClick}
+          />
         </div>
 
         {/* Video Animation */}
@@ -485,9 +510,9 @@ export default function UserDict({ user }: UserDictProps) {
           >
             <video
               ref={videoRef}
-              className="w-auto h-64 cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
+              className="w-auto h-[25rem] cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
               style={{
-                transform: `translateX(${videoOffset}px)`,
+                transform: `translateX(${videoOffset}%)`,
                 transition: videoStarted
                   ? "none"
                   : "transform 0.3s ease-in-out",
@@ -687,7 +712,7 @@ export default function UserDict({ user }: UserDictProps) {
                 disabled={isLoading}
               >
                 <Upload className="w-3 h-3 mr-1" />
-                Upload .txt file instead
+                Upload file instead
               </button>
             </div>
 
@@ -854,6 +879,29 @@ export default function UserDict({ user }: UserDictProps) {
           return div.innerText || div.textContent || "";
         })()}
       />
+
+      {/* Video Guide Modal */}
+      <Modal
+        isOpen={showVideoModal}
+        onClose={handleCloseVideoModal}
+        title="How to use"
+        size="md"
+        closeOnBackdropClick={true}
+      >
+        <div className="flex justify-center">
+          <video
+            ref={modalVideoRef}
+            className="max-w-2xl h-auto"
+            controls
+            playsInline
+            preload="metadata"
+          >
+            <source src="/videos/dict_guide.mov" type="video/mp4" />
+            {/* <source src="/videos/dict_guide.mp4" type="video/mp4" /> */}
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -289,7 +289,7 @@ export default function AlignerRow({
           </div>
         ) : task.task_status === "uploaded" ? (
           <button
-            className="btn btn-secondary mx-auto font-thin btn-sm flex items-center gap-2"
+            className="btn btn-neutral mx-auto font-thin btn-sm flex items-center gap-2"
             onClick={() => alignmentMutation.mutate(task.task_id)}
             disabled={alignmentMutation.isPending}
           >

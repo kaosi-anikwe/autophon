@@ -6,56 +6,48 @@ import { useConfig } from "@/contexts/AppConfigContext";
 interface FileValidatorProps {
   onFilesValidated?: (files: FileList) => void;
   isUploading?: boolean;
+  homepage?: boolean;
 }
 
 export default function FileValidator({
   onFilesValidated,
   isUploading = false,
+  homepage = false,
 }: FileValidatorProps) {
   const [isValidating, setIsValidating] = useState(false);
   const toast = useToast();
   const config = useConfig();
 
-  // Allowed file extensions from the JavaScript validation
-  const allowedExtensions = [
-    "wav",
-    "mp3",
-    "avi",
-    "m4a",
-    "ac-3",
-    "aiff",
-    "alac",
-    "flac",
-    "m4r",
-    "ogg",
-    "opus",
-    "wma",
-    "lab",
-    "textgrid",
-    "eaf",
-    "tsv",
-    "txt",
-    "xlsx",
-  ];
+  if (!config) {
+    return (
+      <button disabled className="btn btn-primary">
+        Loading config...
+      </button>
+    );
+  }
+
+  const allowedExtensions = ["lab", "textgrid", "eaf", "tsv", "txt", "xlsx"];
+
+  // Get cookie value by name
+  function getCookie(name: string) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === " ") {
+        c = c.substring(1, c.length);
+      }
+      if (c.indexOf(nameEQ) === 0) {
+        return c.substring(nameEQ.length, c.length);
+      }
+    }
+    return null;
+  }
 
   // Check if file is an audio file (based on messages_2.js)
   const isAudioFile = (fileName: string): boolean => {
-    const audioExtensions = [
-      "wav",
-      "mp3",
-      "avi",
-      "m4a",
-      "ac-3",
-      "aiff",
-      "alac",
-      "flac",
-      "m4r",
-      "ogg",
-      "opus",
-      "wma",
-    ];
     const extension = fileName.split(".").pop()?.toLowerCase();
-    return audioExtensions.includes(extension || "");
+    return config.audioExtensions.includes(extension || "");
   };
 
   // Count files in ZIP
@@ -86,7 +78,10 @@ export default function FileValidator({
 
     for (const fileName of fileList) {
       const extension = fileName.split(".").pop()?.toLowerCase();
-      if (!extension || !allowedExtensions.includes(extension)) {
+      if (
+        !extension ||
+        ![...config.audioExtensions, ...allowedExtensions].includes(extension)
+      ) {
         return { error: true, badFile: fileName };
       }
     }
@@ -134,25 +129,48 @@ export default function FileValidator({
 
     setIsValidating(true);
 
+    // Check if anonymous user limit reached
+    if (homepage) {
+      const formattedDate = (date = new Date()) =>
+        date.getFullYear().toString().slice(-2) +
+        (date.getMonth() + 1).toString().padStart(2, "0") +
+        date.getDate().toString().padStart(2, "0");
+      const taskCount = getCookie("task_count");
+      const taskDate = getCookie("task_date");
+      if (
+        formattedDate() === taskDate &&
+        taskCount &&
+        parseInt(taskCount) >= config.userLimits.a_upload_limit
+      ) {
+        toast.error(
+          "You have reached your daily limit. Sign up to increase limits."
+        );
+        setIsValidating(false);
+        return;
+      }
+    }
+
     // Check total file size against limit
     const totalSize = Array.from(files).reduce(
       (acc, file) => acc + file.size,
       0
     );
-    const totalSizeMB = totalSize / (1024 * 1024);
+    const totalSizeKB = totalSize / 1024;
 
-    if (config?.userLimits?.size_limit) {
-      const sizeLimitMB = config.userLimits.size_limit;
-      if (totalSizeMB > sizeLimitMB) {
-        toast.error(
-          `Total file size (${totalSizeMB.toFixed(
-            1
-          )} MB) exceeds the maximum allowed limit of ${sizeLimitMB} MB. Please reduce the file size or number of files.`,
-          "File Size Limit Exceeded"
-        );
-        setIsValidating(false);
-        return;
-      }
+    const sizeLimitKB = homepage
+      ? config.userLimits.a_size_limit
+      : config.userLimits.size_limit;
+    if (totalSizeKB > sizeLimitKB) {
+      toast.error(
+        `Total file size (${(totalSizeKB / 1000).toFixed(
+          1
+        )} MB) exceeds the maximum allowed limit of ${
+          sizeLimitKB / 1000
+        } MB. Please reduce the file size or number of files.`,
+        "File Size Limit Exceeded"
+      );
+      setIsValidating(false);
+      return;
     }
 
     try {

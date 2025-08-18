@@ -608,7 +608,7 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
             # 3. Users currently logged in (have active, non-blacklisted tokens)
             # This is approximated by checking for recent token activity
             # We'll count users who have accessed the system in the last hour
-            one_hour_ago = utc_now() - timedelta(hours=1)
+            one_hour_ago = utc_now() - timedelta(hours=6)
 
             # Count users who have tokens that were issued after their revocation time
             # or users without any revocation time

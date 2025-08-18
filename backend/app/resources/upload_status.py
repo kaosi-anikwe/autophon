@@ -6,9 +6,10 @@ from flask_restful import Resource
 from flask import current_app, request, send_file
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
-from app.models.task import Task, TaskStatus, FileType
-from app.utils.helpers import missing_word_html
+from app.models.user import User
 from app.utils.logger import get_logger
+from app.utils.helpers import missing_word_html
+from app.models.task import Task, TaskStatus, FileType
 
 logger = get_logger(__name__)
 
@@ -185,7 +186,7 @@ class TaskDownloadResource(Resource):
 
             # Get task from database
             task = Task.query.filter(
-                Task.task_id == task_id, Task.user_id == user_id, Task.deleted.is_(None)
+                Task.task_id == task_id, Task.user_uuid == user_id, Task.deleted.is_(None)
             ).first()
 
             if not task:
@@ -213,11 +214,12 @@ class TaskDownloadResource(Resource):
             verify_jwt_in_request(optional=True)
             current_user_id = int(get_jwt_identity())
             if current_user_id:
-                return current_user_id
+                user = User.query.get(current_user_id)
+                return user.uuid
         except:
             pass
 
-        return request.args.get("user_id")
+        return request.cookies.get("user_id")
 
     def _download_textgrid(self, task):
         """Download TextGrid files for incomplete/uploaded tasks"""

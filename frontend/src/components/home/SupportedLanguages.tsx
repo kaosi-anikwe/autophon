@@ -10,11 +10,12 @@ interface LanguageItemProps {
 
 function LanguageItem({ language }: LanguageItemProps) {
   const flagImagePath = `/langs/${language.code}/${language.code}_flag_50.png`;
+  const guidePath = `https://new.autophontest.se/api/v1/static/guides/${language.code}.pdf`;
 
   return (
     <div className="flex items-center">
       <div className="w-full">
-        <div className="text-base-content flex items-center font-normal text-lg">
+        <div className="text-base-content flex items-center font-normal">
           <img
             src={flagImagePath}
             alt={`${language.language_name} flag`}
@@ -27,7 +28,7 @@ function LanguageItem({ language }: LanguageItemProps) {
             }}
           />
           <div className="w-6 h-4 bg-gray-300 rounded-sm mr-4 flex-shrink-0 hidden"></div>
-          {language.language_name}
+          <a href={guidePath}>{language.language_name}</a>
         </div>
       </div>
     </div>
@@ -107,7 +108,7 @@ function AllLanguagesTooltip({ isVisible, onClose }: AllLanguagesTooltipProps) {
 
   return (
     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="card bg-base-100 shadow-lg max-w-xl w-96 border border-base-200">
+      <div className="card bg-base-100 shadow-lg max-w-xl w-[44rem] border border-base-200">
         <div className="card-header px-4 py-2 border-b border-base-200">
           <div className="flex justify-between items-center">
             <h3 className="card-title font-semibold">
@@ -152,7 +153,11 @@ function AllLanguagesTooltip({ isVisible, onClose }: AllLanguagesTooltipProps) {
                     }}
                   />
                   <div className="w-4 h-3 bg-base-300 rounded-sm flex-shrink-0 hidden"></div>
-                  <span className="truncate">{language.language_name}</span>
+                  <a
+                    href={`https://new.autophontest.se/api/v1/static/guides/${language.code}.pdf`}
+                  >
+                    <span className="truncate">{language.display_name}</span>
+                  </a>
                 </div>
               ))}
             </div>

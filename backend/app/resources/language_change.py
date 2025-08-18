@@ -4,14 +4,14 @@ import traceback
 import subprocess
 import charset_normalizer
 from praatio import textgrid
-from datetime import datetime
-from app.utils.datetime_helpers import utc_now
 from dotenv import load_dotenv
 from flask_restful import Resource
 from flask import current_app, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from app.utils.datetime_helpers import utc_now
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
 from app.extensions import db
+from app.models.user import User
 from app.models.task import Task
 from app.models.language import Language
 from app.utils.uploads import processTextGridNew
@@ -28,7 +28,6 @@ class LanguageChangeResource(Resource):
     Replaces the legacy /change_lang route
     """
 
-    @jwt_required()
     def post(self):
         """
         Change task language and regenerate missing words
@@ -38,8 +37,21 @@ class LanguageChangeResource(Resource):
             - new_lang: New language code (e.g., 'engGB_MFA1_v010')
         """
         try:
-            current_user_id = int(get_jwt_identity())
-            if not current_user_id:
+            current_user = None
+            user_uuid = None
+            try:
+                verify_jwt_in_request(optional=True)
+                current_user_id = int(get_jwt_identity())
+                current_user = User.query.get(current_user_id)
+                user_uuid = current_user.uuid
+            except Exception as e:
+                # No valid JWT, proceed as anonymous
+                pass
+
+            if not current_user:
+                user_uuid = request.cookies.get("user_id")
+
+            if not current_user and not user_uuid:
                 return {"status": "error", "message": "Authentication required"}, 401
 
             json_data = request.get_json()
@@ -61,7 +73,7 @@ class LanguageChangeResource(Resource):
                 return {"status": "error", "message": "Task not found"}, 404
 
             # Check if user owns this task
-            if task.user_id != current_user_id:
+            if task.user_uuid != user_uuid:
                 return {"status": "error", "message": "Access denied"}, 403
 
             # Validate new language exists
@@ -86,7 +98,7 @@ class LanguageChangeResource(Resource):
 
             # Process language change
             result = self._process_language_change(
-                task, new_lang, current_user_id, held_paths
+                task, new_lang, user_uuid, held_paths
             )
 
             return {

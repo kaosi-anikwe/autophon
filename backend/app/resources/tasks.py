@@ -34,6 +34,7 @@ class TaskListResource(Resource):
         """Get list of tasks with optional filtering"""
         try:
             current_user = None
+            user_uuid = None
             try:
                 # Try to verify JWT token without requiring it
                 verify_jwt_in_request(optional=True)
@@ -44,27 +45,29 @@ class TaskListResource(Resource):
                 # No valid JWT, proceed as anonymous
                 pass
 
+            if not current_user:
+                user_uuid = request.cookies.get("user_id")
+
+            if not current_user and not user_uuid:
+                return {
+                    "success": False,
+                    "message": "Auth required via cookies: JWT or user_uuid.",
+                }, 400
+            
             # Get query parameters
             status = request.args.get("status")
             language_id = request.args.get("language_id")
             engine_id = request.args.get("engine_id")
             limit = request.args.get("limit", type=int)
 
-            user_id = request.cookies.get("user_id")
-
-            if not current_user and not user_id:
-                return {
-                    "success": False,
-                    "message": "Auth required via cookies: JWT or user_id.",
-                }, 400
 
             query = Task.query
 
             # Non-admin users can only see their own tasks
             if current_user and not current_user.admin:
                 query = query.filter_by(user_id=current_user_id, deleted=None)
-            elif user_id:  # Anonymous users
-                query = query.filter_by(user_uuid=user_id, deleted=None)
+            elif user_uuid:  # Anonymous users
+                query = query.filter_by(user_uuid=user_uuid, deleted=None)
             elif current_user:
                 query = query.filter_by(user_id=current_user.id, deleted=None)
 
@@ -399,15 +402,29 @@ class TaskCancelResource(Resource):
 class TaskBulkDeleteResource(Resource):
     """Handle bulk deletion of tasks"""
 
-    @jwt_required()
     def post(self):
         """Delete multiple tasks"""
         try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
+            current_user = None
+            user_uuid = None
+            try:
+                # Try to verify JWT token without requiring it
+                verify_jwt_in_request(optional=True)
+                current_user_id = int(get_jwt_identity())
+                current_user = User.query.get(current_user_id)
+                user_uuid = current_user.uuid
+            except Exception as e:
+                # No valid JWT, proceed as anonymous
+                pass
+            
+            if not current_user:
+                user_uuid = request.cookies.get("user_id")
 
             data = request.get_json()
             task_ids = data.get("task_ids", [])
+
+            if not current_user and not user_uuid:
+                return {"message": "Auth required via cookies: JWT or user_uuid."}
 
             if not task_ids:
                 return {"message": "task_ids list is required"}, 400
@@ -440,8 +457,11 @@ class TaskBulkDeleteResource(Resource):
             # Process each task
             for task in tasks:
                 # Check if user has permission to delete this task
-                if not current_user.admin and task.user_id != current_user_id:
-                    permission_denied.append(task.task_id)
+                if current_user:
+                    if not current_user.admin and task.user_uuid != user_uuid:
+                        permission_denied.append(task.task_id)
+                elif task.user_uuid != user_uuid:
+                        permission_denied.append(task.task_id)
                 else:
                     try:
                         task.deleted = utc_now()

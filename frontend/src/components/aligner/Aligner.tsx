@@ -83,7 +83,9 @@ export default function Aligner({ title, homepage }: AlignerProps) {
 
   let sizeLimit = 750000;
   if (config) {
-    sizeLimit = config.userLimits.size_limit;
+    sizeLimit = homepage
+      ? config.userLimits.a_size_limit
+      : config.userLimits.size_limit;
   }
 
   // File upload mutation
@@ -296,6 +298,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
         <FileValidator
           onFilesValidated={handleFilesValidated}
           isUploading={modalState.uploading}
+          homepage={homepage}
         />
 
         {/* Upload Progress */}
@@ -322,7 +325,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
           </div>
         )}
 
-        <p className="text-xs leading-[1.5] text-base-300 text-left py-1">
+        <p className="text-xs leading-[1.5] text-base-content/50 text-left py-1">
           A single upload may be no larger than {sizeLimit / 1000 || 750} MB. If
           your zip folder contains hundreds or thousands of small files, the
           progress bar will park itself at 100% for as long as 30 minutes. Do
@@ -401,8 +404,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
                 <span className="text-2xl mr-2">
                   <CirclePlus className="w-6 h-6 text-base-100 fill-accent" />
                 </span>
-                {title}
-                {homepage ? "*" : ""}
+                {`${title}${homepage ? "*" : ""}`}
               </h4>
             </button>
           </div>

@@ -33,8 +33,8 @@ export function DictUploadModal({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== "text/plain") {
-      alert("Please upload a .txt file only.");
+    if (file.type !== "text/plain" && !file.name.endsWith(".dict")) {
+      alert("Please upload a .txt or .dict file only.");
       return;
     }
 
@@ -88,11 +88,11 @@ export function DictUploadModal({
       size="md"
     >
       <div className="space-y-4">
-        <div className="alert alert-warning flex items-center">
+        <div className="alert alert-error flex items-center">
           <Info className="w-4 h-4" />
           <span className="text-sm">
-            Files must be .txt format and cannot exceed 50,000 characters
-            (including whitespaces).
+            Files must be .txt or .dict format and cannot exceed 50,000
+            characters (including whitespaces).
           </span>
         </div>
 
@@ -138,7 +138,7 @@ export function DictUploadModal({
           <input
             ref={fileInputRef}
             type="file"
-            accept=".txt"
+            accept=".txt,.dict"
             onChange={handleFileUpload}
             className="file-input file-input-bordered w-full"
           />
