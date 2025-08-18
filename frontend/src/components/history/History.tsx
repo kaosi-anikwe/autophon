@@ -123,7 +123,7 @@ export default function History() {
         </div>
         <div className="text-right mr-8">
           <button
-            className={`btn font-thin ${
+            className={`btn font-thin mb-4 ${
               !historyTasks || historyTasks.length === 0
                 ? "btn-disabled"
                 : "btn-neutral"

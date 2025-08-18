@@ -63,15 +63,15 @@ export default function HistoryTable({
         <div className="relative">
           <div className="max-h-[40rem] overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table className="table">
-              <thead className="table-pin-rows text-center bg-neutral text-neutral-content font-thin">
+              <thead className="sticky top-0 z-10 text-center bg-neutral text-neutral-content font-thin">
                 <tr className="font-thin">
-                  <th className="p-2">Date</th>
-                  <th className="p-2">Tiers</th>
-                  <th className="p-2">Language</th>
-                  <th className="p-2">Size</th>
-                  <th className="p-2">Words</th>
-                  <th className="p-2">Last status</th>
-                  <th className="p-2 w-52">Deleted</th>
+                  <th className="p-2 font-thin">Date</th>
+                  <th className="p-2 font-thin w-16">Tiers</th>
+                  <th className="p-2 font-thin">Language</th>
+                  <th className="p-2 font-thin w-20">Size</th>
+                  <th className="p-2 font-thin w-20">Words</th>
+                  <th className="p-2 font-thin">Last status</th>
+                  <th className="p-2 w-60 font-thin">Deleted</th>
                 </tr>
               </thead>
               <tbody>
@@ -125,48 +125,93 @@ export default function HistoryTable({
             </table>
           </div>
 
-          {/* Fixed Totals Row */}
+          {/* Redesigned Totals Dashboard */}
           {totals && (
-            <div className="sticky bottom-0 bg-neutral text-neutral-content font-thin rounded-b-box">
-              <div className="overflow-x-auto">
-                <table className="table">
-                  <tbody>
-                    <tr className="font-normal">
-                      <td className="p-2 text-center">
-                        <span className="text-sm font-bold">TOTALS</span>
-                      </td>
-                      <td className="p-2 text-center">
-                        <span className="text-sm">{totals.task_count}</span>
-                      </td>
-                      <td className="p-2 text-center" colSpan={2}>
-                        <div className="">
-                          {Object.entries(totals.language_counts).map(
-                            ([lang, count]) => (
-                              <div key={lang} className="">
-                                {lang}: {count}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-2 text-center">
-                        <span className="text-sm">
-                          {totals.total_size.toFixed(1)}
-                        </span>
-                      </td>
-                      <td className="p-2 text-center">
-                        <span className="text-sm">{totals.total_words}</span>
-                      </td>
-
-                      <td className="p-2 text-center">
-                        <span className="text-sm">
-                          {totals.file_count} files
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div className="mt-6 space-y-4">
+              {/* Header Section */}
+              <div className="flex items-center justify-between bg-neutral text-neutral-content px-6 py-4 rounded-t-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+                  <h2 className="text-xl font-bold tracking-wide">MONTHLY ANALYTICS</h2>
+                </div>
+                <div className="text-sm opacity-80 font-mono">
+                  {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                </div>
               </div>
+
+              {/* Main Statistics Grid */}
+              <div className="bg-base-100 border-x border-base-300 px-6 py-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                  {/* Tasks Metric */}
+                  <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-full -mr-8 -mt-8"></div>
+                    <div className="relative">
+                      <div className="text-primary/60 text-sm font-medium uppercase tracking-wider mb-2">Tasks Completed</div>
+                      <div className="text-3xl font-black text-primary mb-1">{totals.task_count}</div>
+                      <div className="text-xs text-base-content/60">alignment jobs</div>
+                    </div>
+                  </div>
+
+                  {/* Files Metric */}
+                  <div className="relative overflow-hidden bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/10 rounded-full -mr-8 -mt-8"></div>
+                    <div className="relative">
+                      <div className="text-secondary/60 text-sm font-medium uppercase tracking-wider mb-2">Total Files</div>
+                      <div className="text-3xl font-black text-secondary mb-1">{totals.file_count}</div>
+                      <div className="text-xs text-base-content/60">audio files processed</div>
+                    </div>
+                  </div>
+
+                  {/* Size Metric */}
+                  <div className="relative overflow-hidden bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-accent/10 rounded-full -mr-8 -mt-8"></div>
+                    <div className="relative">
+                      <div className="text-accent/60 text-sm font-medium uppercase tracking-wider mb-2">Data Volume</div>
+                      <div className="text-3xl font-black text-accent mb-1">{totals.total_size.toFixed(1)}</div>
+                      <div className="text-xs text-base-content/60">megabytes total</div>
+                    </div>
+                  </div>
+
+                  {/* Words Metric */}
+                  <div className="relative overflow-hidden bg-gradient-to-br from-info/10 to-info/5 border border-info/20 rounded-xl p-5 hover:shadow-lg transition-all duration-200 group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-info/10 rounded-full -mr-8 -mt-8"></div>
+                    <div className="relative">
+                      <div className="text-info/60 text-sm font-medium uppercase tracking-wider mb-2">Words Aligned</div>
+                      <div className="text-3xl font-black text-info mb-1">{totals.total_words.toLocaleString()}</div>
+                      <div className="text-xs text-base-content/60">phonetic segments</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Languages Section */}
+              {Object.keys(totals.language_counts).length > 0 && (
+                <div className="bg-base-100 border-x border-base-300 px-6 py-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-base-content mb-2 flex items-center gap-2">
+                      <span className="w-2 h-2 bg-warning rounded-full"></span>
+                      Language Distribution
+                    </h3>
+                    <div className="w-full bg-base-200 rounded-full h-1">
+                      <div className="bg-gradient-to-r from-primary via-secondary to-accent h-1 rounded-full" style={{width: '100%'}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                    {Object.entries(totals.language_counts).map(([lang, count]) => {
+                      return (
+                        <div key={lang} className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-center hover:shadow-md transition-all duration-200">
+                          <div className="text-primary font-bold text-lg">{count}</div>
+                          <div className="text-xs text-base-content/70 uppercase tracking-wide font-medium mt-1">{lang}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Footer Border */}
+              <div className="h-px bg-gradient-to-r from-transparent via-base-300 to-transparent rounded-b-lg"></div>
             </div>
           )}
         </div>
