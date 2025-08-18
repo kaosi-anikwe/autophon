@@ -6,10 +6,13 @@ from .auth import (
     RefreshToken,
     ChangePassword,
     ResetPasswordRequest,
+    ResetPasswordConfirm,
     VerifyToken,
     LogoutAllDevices,
     TokenCleanup,
     RevokeUserTokens,
+    SendVerificationEmail,
+    VerifyEmail,
 )
 
 # User resources
@@ -115,6 +118,8 @@ from .admin import (
     AdminUsersResource,
     AdminDownloadsResource,
     AdminHistoryResource,
+    AdminDashboardResource,
+    AdminUserActionsResource,
 )
 
 __all__ = [
@@ -125,10 +130,13 @@ __all__ = [
     "RefreshToken",
     "ChangePassword",
     "ResetPasswordRequest",
+    "ResetPasswordConfirm",
     "VerifyToken",
     "LogoutAllDevices",
     "TokenCleanup",
     "RevokeUserTokens",
+    "SendVerificationEmail",
+    "VerifyEmail",
     # User resources
     "UserListResource",
     "UserResource",
@@ -191,4 +199,6 @@ __all__ = [
     "AdminUsersResource",
     "AdminDownloadsResource",
     "AdminHistoryResource",
+    "AdminDashboardResource",
+    "AdminUserActionsResource",
 ]

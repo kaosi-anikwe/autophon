@@ -45,7 +45,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     def display_name(self):
         # Return concatenation of name components
-        if self.title:
+        if self.title and self.title != "No title":
             return f"{self.title} {self.first_name} {self.last_name}"
         else:
             return f"{self.first_name} {self.last_name}"

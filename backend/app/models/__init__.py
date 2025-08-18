@@ -9,6 +9,7 @@ from .task import Task, TaskFile, TaskFileName, TaskStatus, FileType
 from .dictionary import UserDictionary
 from .token_blacklist import TokenBlacklist
 from .captcha import Captcha
+from .verification_token import VerificationToken, TokenType
 
 # Configure relationships after all models are imported
 configure_relationships()
@@ -30,4 +31,6 @@ __all__ = [
     "UserDictionary",
     "TokenBlacklist",
     "Captcha",
+    "VerificationToken",
+    "TokenType",
 ]

@@ -135,3 +135,5 @@ mysql.cnf
 
 # Service files
 scripts/systemd
+
+migrations/

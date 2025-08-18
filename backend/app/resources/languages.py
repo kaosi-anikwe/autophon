@@ -22,7 +22,6 @@ from app.schemas import (
 class LanguageListResource(Resource):
     """Handle operations on language collection"""
 
-    @jwt_required()
     def get(self):
         """Get list of languages with optional filtering"""
         try:

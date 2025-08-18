@@ -8,10 +8,13 @@ from app.resources import (
     RefreshToken,
     ChangePassword,
     ResetPasswordRequest,
+    ResetPasswordConfirm,
     VerifyToken,
     LogoutAllDevices,
     TokenCleanup,
     RevokeUserTokens,
+    SendVerificationEmail,
+    VerifyEmail,
     # Captcha
     CaptchaResource,
     CaptchaCleanupResource,
@@ -80,10 +83,13 @@ api.add_resource(Logout, "/auth/logout")
 api.add_resource(RefreshToken, "/auth/refresh")
 api.add_resource(ChangePassword, "/auth/change-password")
 api.add_resource(ResetPasswordRequest, "/auth/reset-password")
+api.add_resource(ResetPasswordConfirm, "/auth/reset-password-confirm")
 api.add_resource(VerifyToken, "/auth/verify")
 api.add_resource(LogoutAllDevices, "/auth/logout-all")
 api.add_resource(TokenCleanup, "/auth/cleanup-tokens")
 api.add_resource(RevokeUserTokens, "/auth/revoke-user-tokens")
+api.add_resource(SendVerificationEmail, "/auth/send-verification")
+api.add_resource(VerifyEmail, "/auth/verify-email")
 
 # Captcha routes
 api.add_resource(CaptchaResource, "/auth/register-captcha")

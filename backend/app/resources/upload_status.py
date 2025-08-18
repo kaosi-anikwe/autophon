@@ -272,29 +272,29 @@ class TaskDownloadResource(Resource):
     def _get_held_paths(self, task):
         """Extract held paths from task files using proper database relationship"""
         held_paths = []
-        
+
         # Get HELD type files from TaskFile relationship
         for file in task.files:
             if file.file_type == FileType.HELD:
                 held_paths.append(file.file_path)
-        
+
         return held_paths
 
     def _get_original_filename(self, task, file_path):
         """Get original filename from task file names using proper database relationship"""
         # Extract file key from path
         file_key = os.path.splitext(os.path.basename(file_path))[0]
-        
+
         # Look up original name in TaskFileName relationship
         for file_name in task.file_names:
             if file_name.file_key == file_key:
                 return file_name.original_name
-        
+
         # Fallback: check if the task file has original_filename
         for task_file in task.files:
             if task_file.file_path == file_path and task_file.original_filename:
                 return task_file.original_filename
-        
+
         # Final fallback
         return f"{file_key}.TextGrid"
 

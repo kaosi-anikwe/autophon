@@ -108,12 +108,12 @@ def generate_captcha() -> tuple:
 # ==============================================================================
 
 
-def missing_word_html(word_list) -> str:
+def missing_word_html(word_list, seperator=True) -> str:
     """Generate HTML for missing word display"""
     logger.debug("Generating missing word html")
     html_code = ""
     for i, word in enumerate(word_list, start=1):
-        word_parts = word.split("\\t")
+        word_parts = word.split("\t")
         if len(word_parts) == 2:
             word_text = word_parts[0]
             phonemes = word_parts[1].split()
@@ -121,15 +121,21 @@ def missing_word_html(word_list) -> str:
             for phoneme in phonemes:
                 if len(phoneme) > 1 and phoneme[-1].isdigit():
                     colored_phonemes.append(
-                        f"<span class='vowel-phoneme'>{phoneme}</span>"
+                        f"<span class='text-secondary'>{phoneme}</span>"
                     )
                 else:
-                    colored_phonemes.append(f"<span class='word-text'>{phoneme}</span>")
+                    colored_phonemes.append(
+                        f"<span class='text-primary'>{phoneme}</span>"
+                    )
             colored_phoneme_str = " ".join(colored_phonemes)
             n_digits = len(str(len(word_list))) - len(str(i))
             spaces = "".join(["&nbsp;"] * n_digits)
-            word_text = f"<span class='text-white'>{spaces}{i} {word_text}</span>"
-            html_code += f"{word_text}\\t{colored_phoneme_str}<br>\\n"
+            if seperator:
+                word_text = f"""<span><span class="after:content-['\\2502'] after:text-xl after:leading-3">{spaces}{i} </span> {word_text}</span>"""
+            else:
+                word_text = f"""<span>{spaces}{i} {word_text}</span>"""
+            # number | word -> pro nun cia tion
+            html_code += f"{word_text}\t{colored_phoneme_str}<br>\n"
         else:
             logger.info(f"Invalid entry: {word}")
     return html_code

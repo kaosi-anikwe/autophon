@@ -50,6 +50,34 @@ class Register(Resource):
             user = User(**data, password_hash=password_hash)
             user.insert()
 
+            # Send verification email automatically
+            try:
+                from app.models.verification_token import VerificationToken, TokenType
+                from app.utils.email_util import send_email
+                from app.utils.email_templates import get_email_verification_email
+
+                # Create email verification token
+                verification_token = VerificationToken(
+                    user_id=user.id,
+                    token_type=TokenType.EMAIL_VERIFICATION,
+                    expires_in_hours=24,
+                )
+                verification_token.insert()
+
+                # Send verification email
+                subject, plain_text, html_content = get_email_verification_email(
+                    user.display_name(), verification_token.token
+                )
+                send_email(user.email, subject, plain_text, html_content)
+                logger.info(
+                    f"Verification email sent during registration to: {user.email}"
+                )
+            except Exception as email_error:
+                logger.warning(
+                    f"Failed to send verification email during registration: {str(email_error)}"
+                )
+                # Don't fail registration if email sending fails
+
             # Create tokens
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
@@ -301,14 +329,97 @@ class ResetPasswordRequest(Resource):
 
             user = User.query.filter_by(email=email, deleted=None).first()
 
+            if user:
+                # Revoke any existing password reset tokens for this user
+                from app.models.verification_token import VerificationToken, TokenType
+
+                VerificationToken.revoke_user_tokens(user.id, TokenType.PASSWORD_RESET)
+
+                # Create new password reset token
+                reset_token = VerificationToken(
+                    user_id=user.id,
+                    token_type=TokenType.PASSWORD_RESET,
+                    expires_in_hours=24,
+                )
+                reset_token.insert()
+
+                # Send password reset email
+                from app.utils.email_util import send_email
+                from app.utils.email_templates import get_password_reset_email
+
+                subject, plain_text, html_content = get_password_reset_email(
+                    user.display_name(), reset_token.token
+                )
+
+                email_sent = send_email(user.email, subject, plain_text, html_content)
+
+                if not email_sent:
+                    logger.error(f"Failed to send password reset email to {user.email}")
+
             # Always return success to prevent email enumeration
-            # In production, you would send a reset email here
             return {
                 "message": "If an account with this email exists, a password reset link has been sent"
             }, 200
 
         except Exception as e:
-            return {"message": f"Password reset request failed: {str(e)}"}, 500
+            log_exception(logger, "Password reset request failed")
+            return {"message": "Password reset request failed"}, 500
+
+
+class ResetPasswordConfirm(Resource):
+    """Handle password reset confirmation"""
+
+    def post(self):
+        """Reset password using token"""
+        try:
+            data = request.get_json()
+            token = data.get("token")
+            new_password = data.get("password")
+
+            if not token or not new_password:
+                return {"message": "Token and password are required"}, 400
+
+            # Validate password strength
+            if len(new_password) < 8:
+                return {"message": "Password must be at least 8 characters long"}, 400
+
+            # Verify token
+            from app.models.verification_token import VerificationToken, TokenType
+
+            reset_token = VerificationToken.get_valid_token(
+                token, TokenType.PASSWORD_RESET
+            )
+
+            if not reset_token:
+                return {"message": "Invalid or expired reset token"}, 400
+
+            # Get user
+            user = User.query.filter_by(id=reset_token.user_id, deleted=None).first()
+            if not user:
+                return {"message": "User not found"}, 404
+
+            # Update password
+            from werkzeug.security import generate_password_hash
+
+            user.password_hash = generate_password_hash(new_password)
+
+            # Mark token as used
+            reset_token.mark_as_used()
+
+            # Revoke all existing tokens for security
+            user.revoke_all_tokens(reason="password_reset")
+            user.update()
+
+            logger.info(
+                f"Password reset successful for user: {user.email} (ID: {user.id})"
+            )
+            return {
+                "message": "Password reset successful. All sessions have been logged out for security."
+            }, 200
+
+        except Exception as e:
+            log_exception(logger, f"Password reset confirmation failed: {str(e)}")
+            return {"message": "Password reset failed"}, 500
 
 
 class VerifyToken(Resource):
@@ -411,3 +522,104 @@ class RevokeUserTokens(Resource):
 
         except Exception as e:
             return {"message": f"Token revocation failed: {str(e)}"}, 500
+
+
+class SendVerificationEmail(Resource):
+    """Handle sending email verification"""
+
+    @jwt_required()
+    def post(self):
+        """Send email verification to current user"""
+        try:
+            current_user_id = get_current_user_id()
+            user = User.query.filter_by(id=current_user_id, deleted=None).first()
+
+            if not user:
+                return {"message": "User not found"}, 404
+
+            if user.verified:
+                return {"message": "Email already verified"}, 400
+
+            # Revoke any existing email verification tokens for this user
+            from app.models.verification_token import VerificationToken, TokenType
+
+            VerificationToken.revoke_user_tokens(user.id, TokenType.EMAIL_VERIFICATION)
+
+            # Create new email verification token
+            verification_token = VerificationToken(
+                user_id=user.id,
+                token_type=TokenType.EMAIL_VERIFICATION,
+                expires_in_hours=24,
+            )
+            verification_token.insert()
+
+            # Send verification email
+            from app.utils.email_util import send_email
+            from app.utils.email_templates import get_email_verification_email
+
+            subject, plain_text, html_content = get_email_verification_email(
+                user.display_name(), verification_token.token
+            )
+
+            email_sent = send_email(user.email, subject, plain_text, html_content)
+
+            if not email_sent:
+                logger.error(f"Failed to send verification email to {user.email}")
+                return {"message": "Failed to send verification email"}, 500
+
+            logger.info(
+                f"Verification email sent to user: {user.email} (ID: {user.id})"
+            )
+            return {"message": "Verification email sent successfully"}, 200
+
+        except Exception as e:
+            log_exception(logger, f"Send verification email failed: {str(e)}")
+            return {"message": "Failed to send verification email"}, 500
+
+
+class VerifyEmail(Resource):
+    """Handle email verification confirmation"""
+
+    def get(self):
+        """Verify email using token"""
+        try:
+            token = request.args.get("token")
+
+            if not token:
+                return {"message": "Token is required"}, 400
+
+            # Verify token
+            from app.models.verification_token import VerificationToken, TokenType
+
+            verification_token = VerificationToken.get_valid_token(
+                token, TokenType.EMAIL_VERIFICATION
+            )
+
+            if not verification_token:
+                return {"message": "Invalid or expired verification token"}, 400
+
+            # Get user
+            user = User.query.filter_by(
+                id=verification_token.user_id, deleted=None
+            ).first()
+            if not user:
+                return {"message": "User not found"}, 404
+
+            if user.verified:
+                return {"message": "Email already verified"}, 400
+
+            # Mark email as verified
+            user.verified = True
+            user.update()
+
+            # Mark token as used
+            verification_token.mark_as_used()
+
+            logger.info(
+                f"Email verification successful for user: {user.email} (ID: {user.id})"
+            )
+            return {"message": "Email verified successfully"}, 200
+
+        except Exception as e:
+            log_exception(logger, f"Email verification failed: {str(e)}")
+            return {"message": "Email verification failed"}, 500

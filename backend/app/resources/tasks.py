@@ -4,7 +4,7 @@ from flask_restful import Resource
 from sqlalchemy import func, extract
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 
 from app.extensions import db
 from app.models.user import User
@@ -30,27 +30,43 @@ from app.schemas import (
 class TaskListResource(Resource):
     """Handle operations on task collection"""
 
-    @jwt_required()
     def get(self):
         """Get list of tasks with optional filtering"""
         try:
-            current_user_id = int(get_jwt_identity())
-            current_user = User.query.get(current_user_id)
+            current_user = None
+            try:
+                # Try to verify JWT token without requiring it
+                verify_jwt_in_request(optional=True)
+                current_user_id = int(get_jwt_identity())
+                current_user = User.query.get(current_user_id)
+
+            except Exception as e:
+                # No valid JWT, proceed as anonymous
+                pass
 
             # Get query parameters
             status = request.args.get("status")
-            user_id = request.args.get("user_id")
             language_id = request.args.get("language_id")
             engine_id = request.args.get("engine_id")
             limit = request.args.get("limit", type=int)
 
+            user_id = request.cookies.get("user_id")
+
+            if not current_user and not user_id:
+                return {
+                    "success": False,
+                    "message": "Auth required via cookies: JWT or user_id.",
+                }, 400
+
             query = Task.query
 
             # Non-admin users can only see their own tasks
-            if not current_user.admin:
+            if current_user and not current_user.admin:
                 query = query.filter_by(user_id=current_user_id, deleted=None)
-            elif user_id:
-                query = query.filter_by(user_id=user_id, deleted=None)
+            elif user_id:  # Anonymous users
+                query = query.filter_by(user_uuid=user_id, deleted=None)
+            elif current_user:
+                query = query.filter_by(user_id=current_user.id, deleted=None)
 
             # Apply filters
             if status:

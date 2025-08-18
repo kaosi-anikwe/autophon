@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
+from app.utils.helpers import missing_word_html
 from app.models.task import Task, TaskFile, TaskFileName, TaskStatus, FileType
 
 
@@ -28,6 +29,7 @@ class TaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Task
         load_instance = True
+        exclude = ("final_temp", "log_path", "download_path")
 
     # Enum field
     task_status = fields.Enum(TaskStatus, by_value=True)
@@ -35,12 +37,35 @@ class TaskSchema(SQLAlchemyAutoSchema):
     # Decimal field
     size = fields.Decimal(as_string=True)
 
+    # Custom field for relative missing pronunciation dictionary path
+    missingprondict = fields.Method("get_relative_missingprondict")
+
+    missingpronhtml = fields.Method("format_to_html")
+
     # Nested relationships
     owner = fields.Nested("UserPublicSchema", dump_only=True)
     language = fields.Nested("LanguageSimpleSchema", dump_only=True)
     engine = fields.Nested("EngineSimpleSchema", dump_only=True)
-    files = fields.Nested(TaskFileSchema, many=True, dump_only=True)
-    file_names = fields.Nested(TaskFileNameSchema, many=True, dump_only=True)
+
+    def get_relative_missingprondict(self, obj: Task):
+        """Convert absolute path to relative path for missingprondict"""
+        if obj.missingprondict:
+            # Extract just the filename or make it relative to a base path
+            import os
+
+            return os.path.basename(obj.missingprondict)
+        return None
+
+    def format_to_html(self, obj: Task):
+        """Convert missing words to HTML"""
+        import os
+
+        if obj.missing_words and os.path.exists(obj.missingprondict):
+            with open(obj.missingprondict, "r", encoding="utf-8") as f:
+                content = f.readlines()
+
+            # Format content as HTML
+            return missing_word_html(content, seperator=False)
 
 
 class TaskCreateSchema(Schema):

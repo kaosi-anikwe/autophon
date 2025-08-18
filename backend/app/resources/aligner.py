@@ -354,12 +354,12 @@ class AlignTaskResource(Resource):
         """Calculate estimated alignment duration based on task properties"""
         # Get held_paths count using proper database relationship
         from app.models.task import FileType
-        
+
         held_paths_count = 0
         for file in task.files:
             if file.file_type == FileType.HELD:
                 held_paths_count += 1
-        
+
         # Default to 1 if no held files found
         if held_paths_count == 0:
             held_paths_count = 1

@@ -58,7 +58,7 @@ class UploadWorkerConfig:
         self.min_poll_interval = MIN_POLL_INTERVAL
         self.max_poll_interval = MAX_POLL_INTERVAL
         self.poll_backoff_factor = POLL_BACKOFF_FACTOR
-        self.retry_attempts = 2  # Quick retries for uploads
+        self.retry_attempts = 1  # Quick retries for uploads
         self.retry_delay = 1  # Fast retry for real-time feel
 
 
@@ -89,7 +89,7 @@ class UploadTaskProcessor:
                 logger.error("Upload task missing task_id")
                 return False
 
-            if not task.user_id:
+            if not task.user_uuid:
                 logger.error(f"Upload task {task.task_id} missing user_id")
                 return False
 
@@ -421,6 +421,7 @@ class UploadWorker:
 
             except Exception as e:
                 logger.error(f"Upload task wrapper error: {e}")
+                logger.error(traceback.format_exc())
                 self.stats["uploads_failed"] += 1
             finally:
                 self.active_tasks.discard(task.task_id)

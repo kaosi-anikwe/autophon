@@ -305,7 +305,11 @@ class FileUploadResource(Resource):
                 if anonymous and not request.cookies.get("user_id"):
                     response = make_response(response_data)
                     response.set_cookie(
-                        "user_id", user_uuid, max_age=315360000
+                        "user_id",
+                        user_uuid,
+                        max_age=315360000,
+                        samesite="None",
+                        secure=True,
                     )  # 10 years
                     return response
 

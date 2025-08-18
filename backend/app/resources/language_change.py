@@ -110,14 +110,14 @@ class LanguageChangeResource(Resource):
     def _get_held_paths(self, task):
         """Extract held paths from task - adapt based on how they're stored"""
         from app.models.task import FileType
-        
+
         textgrid_paths = []
-        
+
         # Get HELD type files from TaskFile relationship
         for file in task.files:
             if file.file_type == FileType.HELD:
                 textgrid_paths.append(file.file_path)
-        
+
         # Fallback: scan task directory for TextGrid files if no DB records
         if not textgrid_paths:
             task_dir = os.path.join(UPLOADS, task.task_path) if task.task_path else None
@@ -126,7 +126,7 @@ class LanguageChangeResource(Resource):
                     for file in files:
                         if file.endswith(".TextGrid"):
                             textgrid_paths.append(os.path.join(root, file))
-        
+
         return textgrid_paths
 
     def _process_language_change(self, task, new_lang, user_id, held_paths):

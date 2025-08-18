@@ -159,7 +159,8 @@ class UserDictionaryUploadResource(Resource):
         """Handle empty dictionary upload"""
         try:
             # Create user dictionary directory
-            dict_dir = os.path.join(UPLOADS, str(user_id), "dic")
+            uuid = User.query.get(int(user_id)).uuid
+            dict_dir = os.path.join(UPLOADS, uuid, "dic")
             os.makedirs(dict_dir, exist_ok=True)
 
             # Create empty files
@@ -197,7 +198,8 @@ class UserDictionaryUploadResource(Resource):
         """Save dictionary file and create JSON index"""
         try:
             # Create user dictionary directory
-            dict_dir = os.path.join(UPLOADS, str(user_id), "dic")
+            uuid = User.query.get(int(user_id)).uuid
+            dict_dir = os.path.join(UPLOADS, uuid, "dic")
             os.makedirs(dict_dir, exist_ok=True)
 
             dict_path = os.path.join(dict_dir, f"{lang}.dict")
@@ -226,7 +228,9 @@ class UserDictionaryUploadResource(Resource):
 
             # Sort and remove duplicates
             subprocess.run(
-                f'sort -u "{dict_path}" -o "{dict_path}"', shell=True, check=True
+                f'/usr/bin/sort -u "{dict_path}" -o "{dict_path}"',
+                shell=True,
+                check=True,
             )
 
             # Create JSON index for fast lookups
@@ -315,15 +319,21 @@ class UserDictionaryResource(Resource):
                 }, 500
 
             # Check if user dictionary exists
-            dict_dir = os.path.join(UPLOADS, str(current_user_id), "dic")
+            user = User.query.get(int(current_user_id))
+            dict_dir = os.path.join(UPLOADS, user.uuid, "dic")
             dict_path = os.path.join(dict_dir, f"{lang}.dict")
 
             if not os.path.exists(dict_dir) or not os.path.exists(dict_path):
                 return {
-                    "status": "error",
+                    "status": "success",
                     "message": "No user-made dictionary found for this language",
-                    "data": {"phones": phones},
-                }, 404
+                    "data": {
+                        "content": "",
+                        "phones": phones,
+                        "word_count": 0,
+                        "language": lang,
+                    },
+                }
 
             # Read and format dictionary content
             try:

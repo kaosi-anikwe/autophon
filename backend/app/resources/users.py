@@ -211,6 +211,41 @@ class UserProfileResource(Resource):
             log_exception(logger, "Error updating profile")
             return {"message": f"Error updating profile: {str(e)}"}, 500
 
+    @jwt_required()
+    def delete(self):
+        """Delete current user account"""
+        try:
+            current_user_id = int(get_jwt_identity())
+            user = User.query.filter_by(id=current_user_id, deleted=None).first()
+
+            if not user:
+                return {"message": "User not found"}, 404
+
+            # Import the delete_user_account function from utils.helpers
+            from app.utils.helpers import delete_user_account
+
+            # Delete the user account using the helper function
+            success = delete_user_account(current_user_id)
+
+            if not success:
+                return {"message": "Failed to delete account"}, 500
+
+            # Clear HTTP-only cookies after successful deletion
+            from flask import jsonify
+            from flask_jwt_extended import unset_jwt_cookies
+
+            response = jsonify({"message": "Account deleted successfully"})
+            unset_jwt_cookies(response)
+
+            logger.info(
+                f"User account deleted successfully: {user.email} (ID: {current_user_id})"
+            )
+            return response
+
+        except Exception as e:
+            log_exception(logger, "Error deleting account")
+            return {"message": f"Error deleting account: {str(e)}"}, 500
+
 
 class UserTasksResource(Resource):
     """Handle user's tasks (admin only)"""
