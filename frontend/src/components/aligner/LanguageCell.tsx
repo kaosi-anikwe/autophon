@@ -156,7 +156,7 @@ export default function LanguageCell({
     >
       {/* Clickable span to show dropdown */}
       <span
-        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded ${
+        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-base-300 p-1 rounded ${
           isDisabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() => !isDisabled && setShowDropdown(!showDropdown)}

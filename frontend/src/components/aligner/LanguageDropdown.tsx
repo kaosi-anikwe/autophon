@@ -126,7 +126,7 @@ export default function LanguageDropdown({
     return (
       <div
         ref={containerRef}
-        className="w-full max-h-80 bg-white border border-base-200 rounded-md shadow-lg p-1 z-[100] outline-none"
+        className="w-full max-h-80 bg-base-100 border border-base-200 rounded-md shadow-lg p-1 z-[100] outline-none"
         tabIndex={0}
       >
         {/* Search input */}

@@ -243,6 +243,7 @@ export default function AlignerRow({
       {/* Language dropdown */}
       <td>
         <LanguageCell
+          key={task.task_status}
           task={task}
           onLanguageSelected={(languageName) => {
             setSelectedLanguageName(languageName);
