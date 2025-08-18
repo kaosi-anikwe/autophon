@@ -23,11 +23,6 @@ export default function EngineCell({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [dropdownPosition, setDropdownPosition] = useState({
-    top: 0,
-    left: 0,
-    width: 0,
-  });
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -95,19 +90,10 @@ export default function EngineCell({
   };
 
   const isDisabled =
-    task.task_status === "uploading" || task.pre_error || isChangingLanguage;
-
-  // Update dropdown position when shown
-  useEffect(() => {
-    if (showDropdown && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }
-  }, [showDropdown]);
+    task.task_status === "completed" ||
+    task.task_status === "uploading" ||
+    task.pre_error ||
+    isChangingLanguage;
 
   // Reset selected index when dropdown options change
   useEffect(() => {
@@ -182,7 +168,7 @@ export default function EngineCell({
     >
       {/* Clickable span to show dropdown */}
       <span
-        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded ${
+        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-base-200/50 p-1 rounded ${
           isDisabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() =>
@@ -210,25 +196,18 @@ export default function EngineCell({
 
       {/* Dropdown - positioned outside table container */}
       {showDropdown && !isDisabled && selectedLanguageName && (
-        <div
-          className="fixed z-[9999]"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-            width: `${dropdownPosition.width}px`,
-          }}
-        >
+        <div className="absolute w-full z-[10]">
           <div
             ref={dropdownRef}
-            className="w-full max-h-80 bg-white border border-base-200 rounded-md shadow-lg p-1 z-[100] outline-none"
+            className="w-full max-h-80 bg-base-100 border border-base-200 rounded-md shadow-lg p-1 z-[100] outline-none"
             tabIndex={0}
           >
             {displayOptions.map((language, index) => (
               <div
                 key={language.code}
                 onClick={() => handleDisplayNameSelect(language.code)}
-                className={`flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 cursor-pointer rounded-sm ${
-                  selectedIndex === index ? "bg-blue-100" : ""
+                className={`flex items-center gap-2 px-2 py-1.5 hover:bg-base-200/50 cursor-pointer rounded-sm ${
+                  selectedIndex === index ? "bg-base-200/80" : ""
                 }`}
               >
                 <img
@@ -245,7 +224,7 @@ export default function EngineCell({
             ))}
 
             {displayOptions.length === 0 && (
-              <div className="px-2 py-1.5 text-sm text-gray-500">
+              <div className="px-2 py-1.5 text-sm text-neutral/50">
                 No variants available
               </div>
             )}

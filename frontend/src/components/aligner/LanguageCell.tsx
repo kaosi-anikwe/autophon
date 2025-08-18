@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
+import { useState, useRef } from "react";
 import { AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, useEffect } from "react";
 
 import { api } from "@/lib/api";
 import type { Task, Language } from "@/types/api";
@@ -23,11 +23,6 @@ export default function LanguageCell({
   );
   const [showDropdown, setShowDropdown] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({
-    top: 0,
-    left: 0,
-    width: 0,
-  });
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Fetch languages
@@ -85,20 +80,11 @@ export default function LanguageCell({
   };
 
   const isDisabled =
-    task.task_status === "uploading" || task.pre_error || isChangingLanguage;
+    task.task_status === "completed" ||
+    task.task_status === "uploading" ||
+    task.pre_error ||
+    isChangingLanguage;
   const hasPreError = task.pre_error === true;
-
-  // Update dropdown position when shown
-  useEffect(() => {
-    if (showDropdown && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }
-  }, [showDropdown]);
 
   const getLanguageFlag = () => {
     if (languagesData && selectedLanguage) {
@@ -152,11 +138,11 @@ export default function LanguageCell({
   return (
     <div
       ref={containerRef}
-      className="relative rounded w-full border border-base-200"
+      className="relative rounded w-full min-w-48 border border-base-200"
     >
       {/* Clickable span to show dropdown */}
       <span
-        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-base-300 p-1 rounded ${
+        className={`flex items-center align-middle gap-2 cursor-pointer hover:bg-base-200/50 p-1 rounded ${
           isDisabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() => !isDisabled && setShowDropdown(!showDropdown)}
@@ -178,14 +164,7 @@ export default function LanguageCell({
 
       {/* Dropdown - positioned outside table container */}
       {showDropdown && !isDisabled && (
-        <div
-          className="fixed z-[9999]"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-            width: `${dropdownPosition.width}px`,
-          }}
-        >
+        <div className="absolute w-full z-[10]">
           <LanguageDropdown
             key={selectedLanguage}
             value={selectedLanguage!}

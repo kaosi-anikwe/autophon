@@ -1,16 +1,17 @@
-import { CirclePlus } from "lucide-react";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import TranscriptionSelect from "../modals/TranscriptionSelect";
+import { AxiosError } from "axios";
 import TransChoices from "./TransChoices";
+import { CirclePlus } from "lucide-react";
+import ProgressBar from "../ui/ProgressBar";
 import FileValidator from "../features/FileValidator";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import TranscriptionSelect from "../modals/TranscriptionSelect";
+
+import { api } from "@/lib/api";
+import { type Task } from "@/types/api";
+import AlignerTable from "./AlignerTable";
 import { useToast } from "@/contexts/ToastContext";
 import { useConfig } from "@/contexts/AppConfigContext";
-import { AxiosError } from "axios";
-import { type Task } from "@/types/api";
-import ProgressBar from "../ui/ProgressBar";
-import AlignerTable from "./AlignerTable";
 import { useAppSelector } from "@/hooks/useAppDispatch";
 
 type TaskUploadError = {
@@ -76,9 +77,14 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   const [transChoice, setTransChoice] = useState<string | null>(
     user?.trans_default ? transMap[user.trans_default] : null
   ); // to be populated with user data
-  const [fileList, setFileList] = useState<FileList | null>(null);
+  const [, setFileList] = useState<FileList | null>(null);
   const toast = useToast();
   const config = useConfig();
+
+  let sizeLimit = 750000;
+  if (config) {
+    sizeLimit = config.userLimits.size_limit;
+  }
 
   // File upload mutation
   const uploadMutation = useMutation({
@@ -183,10 +189,21 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     },
   });
 
+  // Helper function to check if user_id cookie exists (for anonymous uploads)
+  const hasUserIdCookie = () => {
+    return document.cookie
+      .split(";")
+      .some((cookie) => cookie.trim().startsWith("user_id="));
+  };
+
+  // Only fetch tasks if user is authenticated OR has user_id cookie (anonymous upload)
+  const shouldFetchTasks = user?.uuid !== undefined || hasUserIdCookie();
+
   // Fetch tasks query with real-time updates for uploading and aligning tasks
   const fetchTasks = useQuery<Task[]>({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", user?.uuid],
     staleTime: 2 * 1000, // 2 seconds for real-time feel
+    enabled: shouldFetchTasks, // Only fetch when user is authenticated or has user_id cookie
     refetchInterval: ({ state }) => {
       // Check if any tasks are in uploading or aligned state
       if (!state?.data || !Array.isArray(state.data)) {
@@ -205,7 +222,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   });
 
   // Prefetch languages data
-  const { data: languagesData } = useQuery({
+  useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
       const response = await api.get("/languages");
@@ -215,7 +232,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   });
 
   // Prefetch engines data
-  const { data: enginesData } = useQuery({
+  useQuery({
     queryKey: ["engines"],
     queryFn: async () => {
       const response = await api.get("/engines");
@@ -306,13 +323,12 @@ export default function Aligner({ title, homepage }: AlignerProps) {
         )}
 
         <p className="text-xs leading-[1.5] text-base-300 text-left py-1">
-          A single upload may be no larger than{" "}
-          {config?.userLimits?.size_limit / 1000 || 750} MB. If your zip folder
-          contains hundreds or thousands of small files, the progress bar will
-          park itself at 100% for as long as 30 minutes. Do not refresh; rather,
-          wait it out, and it will eventually load. We are currently working on
-          a patch to fix this. If you need help, select change transcription
-          mode for video guides.
+          A single upload may be no larger than {sizeLimit / 1000 || 750} MB. If
+          your zip folder contains hundreds or thousands of small files, the
+          progress bar will park itself at 100% for as long as 30 minutes. Do
+          not refresh; rather, wait it out, and it will eventually load. We are
+          currently working on a patch to fix this. If you need help, select
+          change transcription mode for video guides.
         </p>
         {!modalState.uploading && (
           <button

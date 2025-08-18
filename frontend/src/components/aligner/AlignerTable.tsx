@@ -33,7 +33,6 @@ export default function AlignerTable({
   const toast = useToast();
 
   let sizeLimit = "N/A";
-  console.log(homepage, "homepage");
   if (config) {
     sizeLimit = homepage
       ? `${config.userLimits.a_size_limit / 1000} MB`

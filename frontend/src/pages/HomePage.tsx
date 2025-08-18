@@ -147,10 +147,10 @@ export function HomePage() {
             {config?.userLimits && config.audioExtensions && (
               <>
                 <p className="text-[#949494] text-sm">
-                  * Files under {config.userLimits.a_size_limit || 100}MB may be
-                  aligned without an account. To align batches as large as{" "}
-                  {config.userLimits.size_limit || 750} MB and to access
-                  advanced features,{" "}
+                  * Files under {config.userLimits.a_size_limit / 1000 || 100}MB
+                  may be aligned without an account. To align batches as large
+                  as {config.userLimits.size_limit / 1000 || 750} MB and to
+                  access advanced features,{" "}
                   <Link
                     to="/register"
                     className="text-[#949494] no-underline border-b-[0.3px] border-dotted border-[#949494] hover:text-primary transition-colors mx-0"

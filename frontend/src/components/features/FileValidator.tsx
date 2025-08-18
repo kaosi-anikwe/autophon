@@ -250,12 +250,6 @@ export default function FileValidator({
           <span className="text-sm">Validating files...</span>
         </div>
       )}
-
-      {config?.userLimits?.size_limit && (
-        <p className="text-xs text-base-300 mt-2">
-          Maximum total file size: {config.userLimits.size_limit} MB
-        </p>
-      )}
     </div>
   );
 }

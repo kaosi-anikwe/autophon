@@ -233,7 +233,7 @@ export default function AlignerRow({
             <span className="font-cascadia font-medium text-left">
               {task.download_title}
             </span>
-            <span className="text-xs text-left text-base-content/60">
+            <span className="font-cascadia text-xs text-left text-base-content/60">
               {task.download_date}
             </span>
           </div>

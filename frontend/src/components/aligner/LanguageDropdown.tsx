@@ -131,7 +131,7 @@ export default function LanguageDropdown({
       >
         {/* Search input */}
         <div className="relative p-2">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-base-content/50" />
           <input
             type="text"
             placeholder="Search languages..."
@@ -153,8 +153,8 @@ export default function LanguageDropdown({
               setSearchTerm("");
               onClose?.();
             }}
-            className={`flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 cursor-pointer rounded-sm ${
-              selectedIndex === index ? "bg-blue-100" : ""
+            className={`flex items-center gap-2 px-2 py-1.5 hover:bg-base-200/50 cursor-pointer rounded-sm ${
+              selectedIndex === index ? "bg-base-200/80" : ""
             }`}
           >
             <img
@@ -167,14 +167,16 @@ export default function LanguageDropdown({
             />
             <div className="flex flex-col">
               <span className="text-sm">{language.language_name}</span>
-              <span className="text-xs text-gray-500">{language.alphabet}</span>
+              <span className="text-xs text-neutral/50">
+                {language.alphabet}
+              </span>
             </div>
           </div>
         ))}
 
         {/* No results */}
         {allFilteredLanguages.length === 0 && (
-          <div className="px-2 py-1.5 text-sm text-gray-500">
+          <div className="px-2 py-1.5 text-sm text-neutral/50">
             No languages found
           </div>
         )}
@@ -185,7 +187,7 @@ export default function LanguageDropdown({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
-        className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 p-2 hover:bg-base-200/50 rounded-md min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={disabled}
       >
         {selectedLanguage && (
@@ -207,7 +209,7 @@ export default function LanguageDropdown({
       <DropdownMenuContent className="w-full max-h-80">
         {/* Search input */}
         <div className="relative p-2">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-base-content" />
           <input
             type="text"
             placeholder="Search languages..."
@@ -244,7 +246,7 @@ export default function LanguageDropdown({
                 />
                 <div className="flex flex-col">
                   <span className="text-sm">{language.language_name}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-neutral/50">
                     {language.alphabet}
                   </span>
                 </div>
@@ -278,7 +280,7 @@ export default function LanguageDropdown({
                 />
                 <div className="flex flex-col">
                   <span className="text-sm">{language.language_name}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-neutral/50">
                     {language.alphabet}
                   </span>
                 </div>
