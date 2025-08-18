@@ -16,7 +16,9 @@ export default function ProgressBar({
         <span>{progress}%</span>
       </div>
       <progress
-        className={`progress progress-${type ? type : "primary"} w-full transition-all duration-300 ease-out`}
+        className={`progress progress-${
+          type ? type : "success"
+        } w-full transition-all duration-300 ease-out`}
         value={progress}
         max="100"
       ></progress>

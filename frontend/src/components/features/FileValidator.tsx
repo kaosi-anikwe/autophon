@@ -164,12 +164,14 @@ export default function FileValidator({
 
         try {
           const [fileCount, fileList] = await countFilesInZip(zipFile);
-          const { error, badFile } = checkExtensions(fileList, true);
 
-          if (error) {
-            toast.error(`File "${badFile}" is not supported`);
-            return;
-          }
+          // Disable file extension check for zip files
+          // const { error, badFile } = checkExtensions(fileList, true);
+
+          // if (error) {
+          //   toast.error(`File "${badFile}" is not supported`);
+          //   return;
+          // }
 
           console.log("ZIP file validation successful:", {
             fileName: zipFile.name,

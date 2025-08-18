@@ -307,7 +307,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
 
         <p className="text-xs leading-[1.5] text-base-300 text-left py-1">
           A single upload may be no larger than{" "}
-          {config?.userLimits?.size_limit || 750} MB. If your zip folder
+          {config?.userLimits?.size_limit / 1000 || 750} MB. If your zip folder
           contains hundreds or thousands of small files, the progress bar will
           park itself at 100% for as long as 30 minutes. Do not refresh; rather,
           wait it out, and it will eventually load. We are currently working on
@@ -317,7 +317,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
         {!modalState.uploading && (
           <button
             type="button"
-            className="btn btn-primary font-thin text-left mt-2"
+            className="btn btn-neutral font-thin text-left mt-2"
             onClick={() => {
               setModalState({
                 type: "closed",

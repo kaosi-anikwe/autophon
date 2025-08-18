@@ -12,6 +12,7 @@ export interface User {
   display_name?: string;
   profile_image?: string;
   trans_default?: string;
+  dict_default?: string;
   admin: boolean;
   verified?: boolean;
   created_at?: string;
@@ -79,6 +80,7 @@ export interface Task {
   download_date?: string;
   no_of_tiers?: number;
   size?: number;
+  batch?: boolean;
   task_status:
     | "uploading"
     | "uploaded"
@@ -96,6 +98,7 @@ export interface Task {
   file_count: number;
   words?: number;
   missing_words?: number;
+  missingpronhtml?: string;
   duration?: number;
   created_at: string;
   updated_at: string;
@@ -166,6 +169,13 @@ export interface EngineHomepage {
 export interface EnginesResponse {
   engines: EngineHomepage[];
   count: number;
+}
+
+export interface Dictionary {
+  content: string;
+  language: string;
+  phones: string[];
+  word_count: number;
 }
 
 // API Response types

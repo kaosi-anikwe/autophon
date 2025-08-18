@@ -13,6 +13,8 @@ import {
   UserMinus,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { AxiosError } from "axios";
 import { adminAPI } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
 import { useAppSelector } from "@/hooks/useAppDispatch";
@@ -48,8 +50,10 @@ export default function AdminUsers() {
       toast.success(data.message, "Action Completed");
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Action failed", "Error");
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Action failed", "Error");
+      }
     },
   });
 
@@ -185,7 +189,11 @@ export default function AdminUsers() {
                 <Filter className="w-4 h-4 text-base-content/50" />
                 <select
                   value={filterDeleted}
-                  onChange={(e) => setFilterDeleted(e.target.value as any)}
+                  onChange={(e) =>
+                    setFilterDeleted(
+                      e.target.value as "all" | "active" | "deleted"
+                    )
+                  }
                   className="select select-bordered select-sm"
                 >
                   <option value="all">All Users</option>
@@ -198,7 +206,11 @@ export default function AdminUsers() {
               <div>
                 <select
                   value={filterVerified}
-                  onChange={(e) => setFilterVerified(e.target.value as any)}
+                  onChange={(e) =>
+                    setFilterVerified(
+                      e.target.value as "all" | "verified" | "unverified"
+                    )
+                  }
                   className="select select-bordered select-sm"
                 >
                   <option value="all">All Status</option>
@@ -211,7 +223,9 @@ export default function AdminUsers() {
               <div>
                 <select
                   value={filterAdmin}
-                  onChange={(e) => setFilterAdmin(e.target.value as any)}
+                  onChange={(e) =>
+                    setFilterAdmin(e.target.value as "all" | "admin" | "user")
+                  }
                   className="select select-bordered select-sm"
                 >
                   <option value="all">All Roles</option>
@@ -356,58 +370,66 @@ export default function AdminUsers() {
                           <>
                             {/* Verify Button */}
                             {!user.verified && (
-                              <button
-                                onClick={() =>
-                                  handleUserAction(user.email, "verify")
-                                }
-                                disabled={userActionMutation.isPending}
-                                className="btn btn-success btn-xs"
-                                title="Verify User"
-                              >
-                                <ShieldCheck className="w-3 h-3" />
-                              </button>
+                              <div className="tooltip" data-tip="Verify User">
+                                <button
+                                  onClick={() =>
+                                    handleUserAction(user.email, "verify")
+                                  }
+                                  disabled={userActionMutation.isPending}
+                                  className="btn btn-success btn-xs"
+                                  title="Verify User"
+                                >
+                                  <ShieldCheck className="w-3 h-3" />
+                                </button>
+                              </div>
                             )}
 
                             {/* Make Admin Button */}
                             {!user.admin && !isCurrentUserRow && (
-                              <button
-                                onClick={() =>
-                                  handleUserAction(user.email, "make_admin")
-                                }
-                                disabled={userActionMutation.isPending}
-                                className="btn btn-info btn-xs"
-                                title="Make Admin"
-                              >
-                                <Crown className="w-3 h-3" />
-                              </button>
+                              <div className="tooltip" data-tip="Make Admin">
+                                <button
+                                  onClick={() =>
+                                    handleUserAction(user.email, "make_admin")
+                                  }
+                                  disabled={userActionMutation.isPending}
+                                  className="btn btn-info btn-xs"
+                                  title="Make Admin"
+                                >
+                                  <Crown className="w-3 h-3" />
+                                </button>
+                              </div>
                             )}
 
                             {/* Block Button */}
                             {!isCurrentUserRow && (
-                              <button
-                                onClick={() =>
-                                  handleUserAction(user.email, "block")
-                                }
-                                disabled={userActionMutation.isPending}
-                                className="btn btn-warning btn-xs"
-                                title="Block User"
-                              >
-                                <UserX className="w-3 h-3" />
-                              </button>
+                              <div className="tooltip" data-tip="Block User">
+                                <button
+                                  onClick={() =>
+                                    handleUserAction(user.email, "block")
+                                  }
+                                  disabled={userActionMutation.isPending}
+                                  className="btn btn-warning btn-xs"
+                                  title="Block User"
+                                >
+                                  <UserX className="w-3 h-3" />
+                                </button>
+                              </div>
                             )}
 
                             {/* Delete Button */}
                             {!isCurrentUserRow && (
-                              <button
-                                onClick={() =>
-                                  handleUserAction(user.email, "delete")
-                                }
-                                disabled={userActionMutation.isPending}
-                                className="btn btn-error btn-xs"
-                                title="Delete User"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
+                              <div className="tooltip" data-tip="Delete User">
+                                <button
+                                  onClick={() =>
+                                    handleUserAction(user.email, "delete")
+                                  }
+                                  disabled={userActionMutation.isPending}
+                                  className="btn btn-error btn-xs"
+                                  title="Delete User"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
                             )}
                           </>
                         )}

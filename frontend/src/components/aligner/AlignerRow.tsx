@@ -44,9 +44,7 @@ export default function AlignerRow({
 
   // Countdown timer state
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [alignmentStartTime, setAlignmentStartTime] = useState<Date | null>(
-    null
-  );
+  const [, setAlignmentStartTime] = useState<Date | null>(null);
 
   // Determine if task has errors
   const hasPreError = task.pre_error === true;
@@ -95,7 +93,7 @@ export default function AlignerRow({
     return (
       task.trans_choice === "exp-a" ||
       task.trans_choice === "comp-ling" ||
-      (task as any).batch === true // In case batch property exists but not in type
+      task.batch === true // In case batch property exists but not in type
     );
   };
 
@@ -137,7 +135,15 @@ export default function AlignerRow({
     return null;
   };
 
+  const getMissingUrl = () => {
+    if (task.missing_words) {
+      return `https://new.autophontest.se/api/v1/tasks/${task.task_id}/download/missing_dict`;
+    }
+    return null;
+  };
+
   const downloadUrl = getDownloadUrl();
+  const missingUrl = getMissingUrl();
 
   // Render cell content based on status
   const renderCellContent = (
@@ -154,7 +160,29 @@ export default function AlignerRow({
       isUploading &&
       ["no_of_tiers", "words", "missing_words"].includes(field)
     ) {
-      return <img src="/spinner.gif" alt="Loading..." className="w-auto h-6" />;
+      return (
+        <img
+          src="/spinner.gif"
+          alt="Loading..."
+          className="w-auto h-6 mx-auto"
+        />
+      );
+    }
+    if (field === "missing_words") {
+      return missingUrl ? (
+        <div className="tooltip tooltip-left">
+          <div
+            className="tooltip-content text-xs bg-base-300 font-cascadia whitespace-nowrap text-left max-w-fit rounded w-[50rem] z-[50]"
+            dangerouslySetInnerHTML={{ __html: task.missingpronhtml! }}
+          />
+          {value}
+          <a href={getMissingUrl()!} className="btn btn-ghost btn-xs" download>
+            <Download className="w-4 h-4 mb-2" />
+          </a>
+        </div>
+      ) : (
+        value
+      );
     }
     return value || "N/A";
   };
@@ -202,7 +230,9 @@ export default function AlignerRow({
             <Folder className="w-4 h-4 text-accent mt-0.5 my-auto" />
           )}
           <div className="flex flex-col">
-            <span className="font-medium">{task.download_title}</span>
+            <span className="font-cascadia font-medium text-left">
+              {task.download_title}
+            </span>
             <span className="text-xs text-left text-base-content/60">
               {task.download_date}
             </span>
@@ -322,13 +352,17 @@ export default function AlignerRow({
             </a>
           </div>
         ) : hasPreError ? (
-          <p className="text-center flex justify-around">
+          <div className="text-center flex justify-around">
             <div className="tooltip" data-tip="No files available">
               <FileX className="w-4 h-4 text-error" />
             </div>
-          </p>
+          </div>
         ) : isUploading ? (
-          <img src="/spinner.gif" alt="Processing..." className="w-auto h-6" />
+          <img
+            src="/spinner.gif"
+            alt="Processing..."
+            className="w-auto h-6 mx-auto"
+          />
         ) : (
           <span className="text-gray-400">Not ready</span>
         )}

@@ -94,12 +94,14 @@ const TRANSCHOICES: TransChoiceType[] = [
   },
 ];
 
-export default function TransChoices({ 
+export default function TransChoices({
   activeTitle = null,
   onSelectionChange,
-  onContinue 
+  onContinue,
 }: TransChoicesProps) {
-  const [localActiveTitle, setLocalActiveTitle] = useState<string | null>(activeTitle);
+  const [localActiveTitle, setLocalActiveTitle] = useState<string | null>(
+    activeTitle
+  );
 
   // Update local state when activeTitle prop changes
   useEffect(() => {
@@ -109,7 +111,7 @@ export default function TransChoices({
   function handleSelect(title: string) {
     const newActiveTitle = localActiveTitle === title ? null : title;
     setLocalActiveTitle(newActiveTitle);
-    
+
     // Notify parent component of the selection change
     if (onSelectionChange) {
       onSelectionChange(newActiveTitle);
@@ -150,8 +152,8 @@ export default function TransChoices({
             download transcription template here
           </a>
 
-          <button 
-            className="btn btn-primary font-thin" 
+          <button
+            className="btn btn-neutral font-thin"
             onClick={handleContinue}
             disabled={!localActiveTitle}
           >

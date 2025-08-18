@@ -1,5 +1,5 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
-import type { User } from "../types/api";
+import type { Dictionary, User } from "../types/api";
 
 // Extend AxiosRequestConfig to include retry flag
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
@@ -442,6 +442,45 @@ export const appConfigAPI = {
   // Get application configuration
   getAppConfig: async (): Promise<AppConfig> => {
     const response = await api.get("/config");
+    return response.data.data;
+  },
+};
+
+// Dictionary management API
+export const dictionaryAPI = {
+  // Upload user dictionary
+  uploadDictionary: async (
+    lang: string,
+    dictContent: string,
+    opType: "replace" | "append" = "replace"
+  ): Promise<{ message: string }> => {
+    const formData = new FormData();
+
+    // Create a text file from the content
+    const blob = new Blob([dictContent], { type: "text/plain" });
+    const file = new File([blob], "dictionary.txt", { type: "text/plain" });
+
+    formData.append("dict", file);
+    formData.append("lang", lang);
+    formData.append("opType", opType);
+
+    const response = await api.post("/dictionaries/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
+  // Get user dictionaries
+  getUserDictionaries: async (): Promise<Dictionary[]> => {
+    const response = await api.get("/dictionaries/user");
+    return response.data;
+  },
+
+  // Get user dictionary by language
+  getUserDictionaryByLanguage: async (lang: string): Promise<Dictionary> => {
+    const response = await api.post("/dictionaries/get", { lang });
     return response.data.data;
   },
 };

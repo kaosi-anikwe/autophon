@@ -19,9 +19,9 @@ export default function TransChoice({
 }: TransChoiceProps) {
   const cardClasses = `card ${
     isActive
-      ? "bg-primary shadow-secondary shadow-xl"
-      : "bg-primary/60 hover:bg-primary/70"
-  } text-primary-content h-full cursor-pointer hover:shadow-secondary hover:shadow-2xl duration-300 transition-all ease-in-out`;
+      ? "bg-neutral shadow-secondary shadow-xl"
+      : "bg-neutral/60 hover:bg-neutral/70"
+  } text-neutral-content h-full cursor-pointer hover:shadow-secondary hover:shadow-2xl duration-300 transition-all ease-in-out`;
 
   return (
     <div className={cardClasses} onClick={onSelect}>
@@ -30,7 +30,7 @@ export default function TransChoice({
           <h2 className="font-bold text-xl text-center mx-auto">{title}</h2>
           <p
             id={video}
-            className="text-sm text-primary-content/80 mb-4 text-center"
+            className="text-sm text-neutral-content/80 mb-4 text-center"
           >
             (click to see video guide)
           </p>
@@ -41,14 +41,14 @@ export default function TransChoice({
 
         {/* File Structure - fixed spacing */}
         <div className="flex-none">
-          <div className="font-cascadia bg-primary-focus p-3 pt-0 rounded text-sm text-amber-50 space-y-1">
+          <div className="font-cascadia bg-neutral-focus p-3 pt-0 rounded text-sm text-amber-50 space-y-1">
             {children}
           </div>
         </div>
 
         {/* Description - pushed to bottom */}
         <div className="flex-1 flex items-end">
-          <p className="text-xs italic text-primary-content/90">
+          <p className="text-xs italic text-neutral-content/90">
             {instructions}
           </p>
         </div>

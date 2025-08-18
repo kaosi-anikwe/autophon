@@ -21,6 +21,8 @@ export default function AlignerTable({
   homepage = false,
   isLoading = false,
 }: AlignerTableProps) {
+  console.log("Tasks", tasks);
+
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -157,8 +159,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center">
                 <p className="my-auto text-center mt-[0.15rem]">Name</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     Each alignment batch is given a dummy name of "yyyy/mm/dd -
                     hh:mm:ss" using Greenwich Mean Time. Only a record of the
                     dummy name is kept in Autophon&apos;s log.
@@ -172,8 +174,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Language</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     Transcriptions are run through language-detection software,
                     and a language is suggested. For languages with
                     variety-specific models like American English vs. UK
@@ -191,8 +193,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Engine</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     This is the forced aligner engine that drives the actual
                     alignment. These are either facilitated by Hidden Markov
                     Models (e.g., FAVE-Align) or Deep Neural Networks (e.g.,
@@ -207,8 +209,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Tiers</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     If a single-tier file is submitted, the output tiers will be
                     labeled "trans", "word", and "phone" for transcription,
                     word, and phone, respectively. If a multi-tier file is
@@ -225,8 +227,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Size MB</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     No more than {sizeLimit} can be uploaded at any given time.
                     This helps keep Autophon lean and – most important of all –
                     free.
@@ -240,8 +242,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Words</p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     This is calculated so we can make a case to funders that
                     "Autophon aligned so and so many words in 2023". It might
                     also be a useful metric for you.
@@ -257,8 +259,8 @@ export default function AlignerTable({
                 <p className="my-auto text-center mt-[0.15rem]">
                   Missing Words
                 </p>
-                <div className="tooltip my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     Autophon bases its phonetic alignments from pre-existing
                     pronunciation dictionaries (see user guide). Any words from
                     your transcription that are missing from the dictionary will
@@ -277,8 +279,8 @@ export default function AlignerTable({
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
                 <p className="my-auto text-center mt-[0.15rem]">Last status</p>
-                <div className="tooltip tooltip-bottom my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip tooltip-bottom my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     This shows the status of your upload. "Align" indicates that
                     the file is ready for alignment. "Completed" indicates it
                     has already been aligned, and the TextGrids are ready for
@@ -299,8 +301,8 @@ export default function AlignerTable({
             {/* Download */}
             <th className="p-2">
               <div className="flex gap-1 justify-center items-center align-middle">
-                <div className="tooltip tooltip-left my-auto z-[100]">
-                  <div className="tooltip-content font-thin">
+                <div className="tooltip tooltip-left my-auto">
+                  <div className="tooltip-content font-thin z-[100]">
                     Completed alignments download as zip files, within which the
                     ASCII-based phones are in one folder and the IPA phones in
                     another.

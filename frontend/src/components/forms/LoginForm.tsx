@@ -48,7 +48,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-12 gap-4"
       >
-        <div className="col-span-5 mb-1">
+        <div className="md:col-span-5 col-span-12 mb-1">
           <label htmlFor="email" className="floating-label">
             <span>Email address</span>
             <input
@@ -66,7 +66,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
           </label>
         </div>
 
-        <div className="col-span-5 mb-1">
+        <div className="md:col-span-5 col-span-12 mb-1">
           <label htmlFor="password" className="floating-label">
             <span>Password</span>
             <input
@@ -86,7 +86,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
 
         <button
           type="submit"
-          className="col-span-2 btn btn-primary font-thin"
+          className="md:col-span-2 col-span-3 btn btn-primary font-thin"
           disabled={isLoading}
         >
           {isLoading ? "Logging in..." : "Login"}

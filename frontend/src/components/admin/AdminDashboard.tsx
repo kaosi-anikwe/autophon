@@ -212,7 +212,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="stat">
+              {/* <div className="stat">
                 <div className="stat-title text-sm">Success Rate Today</div>
                 <div className="stat-value text-2xl text-info">
                   {dashboardStats.tasks_processed_today > 0
@@ -225,7 +225,7 @@ export default function AdminDashboard() {
                     : 0}
                   %
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
