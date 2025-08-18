@@ -186,7 +186,9 @@ class TaskDownloadResource(Resource):
 
             # Get task from database
             task = Task.query.filter(
-                Task.task_id == task_id, Task.user_uuid == user_id, Task.deleted.is_(None)
+                Task.task_id == task_id,
+                Task.user_uuid == user_id,
+                Task.deleted.is_(None),
             ).first()
 
             if not task:

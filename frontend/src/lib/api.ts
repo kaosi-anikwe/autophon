@@ -484,3 +484,19 @@ export const dictionaryAPI = {
     return response.data.data;
   },
 };
+
+// Organizations API interfaces
+export interface OrganizationsResponse {
+  organizations: string[];
+  total: number;
+}
+
+// Organizations API
+export const organizationsAPI = {
+  // Get organizations for autocomplete
+  getOrganizations: async (query?: string): Promise<OrganizationsResponse> => {
+    const params = query ? { q: query } : {};
+    const response = await api.get("/organizations", { params });
+    return response.data;
+  },
+};

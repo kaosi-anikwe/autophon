@@ -122,6 +122,11 @@ from .admin import (
     AdminUserActionsResource,
 )
 
+# Organization resources
+from .organizations import (
+    OrganizationListResource,
+)
+
 __all__ = [
     # Authentication resources
     "Register",
@@ -201,4 +206,6 @@ __all__ = [
     "AdminHistoryResource",
     "AdminDashboardResource",
     "AdminUserActionsResource",
+    # Organization resources
+    "OrganizationListResource",
 ]

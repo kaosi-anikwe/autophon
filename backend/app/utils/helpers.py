@@ -230,7 +230,7 @@ def excel_to_pdf(input_file, output_file) -> bool:
     # ln -s /usr/lib/python3/dist-packages/uno.py /path/to/your/virtualenv/lib/python3.8/site-packages/uno.py
     # ln -s /usr/lib/python3/dist-packages/unohelper.py /path/to/your/virtualenv/lib/python3.8/site-packages/unohelper.py
 
-    command = f"PYTHON=$(eval 'which python') UNOPATH=$(eval 'which libreoffice') unoconv -f pdf -o {output_file} {input_file}"
+    command = f"PYTHON=$(eval 'which python') UNOPATH=$(eval 'which libreoffice') /usr/bin/unoconv -f pdf -o {output_file} {input_file}"
     process = subprocess.run(command, shell=True, executable="/bin/bash")
 
     if process.returncode == 0:

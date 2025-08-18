@@ -10,6 +10,7 @@ from .dictionary import UserDictionary
 from .token_blacklist import TokenBlacklist
 from .captcha import Captcha
 from .verification_token import VerificationToken, TokenType
+from .organization import Organization
 
 # Configure relationships after all models are imported
 configure_relationships()
@@ -33,4 +34,5 @@ __all__ = [
     "Captcha",
     "VerificationToken",
     "TokenType",
+    "Organization",
 ]
