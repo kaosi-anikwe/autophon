@@ -1,6 +1,7 @@
 import os
 from flask import request
 from datetime import datetime
+import traceback
 from flask_restful import Resource
 from sqlalchemy import func, extract
 from marshmallow import ValidationError
@@ -102,36 +103,34 @@ class TaskListResource(Resource):
                 admin_path = os.getenv("ADMIN")
                 if admin_path:
                     for task in task_data:
-                        # Extract language code from the task's lang field
-                        lang_code = (
-                            task.get("lang", "").replace("(suggested)", "").strip()
-                        )
-                        if lang_code:
-                            cite_file_path = os.path.join(
-                                admin_path, lang_code, f"{lang_code}_cite.txt"
+                        if task.lang:
+                            # Extract language code from the task's lang field
+                            lang_code = (
+                                task.get("lang", "").replace("(suggested)", "").strip()
                             )
-                            try:
-                                if os.path.exists(cite_file_path):
-                                    with open(
-                                        cite_file_path, "r", encoding="utf-8"
-                                    ) as f:
-                                        # Splice lines [4:] and join with newlines
-                                        task["cite"] = "<br>".join(
-                                            [
-                                                line
-                                                for line in f.readlines()[2:]
-                                            ]
-                                        )
-
-                                else:
-                                    task["cite"] = ""
-                            except (IOError, UnicodeDecodeError) as e:
-                                logger.warning(
-                                    f"Failed to read cite file for {lang_code}: {e}"
+                            if lang_code:
+                                cite_file_path = os.path.join(
+                                    admin_path, lang_code, f"{lang_code}_cite.txt"
                                 )
+                                try:
+                                    if os.path.exists(cite_file_path):
+                                        with open(
+                                            cite_file_path, "r", encoding="utf-8"
+                                        ) as f:
+                                            # Splice lines [4:] and join with newlines
+                                            task["cite"] = "<br>".join(
+                                                [line for line in f.readlines()[2:]]
+                                            )
+
+                                    else:
+                                        task["cite"] = ""
+                                except (IOError, UnicodeDecodeError) as e:
+                                    logger.warning(
+                                        f"Failed to read cite file for {lang_code}: {e}"
+                                    )
+                                    task["cite"] = ""
+                            else:
                                 task["cite"] = ""
-                        else:
-                            task["cite"] = ""
 
             return {"tasks": task_data, "count": len(task_data)}, 200
 
@@ -493,8 +492,16 @@ class TaskBulkDeleteResource(Resource):
             for task in tasks:
                 # Check if user has permission to delete this task
                 if current_user:
-                    if not current_user.admin and task.user_uuid != user_uuid:
+                    if task.user_uuid != current_user.uuid and not current_user.admin:
                         permission_denied.append(task.task_id)
+                    else:
+                        try:
+                            task.deleted = utc_now()
+                            task.update()
+                            deleted_tasks.append(task.task_id)
+                        except Exception as e:
+                            # If individual deletion fails, continue with others
+                            logger.error(f"Failed to delete task {task.task_id}: {str(e)}")
                 elif task.user_uuid != user_uuid:
                     permission_denied.append(task.task_id)
                 else:
@@ -504,7 +511,7 @@ class TaskBulkDeleteResource(Resource):
                         deleted_tasks.append(task.task_id)
                     except Exception as e:
                         # If individual deletion fails, continue with others
-                        print(f"Failed to delete task {task.task_id}: {str(e)}")
+                        logger.error(f"Failed to delete task {task.task_id}: {str(e)}")
 
             # Prepare response
             response = {

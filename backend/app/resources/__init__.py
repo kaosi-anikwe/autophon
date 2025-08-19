@@ -29,6 +29,7 @@ from .languages import (
     LanguageResource,
     LanguageByCodeResource,
     LanguageEnginesResource,
+    LanguageFileResource,
     PublicLanguageListResource,
 )
 
@@ -152,6 +153,7 @@ __all__ = [
     "LanguageResource",
     "LanguageByCodeResource",
     "LanguageEnginesResource",
+    "LanguageFileResource",
     "PublicLanguageListResource",
     # Engine resources
     "EngineListResource",

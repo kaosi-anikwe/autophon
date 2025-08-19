@@ -8,8 +8,7 @@ from flask import request, current_app, send_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
-from app.models.task import Task
-from app.models.token_blacklist import TokenBlacklist
+from app.models.task import Task, TaskStatus
 from app.utils.logger import (
     get_logger,
     log_exception,
@@ -178,18 +177,25 @@ class BlockedEmailsResource(Resource, AdminRequiredMixin):
             return response, 500
 
 
-class SiteStatusResource(Resource, AdminRequiredMixin):
+class SiteStatusResource(Resource):
     """RESTful resource for managing site active status"""
 
-    @jwt_required()
+    def check_admin_access(self):
+        """Check if current user is admin"""
+        try:
+            current_user_id = int(get_jwt_identity())
+            current_user = User.query.get(current_user_id)
+
+            if not current_user or not current_user.admin:
+                return {"message": "Admin access required"}, 403
+
+            return None
+        except Exception as e:
+            return {"message": f"Authentication error: {str(e)}"}, 500
+
     def get(self):
         """Get current site status"""
         log_request_info(logger, request)
-
-        # Check admin access
-        admin_check = self.check_admin_access()
-        if admin_check:
-            return admin_check
 
         try:
             switch_file = os.path.join(os.getenv("ADMIN", ""), "switch.txt")
@@ -608,14 +614,14 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
             # 3. Users currently logged in (have active, non-blacklisted tokens)
             # This is approximated by checking for recent token activity
             # We'll count users who have accessed the system in the last hour
-            one_hour_ago = utc_now() - timedelta(hours=6)
+            six_hour_ago = utc_now() - timedelta(hours=6)
 
             # Count users who have tokens that were issued after their revocation time
             # or users without any revocation time
             active_users = User.query.filter(
                 and_(
                     (User.deleted == None) | (User.deleted == ""),
-                    User.tokens_revoked_at < one_hour_ago,
+                    User.tokens_revoked_at < six_hour_ago,
                 )
             ).count()
 
@@ -624,16 +630,53 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
                 and_(
                     (User.deleted == None) | (User.deleted == ""),
                     User.tokens_revoked_at == None,
-                    User.updated_at >= one_hour_ago,
+                    User.updated_at >= six_hour_ago,
                 )
             ).count()
 
             currently_logged_in = active_users + users_never_revoked
 
-            # 4. Total tasks processed today (any status)
-            tasks_today = Task.query.filter(
+            # 4. Tasks processed today - broken down by status
+            tasks_today_query = Task.query.filter(
                 and_(Task.created_at >= today_start, Task.created_at <= today_end)
+            )
+
+            # Count by status
+            completed_today = tasks_today_query.filter(
+                Task.task_status == TaskStatus.COMPLETED
             ).count()
+            pending_today = tasks_today_query.filter(
+                Task.task_status.in_([TaskStatus.UPLOADING, TaskStatus.UPLOADED])
+            ).count()
+            failed_today = tasks_today_query.filter(
+                Task.task_status == "failed"
+            ).count()
+            processing_today = tasks_today_query.filter(
+                Task.task_status.in_([TaskStatus.ALIGNED, TaskStatus.PROCESSING])
+            ).count()
+
+            # Total count
+            tasks_today = (
+                completed_today + pending_today + failed_today + processing_today
+            )
+
+            # 5. Total size of uploaded files for the current day
+            size_today = (
+                Task.query.with_entities(func.sum(Task.size))
+                .filter(
+                    and_(Task.created_at >= today_start, Task.created_at <= today_end)
+                )
+                .filter(Task.size.isnot(None))
+                .scalar()
+            )
+
+            size_today_mb = float(size_today or 0)
+
+            # Convert to appropriate units
+            if size_today_mb >= 1024:
+                size_today_display = f"{size_today_mb / 1024:.2f} GB"
+            else:
+                size_today_display = f"{size_today_mb:.2f} MB"
 
             # Additional useful stats
             # Total tasks all time
@@ -655,7 +698,15 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
                     "display": total_size_display,
                 },
                 "currently_logged_in": currently_logged_in,
-                "tasks_processed_today": tasks_today,
+                "tasks_processed_today": {
+                    "completed": completed_today,
+                    "pending": pending_today,
+                    "failed": failed_today,
+                    "processing": processing_today,
+                    "count": tasks_today,
+                    "size_mb": size_today_mb,
+                    "size_display": size_today_display,
+                },
                 "additional_stats": {
                     "total_tasks_all_time": total_tasks,
                     "new_users_today": new_users_today,

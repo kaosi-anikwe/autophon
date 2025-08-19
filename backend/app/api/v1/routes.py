@@ -23,12 +23,9 @@ from app.resources import (
     UserResource,
     UserProfileResource,
     UserTasksResource,
-    # Languages
-    LanguageListResource,
-    LanguageResource,
-    LanguageByCodeResource,
-    LanguageEnginesResource,
+    # Languages (Public only)
     PublicLanguageListResource,
+    LanguageListResource,
     # Engines
     EngineListResource,
     EngineResource,
@@ -103,12 +100,11 @@ api.add_resource(UserResource, "/users/<int:user_id>")
 api.add_resource(UserProfileResource, "/profile")
 api.add_resource(UserTasksResource, "/users/<int:user_id>/tasks")
 
-# Language routes
-api.add_resource(LanguageListResource, "/languages")
-api.add_resource(LanguageResource, "/languages/<int:language_id>")
-api.add_resource(LanguageByCodeResource, "/languages/code/<string:code>")
-api.add_resource(LanguageEnginesResource, "/languages/<string:language_code>/engines")
+# Public Language routes (homepage)
 api.add_resource(PublicLanguageListResource, "/public/languages")
+# In app language route
+api.add_resource(LanguageListResource, "/languages")
+
 
 # Engine routes
 api.add_resource(EngineListResource, "/engines")

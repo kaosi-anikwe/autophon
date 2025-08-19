@@ -172,6 +172,13 @@ class Login(Resource):
                 log_response_info(logger, response, 401)
                 return response, 401
 
+            # Check for admin -> site is inactive
+            if data.get("admin", False):
+                if not user.admin:
+                    response = {"message": "User is not admin."}
+                    log_response_info(logger, response, 401)
+                    return response, 401
+
             # Create tokens
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
@@ -428,7 +435,8 @@ class ResetPasswordConfirm(Resource):
                 f"Password reset successful for user: {user.email} (ID: {user.id})"
             )
             return {
-                "message": "Password reset successful. All sessions have been logged out for security."
+                "success": True,
+                "message": "Password reset successful. All sessions have been logged out for security.",
             }, 200
 
         except Exception as e:
