@@ -215,16 +215,18 @@ export interface AdminDashboardStats {
     display: string;
   };
   currently_logged_in: number;
-  tasks_processed_today: number;
+  tasks_processed_today: {
+    completed: number;
+    pending: number;
+    failed: number;
+    processing: number;
+    count: number;
+    size_mb: number;
+    size_display: string;
+  };
   additional_stats: {
     total_tasks_all_time: number;
     new_users_today: number;
-    tasks_today_by_status: {
-      completed: number;
-      pending: number;
-      failed: number;
-      processing: number;
-    };
   };
   generated_at: string;
   date: string;

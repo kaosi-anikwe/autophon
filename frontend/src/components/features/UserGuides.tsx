@@ -18,7 +18,7 @@ export default function UserGuides({ children }: UserGuideProps) {
   const { data: languages } = useQuery<Language[]>({
     queryKey: ["languages"],
     queryFn: async () => {
-      const response = await api.get("/languages");
+      const response = await api.get("/public/languages");
       return response.data.languages;
     },
     staleTime: 24 * 60 * 60 * 1000, // 24 hours - languages don't change often

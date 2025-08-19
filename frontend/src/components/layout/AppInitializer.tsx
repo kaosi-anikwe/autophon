@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import spinnerGif from "../../assets/spinner.gif";
 import { verifyToken, clearAuth } from "../../store/authSlice";
+import { fetchSiteStatus } from "../../store/siteStatusSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
 
 interface AppInitializerProps {
@@ -10,12 +11,17 @@ interface AppInitializerProps {
 
 export function AppInitializer({ children }: AppInitializerProps) {
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isLoading, isInitialized } = useAppSelector((state) => state.auth);
+  const { isLoading: siteStatusLoading, isInitialized: siteStatusInitialized } =
+    useAppSelector((state) => state.siteStatus);
 
   useEffect(() => {
     // Always try to verify session on startup
     // The API interceptor will handle the case where no cookies exist
     dispatch(verifyToken());
+
+    // Also fetch site status on startup
+    dispatch(fetchSiteStatus());
   }, [dispatch]);
 
   useEffect(() => {
@@ -24,15 +30,18 @@ export function AppInitializer({ children }: AppInitializerProps) {
       dispatch(clearAuth());
     };
 
-    window.addEventListener('auth:logout', handleAuthLogout);
-    
+    window.addEventListener("auth:logout", handleAuthLogout);
+
     return () => {
-      window.removeEventListener('auth:logout', handleAuthLogout);
+      window.removeEventListener("auth:logout", handleAuthLogout);
     };
   }, [dispatch]);
 
-  // Show loading on initial app load while checking auth
-  if (isLoading) {
+  // Show loading on initial app load while checking auth and site status
+  if (
+    (isLoading && !isInitialized) ||
+    (siteStatusLoading && !siteStatusInitialized)
+  ) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

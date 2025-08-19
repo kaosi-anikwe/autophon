@@ -6,6 +6,7 @@ import { ThemeDropdown } from "../ui/ThemeToggle";
 export function Header() {
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const { status } = useAppSelector((state) => state.siteStatus);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -263,7 +264,7 @@ export function Header() {
               </div>
             )}
 
-            {!isAuthenticated && (
+            {!isAuthenticated && status?.active && (
               <ul tabIndex={0} className="menu menu-horizontal px-1 space-x-1">
                 <li>
                   <Link to="/login#login" className="btn font-thin">

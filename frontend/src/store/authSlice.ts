@@ -20,6 +20,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isInitialized: boolean; // Track if initial auth check is complete
   error: string | null;
   verificationLoading: boolean;
   verificationError: string | null;
@@ -34,6 +35,7 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  isInitialized: false,
   error: null,
   verificationLoading: false,
   verificationError: null,
@@ -169,6 +171,7 @@ const authSlice = createSlice({
     clearAuth: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      state.isInitialized = false; // Reset initialization state
       state.error = null;
       state.verificationLoading = false;
       state.verificationError = null;
@@ -241,6 +244,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyToken.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isInitialized = true;
         state.isAuthenticated = true;
         state.user = action.payload;
         state.error = null;
@@ -248,6 +252,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyToken.rejected, (state) => {
         state.isLoading = false;
+        state.isInitialized = true;
         state.isAuthenticated = false;
         state.user = null;
       });
@@ -256,6 +261,7 @@ const authSlice = createSlice({
     builder
       .addCase(logout.fulfilled, (state) => {
         state.isAuthenticated = false;
+        state.isInitialized = false; // Reset initialization state on logout
         state.user = null;
         state.error = null;
         // Clear global flag on logout

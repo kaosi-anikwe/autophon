@@ -105,4 +105,7 @@
   .font-cascadia {
     font-family: "Cascadia Code", monospace !important;
   }
+  .font-mono {
+    font-family: "Cascadia Code", monospace !important;
+  }
 }

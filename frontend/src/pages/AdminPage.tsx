@@ -8,6 +8,7 @@ import {
   FileText,
   Shield,
   Activity,
+  Languages,
 } from "lucide-react";
 
 // import Dashboard from "@/components/admin/Dashboard";
@@ -15,6 +16,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminDatabase from "@/components/admin/AdminDatabase";
 import AdminSettings from "@/components/admin/AdminSettings";
+import AdminLanguages from "@/components/admin/AdminLanguages";
 
 export function AdminPage() {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -22,6 +24,7 @@ export function AdminPage() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "users", label: "User Management", icon: Users },
+    { id: "languages", label: "Language Management", icon: Languages },
     { id: "database", label: "Database", icon: Database },
     { id: "logs", label: "System Logs", icon: FileText },
     { id: "security", label: "Security", icon: Shield },
@@ -36,6 +39,9 @@ export function AdminPage() {
 
       case "users":
         return <AdminUsers />;
+
+      case "languages":
+        return <AdminLanguages />;
 
       case "database":
         return <AdminDatabase />;

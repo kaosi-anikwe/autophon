@@ -11,18 +11,19 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, isLoading, isInitialized } = useAppSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    // Always try to verify token on mount if not already authenticated
-    // The server will check the HTTP-only cookie
-    if (!isAuthenticated) {
+    // Only verify token if app hasn't been initialized yet
+    if (!isInitialized && !isLoading) {
       dispatch(verifyToken());
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isInitialized, isLoading]);
 
-  // Show loading while verifying token
-  if (isLoading) {
+  // Show loading only if we're still initializing or actively verifying
+  if (isLoading || !isInitialized) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -33,8 +34,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
+  // Redirect to login if not authenticated (only after initialization is complete)
+  if (isInitialized && !isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

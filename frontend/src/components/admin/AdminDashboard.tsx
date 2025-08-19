@@ -8,6 +8,10 @@ import {
   TrendingUp,
   UserPlus,
   BarChart3,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Play,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { adminAPI } from "@/lib/api";
@@ -169,7 +173,7 @@ export default function AdminDashboard() {
                   Tasks Today
                 </p>
                 <p className="text-3xl font-bold text-warning">
-                  {dashboardStats.tasks_processed_today}
+                  {dashboardStats.tasks_processed_today.count}
                 </p>
               </div>
               <div className="bg-warning/10 p-3 rounded-full">
@@ -177,55 +181,218 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-2 mt-3">
-              <TrendingUp className="w-4 h-4 text-accent" />
+              <HardDrive className="w-4 h-4 text-info" />
               <span className="text-sm text-base-content/60">
-                {dashboardStats.additional_stats.total_tasks_all_time.toLocaleString()}{" "}
-                all time
+                {dashboardStats.tasks_processed_today.size_display} processed
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Secondary Stats Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Task Processing Details */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Today's Task Breakdown */}
+        <div className="lg:col-span-2 card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-6">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              Today's Task Processing
+            </h3>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {/* Completed Tasks */}
+              <div className="text-center p-4 bg-success/10 rounded-lg border border-success/20">
+                <CheckCircle className="w-6 h-6 text-success mx-auto mb-2" />
+                <div className="text-2xl font-bold text-success">
+                  {dashboardStats.tasks_processed_today.completed}
+                </div>
+                <div className="text-xs text-success font-medium">Completed</div>
+              </div>
+
+              {/* Processing Tasks */}
+              <div className="text-center p-4 bg-info/10 rounded-lg border border-info/20">
+                <Play className="w-6 h-6 text-info mx-auto mb-2" />
+                <div className="text-2xl font-bold text-info">
+                  {dashboardStats.tasks_processed_today.processing}
+                </div>
+                <div className="text-xs text-info font-medium">Processing</div>
+              </div>
+
+              {/* Pending Tasks */}
+              <div className="text-center p-4 bg-warning/10 rounded-lg border border-warning/20">
+                <Clock className="w-6 h-6 text-warning mx-auto mb-2" />
+                <div className="text-2xl font-bold text-warning">
+                  {dashboardStats.tasks_processed_today.pending}
+                </div>
+                <div className="text-xs text-warning font-medium">Pending</div>
+              </div>
+
+              {/* Failed Tasks */}
+              <div className="text-center p-4 bg-error/10 rounded-lg border border-error/20">
+                <AlertTriangle className="w-6 h-6 text-error mx-auto mb-2" />
+                <div className="text-2xl font-bold text-error">
+                  {dashboardStats.tasks_processed_today.failed}
+                </div>
+                <div className="text-xs text-error font-medium">Failed</div>
+              </div>
+            </div>
+
+            {/* Success Rate and Summary */}
+            <div className="border-t border-base-200 pt-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className="text-sm text-base-content/60">Success Rate</div>
+                  <div className="text-xl font-bold text-success">
+                    {dashboardStats.tasks_processed_today.count > 0
+                      ? Math.round(
+                          (dashboardStats.tasks_processed_today.completed /
+                            dashboardStats.tasks_processed_today.count) *
+                            100
+                        )
+                      : 0}
+                    %
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-base-content/60">Data Processed</div>
+                  <div className="text-xl font-bold text-info">
+                    {dashboardStats.tasks_processed_today.size_display}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Quick Stats Summary */}
         <div className="card bg-base-100 shadow-lg border border-base-200">
           <div className="card-body p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
-              Summary
+              Overview
             </h3>
 
             <div className="space-y-4">
-              <div className="stat">
-                <div className="stat-title text-sm">Total Tasks (All Time)</div>
-                <div className="stat-value text-2xl text-primary">
+              <div>
+                <div className="text-sm text-base-content/60 mb-1">Total Tasks (All Time)</div>
+                <div className="text-2xl font-bold text-primary">
                   {dashboardStats.additional_stats.total_tasks_all_time.toLocaleString()}
                 </div>
               </div>
 
-              <div className="stat">
-                <div className="stat-title text-sm">New Users Today</div>
-                <div className="stat-value text-2xl text-success">
+              <div>
+                <div className="text-sm text-base-content/60 mb-1">New Users Today</div>
+                <div className="text-2xl font-bold text-success">
                   {dashboardStats.additional_stats.new_users_today}
                 </div>
               </div>
 
-              {/* <div className="stat">
-                <div className="stat-title text-sm">Success Rate Today</div>
-                <div className="stat-value text-2xl text-info">
-                  {dashboardStats.tasks_processed_today > 0
+              <div>
+                <div className="text-sm text-base-content/60 mb-1">Active Users Now</div>
+                <div className="text-2xl font-bold text-accent">
+                  {dashboardStats.currently_logged_in}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* System Health Indicators */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Task Processing Health */}
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm">Processing Status</h4>
+              {dashboardStats.tasks_processed_today.processing > 0 ? (
+                <div className="badge badge-info badge-sm">Active</div>
+              ) : (
+                <div className="badge badge-ghost badge-sm">Idle</div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span>Queue Length</span>
+                <span className="font-medium">{dashboardStats.tasks_processed_today.pending}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>Processing</span>
+                <span className="font-medium">{dashboardStats.tasks_processed_today.processing}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Storage Status */}
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm">Storage Usage</h4>
+              <HardDrive className="w-4 h-4 text-info" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span>Total Files</span>
+                <span className="font-medium">{dashboardStats.total_file_size.display}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>Today's Data</span>
+                <span className="font-medium">{dashboardStats.tasks_processed_today.size_display}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* User Activity */}
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm">User Activity</h4>
+              <Users className="w-4 h-4 text-primary" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span>Total Users</span>
+                <span className="font-medium">{dashboardStats.total_users.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>New Today</span>
+                <span className="font-medium">{dashboardStats.additional_stats.new_users_today}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Performance Metrics */}
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="card-body p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm">Performance</h4>
+              <TrendingUp className="w-4 h-4 text-accent" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span>Success Rate</span>
+                <span className="font-medium">
+                  {dashboardStats.tasks_processed_today.count > 0
                     ? Math.round(
-                        (dashboardStats.additional_stats.tasks_today_by_status
-                          .completed /
-                          dashboardStats.tasks_processed_today) *
+                        (dashboardStats.tasks_processed_today.completed /
+                          dashboardStats.tasks_processed_today.count) *
                           100
                       )
-                    : 0}
-                  %
-                </div>
-              </div> */}
+                    : 0}%
+                </span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>Tasks/MB Ratio</span>
+                <span className="font-medium">
+                  {dashboardStats.tasks_processed_today.size_mb > 0
+                    ? (dashboardStats.tasks_processed_today.count / dashboardStats.tasks_processed_today.size_mb).toFixed(1)
+                    : '0'} tasks/MB
+                </span>
+              </div>
             </div>
           </div>
         </div>

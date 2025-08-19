@@ -17,6 +17,7 @@ import {
   ResetPasswordPage,
   NotFoundPage,
   ServerErrorPage,
+  AdminLoginPage,
 } from "../pages";
 
 export const router = createBrowserRouter([
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "500",
         element: <ServerErrorPage />,
+      },
+      {
+        path: "admin-login",
+        element: <AdminLoginPage />,
       },
       {
         path: "profile",

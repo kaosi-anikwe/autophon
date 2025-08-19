@@ -153,7 +153,9 @@ export function PrivacyAgreementModal({
               {expectedLetters.map((letter, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <input
-                    ref={(el) => (inputRefs.current[index] = el)}
+                    ref={(el) => {
+                      inputRefs.current[index] = el;
+                    }}
                     type="text"
                     value={inputValues[index]}
                     onChange={(e) => handleInputChange(index, e.target.value)}

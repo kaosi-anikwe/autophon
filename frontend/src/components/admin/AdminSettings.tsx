@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { z } from "zod";
+import { useEffect } from "react";
 import {
   Settings,
   Globe,
@@ -13,19 +14,21 @@ import {
   Calendar,
   Mail,
 } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { adminAPI } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import type { UpdateSiteStatusRequest } from "@/types/api";
+import { fetchSiteStatus } from "../../store/siteStatusSlice";
 
 const siteStatusSchema = z.object({
   active: z.boolean(),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
-  inactive_message: z.string().optional(),
+  start_date: z.string(),
+  end_date: z.string(),
+  inactive_message: z.string(),
 });
 
 const addEmailSchema = z.object({
@@ -36,9 +39,9 @@ type SiteStatusFormData = z.infer<typeof siteStatusSchema>;
 type AddEmailFormData = z.infer<typeof addEmailSchema>;
 
 export default function AdminSettings() {
-  const [newEmail, setNewEmail] = useState("");
   const queryClient = useQueryClient();
   const toast = useToast();
+  const dispatch = useAppDispatch();
 
   const { data: siteStatus, isLoading: loadingSiteStatus } = useQuery({
     queryKey: ["siteStatus"],
@@ -55,7 +58,6 @@ export default function AdminSettings() {
     handleSubmit: handleSiteStatusSubmit,
     reset: resetSiteStatus,
     watch,
-    formState: { errors: siteStatusErrors },
   } = useForm<SiteStatusFormData>({
     resolver: zodResolver(siteStatusSchema),
   });
@@ -87,6 +89,7 @@ export default function AdminSettings() {
     onSuccess: (data) => {
       toast.success(data.message, "Site Status Updated");
       queryClient.invalidateQueries({ queryKey: ["siteStatus"] });
+      dispatch(fetchSiteStatus());
     },
     onError: (error: any) => {
       toast.error(
@@ -102,7 +105,6 @@ export default function AdminSettings() {
       toast.success(data.message, "Email List Updated");
       queryClient.invalidateQueries({ queryKey: ["blockedEmails"] });
       resetEmail();
-      setNewEmail("");
     },
     onError: (error: any) => {
       toast.error(
@@ -244,7 +246,7 @@ export default function AdminSettings() {
                         </label>
                         <input
                           {...registerSiteStatus("start_date")}
-                          type="datetime-local"
+                          type="date"
                           className="input input-bordered w-full"
                         />
                       </div>
@@ -258,7 +260,7 @@ export default function AdminSettings() {
                         </label>
                         <input
                           {...registerSiteStatus("end_date")}
-                          type="datetime-local"
+                          type="date"
                           className="input input-bordered w-full"
                         />
                       </div>

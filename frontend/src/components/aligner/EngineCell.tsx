@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 import { api } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
@@ -30,7 +30,7 @@ export default function EngineCell({
   const { data: languagesData } = useQuery<Language[]>({
     queryKey: ["languages"],
     queryFn: async () => {
-      const response = await api.get("/languages");
+      const response = await api.get("/public/languages");
       return response.data.languages;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -55,39 +55,45 @@ export default function EngineCell({
   }, [shouldOpen, onDropdownOpened]);
 
   // Get language display_name options for the selected language_name
-  const getLanguageDisplayOptions = () => {
+  const getLanguageDisplayOptions = useCallback(() => {
     if (!languagesData || !selectedLanguageName) return [];
     return languagesData.filter(
       (lang) => lang.language_name === selectedLanguageName
     );
-  };
+  }, [languagesData, selectedLanguageName]);
 
-  const handleDisplayNameSelect = async (languageCode: string) => {
-    setIsChangingLanguage(true);
-    try {
-      await api.post("/tasks/change-language", {
-        task_id: task.task_id,
-        new_lang: languageCode,
-      });
+  const handleDisplayNameSelect = useCallback(
+    async (languageCode: string) => {
+      setIsChangingLanguage(true);
+      try {
+        await api.post("/tasks/change-language", {
+          task_id: task.task_id,
+          new_lang: languageCode,
+        });
 
-      const language = languagesData?.find(
-        (lang) => lang.code === languageCode
-      );
-      setShowDropdown(false);
-      toast.success(`Language changed to ${language?.display_name}`);
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          toast.error(error.response.data.message, "Failed to change language");
-        } else {
-          toast.error("Failed to change language");
+        const language = languagesData?.find(
+          (lang) => lang.code === languageCode
+        );
+        setShowDropdown(false);
+        toast.success(`Language changed to ${language?.display_name}`);
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          if (error.response?.data) {
+            toast.error(
+              error.response.data.message,
+              "Failed to change language"
+            );
+          } else {
+            toast.error("Failed to change language");
+          }
         }
+        console.error("Failed to change language:", error);
+      } finally {
+        setIsChangingLanguage(false);
       }
-      console.error("Failed to change language:", error);
-    } finally {
-      setIsChangingLanguage(false);
-    }
-  };
+    },
+    [languagesData, task.task_id, toast]
+  );
 
   const isDisabled =
     task.task_status === "completed" ||
@@ -142,7 +148,13 @@ export default function EngineCell({
     return () => {
       dropdown.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showDropdown, selectedIndex, selectedLanguageName]);
+  }, [
+    showDropdown,
+    selectedIndex,
+    selectedLanguageName,
+    getLanguageDisplayOptions,
+    handleDisplayNameSelect,
+  ]);
 
   // Get engine icon based on the language's associated engine
   const getEngineIcon = (languageCode: string) => {

@@ -12,9 +12,28 @@ import { useConfig, useAppDegradedState } from "../contexts/AppConfigContext";
 
 export function HomePage() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { status, isLoading: siteStatusLoading } = useAppSelector(
+    (state) => state.siteStatus
+  );
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const config = useConfig();
   const { isDegraded } = useAppDegradedState();
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const renderMaintenanceMessage = (message: string) => {
+    return message.split("\n").map((line, index) => (
+      <p key={index} className="mb-2">
+        {line}
+      </p>
+    ));
+  };
 
   return (
     <>
@@ -102,8 +121,16 @@ export function HomePage() {
               </p>
             </div>
 
-            {/* Authentication Section - only for non-authenticated users */}
-            {!isAuthenticated && (
+            {/* Loading state for site status */}
+            {siteStatusLoading && (
+              <div className="mt-4 text-center" aria-live="polite">
+                <div className="loading loading-spinner loading-md"></div>
+                <span className="ml-2 text-sm text-gray-500">Loading...</span>
+              </div>
+            )}
+
+            {/* Authentication Section - only for non-authenticated users and active site */}
+            {!isAuthenticated && !siteStatusLoading && status?.active && (
               <>
                 {/* Toggle between sign-in and forgot password */}
                 <div id="login" className="mt-4">
@@ -127,6 +154,38 @@ export function HomePage() {
                 </div>
               </>
             )}
+
+            {/* Site Maintenance Section */}
+            {!siteStatusLoading &&
+              status &&
+              !status.active &&
+              status.start_date &&
+              status.end_date && (
+                <section
+                  className="mt-4"
+                  role="alert"
+                  aria-labelledby="maintenance-title"
+                  aria-describedby="maintenance-description"
+                >
+                  <h5 id="maintenance-title" className="text-xl font-bold my-2">
+                    Autophon is closed from {formatDate(status.start_date)}{" "}
+                    through {formatDate(status.end_date)}
+                  </h5>
+                  <div
+                    id="maintenance-description"
+                    className="p-3 rounded border border-accent"
+                  >
+                    {status.inactive_message ? (
+                      renderMaintenanceMessage(status.inactive_message)
+                    ) : (
+                      <p>
+                        Autophon is currently undergoing maintenance. Please
+                        check back later.
+                      </p>
+                    )}
+                  </div>
+                </section>
+              )}
           </div>
         </div>
         {/* Right Column - col-md-4 */}
@@ -140,7 +199,7 @@ export function HomePage() {
       </div>
 
       {/* Anonymous Table Section - only for non-authenticated users and if site is active */}
-      {!isAuthenticated && (
+      {!isAuthenticated && !siteStatusLoading && status?.active && (
         <div className="py-3">
           <Aligner title="Align files here" homepage />
           <div className="p-3">

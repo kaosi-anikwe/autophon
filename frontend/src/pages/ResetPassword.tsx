@@ -203,6 +203,7 @@ export default function ResetPassword() {
             )}
 
             {(resetState.status === "form" ||
+              resetState.status === "loading" ||
               (resetState.status === "error" && token)) &&
               token && (
                 <form onSubmit={handleSubmit} className="space-y-4">

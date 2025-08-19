@@ -183,6 +183,7 @@ import type {
 export interface LoginRequest {
   email: string;
   password: string;
+  admin?: boolean; // Optional flag to indicate admin-only login
 }
 
 export interface RegisterRequest {
@@ -604,6 +605,327 @@ export const passwordResetAPI = {
       password,
       token,
     });
+    return response.data;
+  },
+};
+
+// Language Management API interfaces
+export interface AdminLanguage {
+  id: number;
+  code: string;
+  display_name: string;
+  language_name: string;
+  type: "nordic" | "other" | "future";
+  alphabet: string;
+  priority: number;
+  homepage: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  file_info?: {
+    [key: string]: {
+      exists: boolean;
+      size: number | null;
+      modified: string | null;
+    };
+  };
+  missing_files?: string[];
+  is_complete?: boolean;
+  alternatives?: string[];
+}
+
+export interface AdminLanguagesResponse {
+  languages: AdminLanguage[];
+  count: number;
+}
+
+export interface CreateLanguageRequest {
+  code: string;
+  display_name: string;
+  language_name: string;
+  type: "nordic" | "other" | "future";
+  alphabet: string;
+  priority?: number;
+  homepage?: boolean;
+  is_active?: boolean;
+  alternatives?: string[];
+}
+
+export interface UpdateLanguageRequest {
+  display_name?: string;
+  language_name?: string;
+  type?: "nordic" | "other" | "future";
+  alphabet?: string;
+  priority?: number;
+  homepage?: boolean;
+  is_active?: boolean;
+  alternatives?: string[];
+}
+
+export interface LanguageFileInfo {
+  file_type: string;
+  file_info: {
+    exists: boolean;
+    path?: string;
+    size: number | null;
+    modified: string | null;
+  };
+}
+
+export interface LanguageActionResponse {
+  message: string;
+  language?: AdminLanguage;
+  files_uploaded?: number | string[];
+  files_deleted?: string[];
+  files_deleted_count?: number;
+}
+
+// Required file types for language completion
+const REQUIRED_FILE_TYPES = [
+  "cite",
+  "cleanup",
+  "complex2simple",
+  "g2p_model",
+  "ipa",
+  "meta",
+  "simple_dict",
+  "normal_dict",
+  "dict_json",
+  "guide_pdf",
+  "model_zip",
+];
+
+// Utility function to compute is_complete property
+export const computeLanguageCompletion = (
+  language: AdminLanguage
+): AdminLanguage => {
+  if (!language.file_info) {
+    return {
+      ...language,
+      is_complete: false,
+      missing_files: REQUIRED_FILE_TYPES,
+    };
+  }
+
+  const availableFiles = Object.entries(language.file_info)
+    .filter(([, info]) => info.exists)
+    .map(([type]) => type);
+
+  const missingFiles = REQUIRED_FILE_TYPES.filter(
+    (type) => !availableFiles.includes(type)
+  );
+
+  return {
+    ...language,
+    is_complete: missingFiles.length === 0,
+    missing_files: missingFiles,
+  };
+};
+
+// Admin Languages API
+export const adminLanguagesAPI = {
+  // Get all languages for admin management
+  getLanguages: async (params?: {
+    type?: "nordic" | "other" | "future";
+    homepage?: boolean;
+    active?: boolean;
+  }): Promise<AdminLanguagesResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params?.type) queryParams.append("type", params.type);
+    if (params?.homepage !== undefined)
+      queryParams.append("homepage", params.homepage.toString());
+    if (params?.active !== undefined)
+      queryParams.append("active", params.active.toString());
+
+    const response = await api.get(
+      `/admin/languages?${queryParams.toString()}`
+    );
+
+    // Compute is_complete property for each language
+    const data = response.data;
+    if (data.languages) {
+      data.languages = data.languages.map(computeLanguageCompletion);
+    }
+
+    return data;
+  },
+
+  // Get language by ID
+  getLanguageById: async (id: number): Promise<{ language: AdminLanguage }> => {
+    const response = await api.get(`/admin/languages/${id}`);
+    const data = response.data;
+    if (data.language) {
+      data.language = computeLanguageCompletion(data.language);
+    }
+    return data;
+  },
+
+  // Get language by code
+  getLanguageByCode: async (
+    code: string
+  ): Promise<{ language: AdminLanguage }> => {
+    const response = await api.get(`/admin/languages/code/${code}`);
+    const data = response.data;
+    if (data.language) {
+      data.language = computeLanguageCompletion(data.language);
+    }
+    return data;
+  },
+
+  // Create new language (JSON only)
+  createLanguage: async (
+    data: CreateLanguageRequest
+  ): Promise<LanguageActionResponse> => {
+    const response = await api.post("/admin/languages", data);
+    return response.data;
+  },
+
+  // Create language with files
+  createLanguageWithFiles: async (
+    data: CreateLanguageRequest,
+    files: Record<string, File>,
+    onUploadProgress?: (progressEvent: any) => void
+  ): Promise<LanguageActionResponse> => {
+    const formData = new FormData();
+
+    // Add language data
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (key === "alternatives" && Array.isArray(value)) {
+          value.forEach((alt) => formData.append("alternatives", alt));
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    // Add files
+    Object.entries(files).forEach(([fileType, file]) => {
+      formData.append(fileType, file);
+    });
+
+    const config: any = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 10 * 60 * 1000, // 10 minutes timeout for file uploads
+    };
+
+    if (onUploadProgress) {
+      config.onUploadProgress = onUploadProgress;
+    }
+
+    const response = await api.post("/admin/languages", formData, config);
+    return response.data;
+  },
+
+  // Update language (JSON only)
+  updateLanguage: async (
+    id: number,
+    data: UpdateLanguageRequest
+  ): Promise<LanguageActionResponse> => {
+    const response = await api.put(`/admin/languages/${id}`, data);
+    return response.data;
+  },
+
+  // Update language with files
+  updateLanguageWithFiles: async (
+    id: number,
+    data: UpdateLanguageRequest,
+    files: Record<string, File>,
+    onUploadProgress?: (progressEvent: any) => void
+  ): Promise<LanguageActionResponse> => {
+    const formData = new FormData();
+
+    // Add language data
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (key === "alternatives" && Array.isArray(value)) {
+          value.forEach((alt) => formData.append("alternatives", alt));
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    // Add files
+    Object.entries(files).forEach(([fileType, file]) => {
+      formData.append(fileType, file);
+    });
+
+    const config: any = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 10 * 60 * 1000, // 10 minutes timeout for file uploads
+    };
+
+    if (onUploadProgress) {
+      config.onUploadProgress = onUploadProgress;
+    }
+
+    const response = await api.put(`/admin/languages/${id}`, formData, config);
+    return response.data;
+  },
+
+  // Delete language
+  deleteLanguage: async (
+    id: number,
+    deleteFiles: boolean = false
+  ): Promise<LanguageActionResponse> => {
+    const response = await api.delete(
+      `/admin/languages/${id}?delete_files=${deleteFiles}`
+    );
+    return response.data;
+  },
+
+  // Upload/Replace individual file
+  uploadLanguageFile: async (
+    id: number,
+    fileType: string,
+    file: File,
+    onUploadProgress?: (progressEvent: any) => void
+  ): Promise<LanguageActionResponse> => {
+    const formData = new FormData();
+    formData.append(fileType, file);
+
+    const config: any = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 10 * 60 * 1000, // 10 minutes timeout for file uploads
+    };
+
+    if (onUploadProgress) {
+      config.onUploadProgress = onUploadProgress;
+    }
+
+    const response = await api.post(
+      `/admin/languages/${id}/files/${fileType}`,
+      formData,
+      config
+    );
+    return response.data;
+  },
+
+  // Get file information
+  getLanguageFileInfo: async (
+    id: number,
+    fileType: string
+  ): Promise<LanguageFileInfo> => {
+    const response = await api.get(`/admin/languages/${id}/files/${fileType}`);
+    return response.data;
+  },
+
+  // Delete individual file
+  deleteLanguageFile: async (
+    id: number,
+    fileType: string,
+    backup: boolean = true
+  ): Promise<LanguageActionResponse> => {
+    const response = await api.delete(
+      `/admin/languages/${id}/files/${fileType}?backup=${backup}`
+    );
     return response.data;
   },
 };
