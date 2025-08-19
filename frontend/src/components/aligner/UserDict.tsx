@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Info, ChevronDown, Upload } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
 
 import { useToast } from "@/contexts/ToastContext";
 import type { Dictionary, LanguageHomepage, User, Task } from "../../types/api";
@@ -560,10 +561,16 @@ export default function UserDict({ user }: UserDictProps) {
             className="tooltip"
             data-tip="Click to watch instructional video"
           >
-            <Info
-              className="w-5 h-5 cursor-pointer hover:text-primary transition-colors"
-              onClick={handleInfoClick}
-            />
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Info
+                className="w-5 h-5 cursor-pointer hover:text-primary transition-colors"
+                onClick={handleInfoClick}
+              />
+            </motion.div>
           </div>
         </div>
 
@@ -592,11 +599,26 @@ export default function UserDict({ user }: UserDictProps) {
         {/* Video Animation */}
         {showVideo && (
           <div className="tooltip tooltip-right" data-tip="Click me!">
-            <div
+            <motion.div
               className="relative flex flex-col items-center transition-all duration-300 ease-in-out"
               onClick={handleVideoClick}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              animate={{
+                y: !videoStarted ? [0, -8, 0] : 0,
+              }}
+              transition={{
+                y: {
+                  duration: 2.5,
+                  repeat: !videoStarted ? Infinity : 0,
+                  ease: "easeInOut",
+                },
+                scale: {
+                  duration: 0.2,
+                }
+              }}
             >
-              <video
+              <motion.video
                 ref={videoRef}
                 className="w-auto h-[25rem] cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
                 style={{
@@ -607,6 +629,12 @@ export default function UserDict({ user }: UserDictProps) {
                 }}
                 muted
                 playsInline
+                whileHover={{
+                  filter: "brightness(1.1) saturate(1.1)",
+                }}
+                transition={{
+                  filter: { duration: 0.3 }
+                }}
               >
                 <source
                   src={
@@ -617,7 +645,7 @@ export default function UserDict({ user }: UserDictProps) {
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
-              </video>
+              </motion.video>
 
               {/* Language Search Input Overlay - only show after animation completes and no default language */}
               {!selectedLanguage && animationComplete && (
@@ -688,7 +716,7 @@ export default function UserDict({ user }: UserDictProps) {
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
         )}
 
@@ -949,14 +977,17 @@ export default function UserDict({ user }: UserDictProps) {
               </div>
 
               <div className="space-x-2">
-                <button
+                <motion.button
                   onClick={handleClose}
                   className="btn btn-sm btn-ghost font-thin bg-base-200"
                   disabled={isSaving}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
                   Close
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={() => {
                     if (hasProcessingTasks) {
                       handleBlockedAction();
@@ -966,6 +997,9 @@ export default function UserDict({ user }: UserDictProps) {
                   }}
                   className="btn btn-sm btn-neutral font-thin"
                   disabled={isSaving || isLoading || hasProcessingTasks}
+                  whileHover={!isSaving && !isLoading && !hasProcessingTasks ? { scale: 1.05 } : {}}
+                  whileTap={!isSaving && !isLoading && !hasProcessingTasks ? { scale: 0.95 } : {}}
+                  transition={{ duration: 0.2 }}
                 >
                   {isSaving ? (
                     <>
@@ -975,7 +1009,7 @@ export default function UserDict({ user }: UserDictProps) {
                   ) : (
                     "Save"
                   )}
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>

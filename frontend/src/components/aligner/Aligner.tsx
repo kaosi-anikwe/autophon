@@ -252,7 +252,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
-      const response = await api.get("/public/languages");
+      const response = await api.get("/languages");
       return response.data.languages;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes

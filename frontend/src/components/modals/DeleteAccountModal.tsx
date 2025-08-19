@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
 import { deleteAccount } from "@/store/authSlice";
 import { useToast } from "@/contexts/ToastContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -114,37 +115,54 @@ export default function DeleteAccountModal({
       // Close modal and redirect to home page
       onClose();
       navigate("/", { replace: true });
-    } catch (error) {
+    } catch {
       // Error is already handled by the useEffect above
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-base-300/95 opacity-50"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative bg-base-100 rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-6 h-6 text-error" />
-            <h2 className="text-xl font-bold text-error">Delete Account</h2>
-          </div>
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-base-300/95 opacity-50"
             onClick={onClose}
-            className="btn btn-ghost btn-sm btn-circle"
-            disabled={deleteAccountLoading}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+
+          {/* Modal */}
+          <motion.div 
+            className="relative bg-base-100 rounded-lg shadow-xl w-full max-w-md mx-4 p-6"
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 30,
+              duration: 0.3
+            }}
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-6 h-6 text-error" />
+                <h2 className="text-xl font-bold text-error">Delete Account</h2>
+              </div>
+              <motion.button
+                onClick={onClose}
+                className="btn btn-ghost btn-sm btn-circle"
+                disabled={deleteAccountLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
+            </div>
 
         {/* Warning Content */}
         <div className="mb-6">
@@ -199,31 +217,37 @@ export default function DeleteAccountModal({
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={onClose}
-            className="btn btn-ghost flex-1"
-            disabled={deleteAccountLoading}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirmDeletion}
-            disabled={!isDeleteCodeValid || deleteAccountLoading}
-            className="btn btn-error flex-1"
-          >
-            {deleteAccountLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Deleting...
-              </>
-            ) : (
-              "Delete Account"
-            )}
-          </button>
+            {/* Actions */}
+            <div className="flex gap-3">
+              <motion.button
+                onClick={onClose}
+                className="btn btn-ghost flex-1"
+                disabled={deleteAccountLoading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                onClick={handleConfirmDeletion}
+                disabled={!isDeleteCodeValid || deleteAccountLoading}
+                className="btn btn-error flex-1"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {deleteAccountLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete Account"
+                )}
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }

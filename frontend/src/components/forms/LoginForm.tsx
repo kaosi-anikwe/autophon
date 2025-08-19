@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 
 import { useToast } from "../../hooks/useToast";
 import { login, clearError } from "../../store/authSlice";
@@ -43,10 +44,20 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
 
   return (
     <>
-      <h5 className="text-xl font-bold mb-1">Account-holder sign in</h5>
-      <form
+      <motion.h5 
+        className="text-xl font-bold mb-1"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        Account-holder sign in
+      </motion.h5>
+      <motion.form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-12 gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
       >
         <div className="md:col-span-5 col-span-12 mb-1">
           <label htmlFor="email" className="floating-label">
@@ -84,40 +95,49 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
           )}
         </div>
 
-        <button
+        <motion.button
           type="submit"
           className="md:col-span-2 col-span-3 btn btn-primary font-thin"
           disabled={isLoading}
+          whileHover={!isLoading ? { scale: 1.05 } : {}}
+          whileTap={!isLoading ? { scale: 0.95 } : {}}
         >
           {isLoading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-      <div className="grid grid-cols-12 gap-4">
+        </motion.button>
+      </motion.form>
+      <motion.div 
+        className="grid grid-cols-12 gap-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.5 }}
+      >
         <div className="text-left text-sm col-span-5">
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary hover:underline">
+          <Link to="/register" className="text-primary hover:underline transition-colors duration-200">
             Sign up
           </Link>
         </div>
         <div className="text-left text-sm col-span-5">
           {onForgotPasswordClick ? (
-            <button
+            <motion.button
               type="button"
               onClick={onForgotPasswordClick}
-              className="text-primary hover:underline"
+              className="text-primary hover:underline transition-colors duration-200"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               Forgot Password?
-            </button>
+            </motion.button>
           ) : (
             <Link
               to="/forgot-password"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline transition-colors duration-200"
             >
               Forgot Password?
             </Link>
           )}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

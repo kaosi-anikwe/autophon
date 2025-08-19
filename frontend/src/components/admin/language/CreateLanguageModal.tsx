@@ -7,6 +7,7 @@ import { X, Plus, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
 import { adminLanguagesAPI, type CreateLanguageRequest } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
 import { AxiosError } from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 import AlternativesInput from "./AlternativesInput";
 
 const createLanguageSchema = z.object({
@@ -166,21 +167,40 @@ export default function CreateLanguageModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="modal modal-open">
-      <div className="modal-box w-11/12 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold">Create New Language</h3>
-          <button
-            onClick={handleClose}
-            className="btn btn-ghost btn-sm btn-circle"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          className="modal modal-open"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div 
+            className="modal-box w-11/12 max-w-4xl"
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 30,
+              duration: 0.3
+            }}
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold">Create New Language</h3>
+              <motion.button
+                onClick={handleClose}
+                className="btn btn-ghost btn-sm btn-circle"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <X className="w-5 h-5" />
+              </motion.button>
+            </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Information */}
@@ -447,36 +467,40 @@ export default function CreateLanguageModal({
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="btn btn-ghost"
-              disabled={createLanguageMutation.isPending}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={createLanguageMutation.isPending}
-              className="btn btn-primary font-thin"
-            >
-              {createLanguageMutation.isPending ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  {includeFiles && Object.keys(selectedFiles).length > 0
-                    ? `Uploading... ${uploadProgress}%`
-                    : "Creating..."}
-                </>
-              ) : (
-                <>
-                  <Plus className="w-5 h-5" />
-                  Create Language
-                </>
-              )}
-            </button>
-          </div>
+            {/* Actions */}
+            <div className="flex justify-end gap-3">
+              <motion.button
+                type="button"
+                onClick={handleClose}
+                className="btn btn-ghost"
+                disabled={createLanguageMutation.isPending}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                type="submit"
+                disabled={createLanguageMutation.isPending}
+                className="btn btn-primary font-thin"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {createLanguageMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    {includeFiles && Object.keys(selectedFiles).length > 0
+                      ? `Uploading... ${uploadProgress}%`
+                      : "Creating..."}
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5" />
+                    Create Language
+                  </>
+                )}
+              </motion.button>
+            </div>
 
           {/* Upload Progress Bar */}
           {createLanguageMutation.isPending &&
@@ -494,9 +518,17 @@ export default function CreateLanguageModal({
                 />
               </div>
             )}
-        </form>
-      </div>
-      <div className="modal-backdrop" onClick={handleClose}></div>
-    </div>
+          </form>
+          </motion.div>
+          <motion.div 
+            className="modal-backdrop" 
+            onClick={handleClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          ></motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

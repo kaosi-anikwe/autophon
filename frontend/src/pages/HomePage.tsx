@@ -1,6 +1,7 @@
 // import { useState } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import LoginForm from "@/components/forms/LoginForm";
 import { useAppSelector } from "../hooks/useAppDispatch";
@@ -37,23 +38,46 @@ export function HomePage() {
 
   return (
     <>
-      <h6 className="font-normal uppercase text-xl tracking-wide mb-2 text-left">
+      <motion.h6 
+        className="font-normal uppercase text-xl tracking-wide mb-2 text-left"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         Automatic phonetic annotation & online forced aligner
-      </h6>
+      </motion.h6>
 
-      <h1 className="text-[3.5rem] leading-[1.1] font-black text-left flex items-center justify-start gap-2 align-center">
-        <img
+      <motion.h1 
+        className="text-[3.5rem] leading-[1.1] font-black text-left flex items-center justify-start gap-2 align-center"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <motion.img
           src="/favicon.png"
           alt="Icon"
           className="w-[0.75em] h-[0.75em] align-baseline mb-4"
+          initial={{ rotate: -180, scale: 0 }}
+          animate={{ rotate: 0, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 200 }}
         />
         Autophon
-      </h1>
+      </motion.h1>
 
       {/* Main row g-4 grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      >
         {/* Left Column - col-md-8 */}
-        <div className="md:col-span-8 py-0">
+        <motion.div 
+          className="md:col-span-8 py-0"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
           {/* Card matching home-card styling */}
           <div className="card bg-base-100 shadow-lg min-h-[250px] xl:min-h-[300px] border-0 p-3 h-full">
             <h5 className="text-xl font-bold">What the app does</h5>
@@ -187,20 +211,30 @@ export function HomePage() {
                 </section>
               )}
           </div>
-        </div>
+        </motion.div>
         {/* Right Column - col-md-4 */}
-        <div className="md:col-span-4">
+        <motion.div 
+          className="md:col-span-4"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+        >
           <div className="card bg-base-100 shadow-lg min-h-[250px] xl:min-h-[300px] p-3 h-full">
             <SupportedLanguages />
 
             <SupportedEngines />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Anonymous Table Section - only for non-authenticated users and if site is active */}
       {!isAuthenticated && !siteStatusLoading && status?.active && (
-        <div className="py-3">
+        <motion.div 
+          className="py-3"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+        >
           <Aligner title="Align files here" homepage />
           <div className="p-3">
             {config?.userLimits && config.audioExtensions && (
@@ -242,7 +276,7 @@ export function HomePage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Shield, AlertCircle, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useToast } from "../../hooks/useToast";
 
@@ -21,6 +22,7 @@ export function PrivacyAgreementModal({
     "",
     "",
   ]);
+  const [shouldBounce, setShouldBounce] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const toast = useToast();
 
@@ -85,11 +87,14 @@ export function PrivacyAgreementModal({
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
+      // Trigger bounce animation
+      setShouldBounce(true);
+      setTimeout(() => setShouldBounce(false), 600);
+      
       toast.error(
         "You must agree to the privacy terms before signing up.",
         "Agreement Required"
       );
-      onClose();
     }
   };
 
@@ -97,23 +102,44 @@ export function PrivacyAgreementModal({
     (value, index) => value === expectedLetters[index]
   );
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      onClick={handleBackdropClick}
-    >
-      <div className="bg-base-100 rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="relative flex flex-col items-center p-6 border-b border-base-300">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 btn btn-ghost btn-circle btn-sm hover:bg-base-200"
-            title="Close modal"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={handleBackdropClick}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div 
+            className="bg-base-100 rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ 
+              scale: shouldBounce ? [1, 1.05, 0.95, 1.02, 1] : 1, 
+              opacity: 1, 
+              y: 0 
+            }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 30,
+              duration: shouldBounce ? 0.6 : 0.3
+            }}
           >
-            <X className="w-4 h-4" />
-          </button>
+            {/* Header */}
+            <div className="relative flex flex-col items-center p-6 border-b border-base-300">
+              <motion.button
+                onClick={onClose}
+                className="absolute top-4 right-4 btn btn-ghost btn-circle btn-sm hover:bg-base-200"
+                title="Close modal"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-primary" />
           </div>
@@ -180,15 +206,17 @@ export function PrivacyAgreementModal({
 
             {/* Submit Button */}
             <div className="flex justify-center">
-              <button
+              <motion.button
                 onClick={handleSubmit}
                 disabled={!isComplete}
                 className={`btn font-thin px-8 ${
                   isComplete ? "btn-success" : "btn-disabled"
                 }`}
+                whileHover={isComplete ? { scale: 1.05 } : {}}
+                whileTap={isComplete ? { scale: 0.95 } : {}}
               >
                 I Agree & Submit Registration
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -198,7 +226,9 @@ export function PrivacyAgreementModal({
             submitted automatically after you agree.
           </p>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

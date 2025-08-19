@@ -21,8 +21,6 @@ export default function AlignerTable({
   homepage = false,
   isLoading = false,
 }: AlignerTableProps) {
-  console.log("Tasks", tasks);
-
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -116,7 +114,7 @@ export default function AlignerTable({
   }
 
   return (
-    <div className="max-h-[40rem] min-h-fit overflow-y-auto overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+    <div className="max-h-[40rem] overflow-y-auto overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
       {/* Grid Container */}
       <div className="grid grid-cols-[40px_32px_1fr_200px_200px_64px_64px_64px_96px_140px_64px] w-full justify-items-stretch">
         {/* Sticky Header */}
