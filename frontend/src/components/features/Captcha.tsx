@@ -91,7 +91,7 @@ export default function Captcha({ onVerify, isVisible }: CaptchaProps) {
             <div className="skeleton w-32 h-8"></div>
           </div>
         ) : (
-          <div className="relative w-50 inline-block">
+          <div className="flex justify-around relative w-50">
             <img
               src={`data:image/png;base64,${captchaImage}`}
               alt="CAPTCHA verification image"

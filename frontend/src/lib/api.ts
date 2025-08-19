@@ -500,3 +500,61 @@ export const organizationsAPI = {
     return response.data;
   },
 };
+
+// Task reupload interfaces
+export interface ReuploadTaskRequest {
+  taskId: string;
+  audioFile: File;
+}
+
+export interface ReuploadTaskResponse {
+  message: string;
+  task_id: string;
+}
+
+// Task reupload API
+export const taskReuploadAPI = {
+  // Reupload audio file for expired task
+  reuploadTask: async (
+    taskId: string,
+    audioFile: File,
+    onUploadProgress?: (progressEvent: any) => void,
+    cancelToken?: any
+  ): Promise<ReuploadTaskResponse> => {
+    const formData = new FormData();
+    formData.append("audio_file", audioFile);
+
+    const config: any = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 10 * 60 * 1000, // 10 minutes timeout
+    };
+
+    if (onUploadProgress) {
+      config.onUploadProgress = onUploadProgress;
+    }
+
+    if (cancelToken) {
+      config.cancelToken = cancelToken;
+    }
+
+    const response = await api.post(`/tasks/${taskId}/reupload`, formData, config);
+    return response.data;
+  },
+};
+
+// Task cancellation interfaces
+export interface CancelTaskResponse {
+  message: string;
+  task_id: string;
+}
+
+// Task cancellation API
+export const taskCancellationAPI = {
+  // Cancel task alignment
+  cancelTask: async (taskId: string): Promise<CancelTaskResponse> => {
+    const response = await api.put(`/tasks/${taskId}/cancel`);
+    return response.data;
+  },
+};

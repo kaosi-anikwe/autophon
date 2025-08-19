@@ -25,6 +25,8 @@ export default function HistoryTable({
       completed: "badge-success",
       failed: "badge-error",
       cancelled: "badge-neutral",
+      processing: "badge-secondary",
+      expired: "badge-warning",
     };
 
     return (

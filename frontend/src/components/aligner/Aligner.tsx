@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AxiosError } from "axios";
+import axios from "axios";
 import TransChoices from "./TransChoices";
 import { CirclePlus } from "lucide-react";
 import ProgressBar from "../ui/ProgressBar";
 import FileValidator from "../features/FileValidator";
+import Captcha from "../features/Captcha";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import TranscriptionSelect from "../modals/TranscriptionSelect";
 
@@ -25,7 +27,7 @@ type AlignerProps = {
 };
 
 type ModalState = {
-  type: "closed" | "selectingFile" | "selectingTransChoice";
+  type: "closed" | "selectingFile" | "selectingTransChoice" | "captcha";
   uploading: boolean;
   uploadProgress: number;
   preprocessingProgress: number;
@@ -78,6 +80,10 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     user?.trans_default ? transMap[user.trans_default] : null
   ); // to be populated with user data
   const [, setFileList] = useState<FileList | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<FileList | null>(null); // Files waiting for captcha
+  const cancelTokenRef = useRef<ReturnType<
+    typeof axios.CancelToken.source
+  > | null>(null);
   const toast = useToast();
   const config = useConfig();
 
@@ -97,6 +103,10 @@ export default function Aligner({ title, homepage }: AlignerProps) {
       files: FileList;
       transChoice: string;
     }) => {
+      // Create cancel token for this upload
+      const cancelToken = axios.CancelToken.source();
+      cancelTokenRef.current = cancelToken;
+
       const formData = new FormData();
 
       // Add files to FormData
@@ -124,6 +134,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
           "Content-Type": "multipart/form-data",
         },
         timeout: 10 * 60 * 1000, // 10 minutes timeout for file uploads
+        cancelToken: cancelToken.token,
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
             const progress = Math.round(
@@ -134,6 +145,8 @@ export default function Aligner({ title, homepage }: AlignerProps) {
             // Start preprocessing progress when upload is complete
             if (progress === 100) {
               setModalState((prev) => ({ ...prev, isPreprocessing: true }));
+              // Clear cancel token once upload is complete
+              cancelTokenRef.current = null;
 
               // Simulate preprocessing progress
               let preprocessProgress = 0;
@@ -158,6 +171,9 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     onSuccess: () => {
       toast.success("Files uploaded successfully!");
 
+      // Clear cancel token
+      cancelTokenRef.current = null;
+
       // Fetch user tasks after successful upload
       fetchTasks.refetch();
 
@@ -171,16 +187,25 @@ export default function Aligner({ title, homepage }: AlignerProps) {
       });
       setFileList(null);
     },
-    onError: (error: AxiosError<TaskUploadError>) => {
+    onError: (error: AxiosError<TaskUploadError> | Error) => {
       console.error("Upload failed:", error);
-      const data = error.response?.data;
-      toast.error(
-        data ? data.message : "",
-        "File upload failed. Please try again."
-      );
-      toast.error("Please ensure the correct transciption mode was selected.");
 
-      // Reset uploading state but keep modal open
+      // Check if error was due to cancellation
+      if (axios.isCancel(error)) {
+        toast.info("Upload cancelled successfully");
+      } else {
+        const data = (error as AxiosError<TaskUploadError>).response?.data;
+        toast.error(
+          data ? data.message : "",
+          "File upload failed. Please try again."
+        );
+        toast.error(
+          "Please ensure the correct transciption mode was selected."
+        );
+      }
+
+      // Clear cancel token and reset uploading state
+      cancelTokenRef.current = null;
       setModalState((prev) => ({
         ...prev,
         uploading: false,
@@ -243,6 +268,26 @@ export default function Aligner({ title, homepage }: AlignerProps) {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  // Cancel upload function
+  const cancelUpload = () => {
+    if (cancelTokenRef.current) {
+      cancelTokenRef.current.cancel("Upload cancelled by user");
+    }
+  };
+
+  // Handle captcha verification
+  const handleCaptchaVerified = (verified: boolean) => {
+    if (verified && pendingFiles && transChoice) {
+      // Captcha passed, proceed with upload
+      setModalState((prev) => ({ ...prev, uploading: true }));
+      uploadMutation.mutate({ files: pendingFiles, transChoice });
+      setPendingFiles(null);
+    } else {
+      // Captcha failed, stay on captcha screen for retry
+      toast.error("Captcha verification failed. Please try again.");
+    }
+  };
+
   // Handle validated files from FileValidator
   const handleFilesValidated = (files: FileList) => {
     setFileList(files);
@@ -253,6 +298,14 @@ export default function Aligner({ title, homepage }: AlignerProps) {
       return;
     }
 
+    // For homepage users, show captcha before upload
+    if (homepage) {
+      setPendingFiles(files);
+      setModalState((prev) => ({ ...prev, type: "captcha" }));
+      return;
+    }
+
+    // For authenticated users, upload immediately
     setModalState((prev) => ({ ...prev, uploading: true }));
     uploadMutation.mutate({ files, transChoice });
   };
@@ -260,16 +313,21 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   const openModal = modalState.type !== "closed";
 
   let modalContent = <></>;
-  const size = modalState.type === "selectingFile" ? "sm" : "xl";
+  const size =
+    modalState.type === "selectingFile" || modalState.type === "captcha"
+      ? "sm"
+      : "xl";
   const onModalClose = !modalState.uploading
-    ? () =>
+    ? () => {
         setModalState({
           type: "closed",
           uploading: false,
           uploadProgress: 0,
           preprocessingProgress: 0,
           isPreprocessing: false,
-        })
+        });
+        setPendingFiles(null); // Clear pending files on modal close
+      }
     : () => {};
 
   if (modalState.type === "selectingFile") {
@@ -319,9 +377,24 @@ export default function Aligner({ title, homepage }: AlignerProps) {
               />
             )}
 
-            <p className="text-xs text-base-300">
-              Please do not close this window during upload.
-            </p>
+            <div className="flex justify-between items-center mt-3">
+              <p className="text-xs text-base-300">
+                {modalState.isPreprocessing
+                  ? "Files are being processed on the server. This cannot be cancelled."
+                  : "Please do not close this window during upload."}
+              </p>
+
+              {/* Cancel button - only show if upload hasn't completed */}
+              {!modalState.isPreprocessing && cancelTokenRef.current && (
+                <button
+                  type="button"
+                  className="btn btn-error btn-sm font-thin"
+                  onClick={cancelUpload}
+                >
+                  Cancel Upload
+                </button>
+              )}
+            </div>
           </div>
         )}
 
@@ -369,6 +442,44 @@ export default function Aligner({ title, homepage }: AlignerProps) {
       />
     );
   }
+  if (modalState.type === "captcha") {
+    modalContent = (
+      <div className="w-full max-w-md mx-auto p-6">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold mb-4">Captcha Safeguard</h3>
+          <p className="text-sm text-base-content/70 leading-relaxed">
+            Due to bot attacks, we have added this captcha function. To bypass
+            the captcha and gain access to advanced features, we recommend you
+            create a free account. Note that sevens and ones often look the
+            same.
+          </p>
+        </div>
+
+        <div className="flex justify-around">
+          <Captcha onVerify={handleCaptchaVerified} isVisible={true} />
+        </div>
+
+        <div className="mt-4 flex justify-center">
+          <button
+            type="button"
+            className="btn btn-neutral font-thin"
+            onClick={() => {
+              setModalState({
+                type: "closed",
+                uploading: false,
+                uploadProgress: 0,
+                preprocessingProgress: 0,
+                isPreprocessing: false,
+              });
+              setPendingFiles(null);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   let titleClasses = "text-2xl font-bold flex items-center";
   if (!homepage) titleClasses += " py-8";
@@ -393,13 +504,22 @@ export default function Aligner({ title, homepage }: AlignerProps) {
             >
               <h4
                 className={titleClasses}
-                onClick={() =>
-                  setModalState((prev) => ({
-                    ...prev,
-                    type: "selectingFile",
-                    uploading: false,
-                  }))
-                }
+                onClick={() => {
+                  // Check if user has trans_default, if not show trans choice selection first
+                  if (!user?.trans_default) {
+                    setModalState((prev) => ({
+                      ...prev,
+                      type: "selectingTransChoice",
+                      uploading: false,
+                    }));
+                  } else {
+                    setModalState((prev) => ({
+                      ...prev,
+                      type: "selectingFile",
+                      uploading: false,
+                    }));
+                  }
+                }}
               >
                 <span className="text-2xl mr-2">
                   <CirclePlus className="w-6 h-6 text-base-100 fill-accent" />

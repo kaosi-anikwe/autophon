@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { useState, useRef } from "react";
 import { AlertCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "@/lib/api";
 import type { Task, Language } from "@/types/api";
@@ -17,6 +17,8 @@ export default function LanguageCell({
 }) {
   // toast for showing status
   const toast = useToast();
+
+  const queryClient = useQueryClient();
 
   const [selectedLanguage, setSelectedLanguage] = useState(
     task.language?.language_name
@@ -58,6 +60,9 @@ export default function LanguageCell({
         setSelectedLanguage(languageName);
         setShowDropdown(false);
         toast.success(`Language changed to ${languageOptions[0].display_name}`);
+
+        // refetch tasks
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
       } else {
         // Multiple options - close language dropdown and trigger engine dropdown
         setSelectedLanguage(languageName);

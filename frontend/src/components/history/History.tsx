@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import HistoryTable from "./HistoryTable";
 import { api } from "@/lib/api";
 import type { Task, HistoryTotals } from "@/types/api";
+import { useToast } from "@/contexts/ToastContext";
+import { useAppSelector } from "@/hooks/useAppDispatch";
 
 // Generate years from current year back to 2000
 const currentYear = new Date().getFullYear();
@@ -33,6 +35,8 @@ const currentMonthName = months[currentMonthIndex];
 export default function History() {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonthName);
+  const toast = useToast();
+  const { user } = useAppSelector((state) => state.auth);
 
   // Fetch history data when month or year changes
   const { data: historyData, isLoading } = useQuery({
@@ -48,6 +52,16 @@ export default function History() {
     },
   });
 
+  const isCurrentMonth = () => {
+    if (
+      selectedYear === currentYear &&
+      selectedMonth === currentMonthName &&
+      !user?.admin
+    )
+      return true;
+    else return false;
+  };
+
   const historyTasks = historyData?.results;
   const totals = historyData?.totals;
 
@@ -60,6 +74,13 @@ export default function History() {
   };
 
   const handleDownloadHistory = () => {
+    if (isCurrentMonth()) {
+      toast.error(
+        "History downloads are only available at the end of the month",
+        "Not allowed"
+      );
+      return;
+    }
     const monthIndex = months.indexOf(selectedMonth) + 1;
     const downloadUrl = `/monthly-download?month=${
       months[monthIndex - 1]
@@ -122,19 +143,28 @@ export default function History() {
           />
         </div>
         <div className="text-right mr-8">
-          <button
-            className={`btn font-thin mb-4 ${
-              !historyTasks || historyTasks.length === 0
-                ? "btn-disabled"
-                : "btn-neutral"
-            }`}
-            onClick={handleDownloadHistory}
-            disabled={!historyTasks || historyTasks.length === 0}
+          <div
+            className="tooltip"
+            data-tip={
+              isCurrentMonth()
+                ? "Downloads are available at the end of the month."
+                : ""
+            }
           >
-            {!historyTasks || historyTasks.length === 0
-              ? `No tasks for ${selectedMonth} ${selectedYear}`
-              : `Download History for ${selectedMonth} ${selectedYear}`}
-          </button>
+            <button
+              className={`btn font-thin mb-4 ${
+                isCurrentMonth() ? "btn-disabled" : "btn-neutral"
+              }`}
+              onClick={handleDownloadHistory}
+              disabled={
+                isCurrentMonth() || !historyTasks || historyTasks.length === 0
+              }
+            >
+              {!historyTasks || historyTasks.length === 0
+                ? `No tasks for ${selectedMonth} ${selectedYear}`
+                : `Download History for ${selectedMonth} ${selectedYear}`}
+            </button>
+          </div>
         </div>
       </div>
     </div>

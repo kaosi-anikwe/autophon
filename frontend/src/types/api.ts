@@ -87,7 +87,9 @@ export interface Task {
     | "aligned"
     | "completed"
     | "failed"
-    | "cancelled";
+    | "processing"
+    | "cancelled"
+    | "expired";
   pre_error?: boolean;
   anonymous: boolean;
   trans_choice: "var-ling" | "comp-ling" | "exp-a" | "exp-b";
@@ -99,6 +101,7 @@ export interface Task {
   words?: number;
   missing_words?: number;
   missingpronhtml?: string;
+  cite?: string;
   duration?: number;
   created_at: string;
   updated_at: string;

@@ -4,8 +4,8 @@ import { Info, ChevronDown, Upload } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import { useToast } from "@/contexts/ToastContext";
-import type { Dictionary, LanguageHomepage, User } from "../../types/api";
-import { languagesAPI, dictionaryAPI } from "../../lib/api";
+import type { Dictionary, LanguageHomepage, User, Task } from "../../types/api";
+import { languagesAPI, dictionaryAPI, api } from "../../lib/api";
 import { DictUploadModal } from "../modals/DictUploadModal";
 import { Modal } from "../ui/Modal";
 
@@ -45,31 +45,78 @@ export default function UserDict({ user }: UserDictProps) {
   const dictContentRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
-  const selectLanguage = async (language: LanguageHomepage) => {
-    setSelectedLanguage(language);
-    // setSearchTerm(language.display_name);
-    setShowDropdown(false);
-    setSelectedIndex(-1);
-    setShowVideo(false);
-    setInvalidPhones(false);
-
-    // Fetch existing dictionary for this language
-    setIsLoading(true);
-    setIsEditable(false); // Reset to read-only when loading new content
-    try {
-      const dictData = await dictionaryAPI.getUserDictionaryByLanguage(
-        language.code
-      );
-      setCustomPronunciations(dictData.content || "");
-      setSelectedDictionary(dictData);
-      setContentKey((prev) => prev + 1); // Force re-render with new content
-    } catch (error) {
-      console.error("Failed to load dictionary:", error);
-      setCustomPronunciations(""); // Start with empty if no dictionary exists
-    } finally {
-      setIsLoading(false);
-    }
+  // Helper function to check if user_id cookie exists (for anonymous uploads)
+  const hasUserIdCookie = () => {
+    return document.cookie
+      .split(";")
+      .some((cookie) => cookie.trim().startsWith("user_id="));
   };
+
+  // Only fetch tasks if user is authenticated OR has user_id cookie (anonymous upload)
+  const shouldFetchTasks = user?.uuid !== undefined || hasUserIdCookie();
+
+  // Query to fetch current tasks to check for processing status
+  const { data: currentTasks } = useQuery<Task[]>({
+    queryKey: ["tasks", user?.uuid],
+    staleTime: 2 * 1000, // 2 seconds for real-time feel
+    enabled: shouldFetchTasks, // Only fetch when user is authenticated or has user_id cookie
+    refetchInterval: 5000, // Check every 5 seconds for processing tasks
+    queryFn: async () => {
+      const response = await api.get("/tasks");
+      return response.data.tasks;
+    },
+  });
+
+  // Check if any tasks are currently being processed
+  const hasProcessingTasks =
+    currentTasks?.some(
+      (task) =>
+        task.task_status === "uploading" ||
+        task.task_status === "aligned" ||
+        task.task_status === "processing"
+    ) || false;
+
+  // Handle clicks when tasks are processing
+  const handleBlockedAction = useCallback(() => {
+    toast.error(
+      "Please wait for your current tasks to finish processing before using the Custom Pronunciations feature.",
+      "Feature temporarily unavailable"
+    );
+  }, [toast]);
+
+  const selectLanguage = useCallback(
+    async (language: LanguageHomepage) => {
+      // Prevent language selection when tasks are processing
+      if (hasProcessingTasks) {
+        handleBlockedAction();
+        return;
+      }
+      setSelectedLanguage(language);
+      // setSearchTerm(language.display_name);
+      setShowDropdown(false);
+      setSelectedIndex(-1);
+      setShowVideo(false);
+      setInvalidPhones(false);
+
+      // Fetch existing dictionary for this language
+      setIsLoading(true);
+      setIsEditable(false); // Reset to read-only when loading new content
+      try {
+        const dictData = await dictionaryAPI.getUserDictionaryByLanguage(
+          language.code
+        );
+        setCustomPronunciations(dictData.content || "");
+        setSelectedDictionary(dictData);
+        setContentKey((prev) => prev + 1); // Force re-render with new content
+      } catch (error) {
+        console.error("Failed to load dictionary:", error);
+        setCustomPronunciations(""); // Start with empty if no dictionary exists
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [handleBlockedAction, hasProcessingTasks]
+  );
 
   function checkPhones(text: string) {
     let valid = true;
@@ -297,8 +344,9 @@ export default function UserDict({ user }: UserDictProps) {
     videoStarted,
     animationComplete,
     isClosing,
-    user?.dict_default,
+    user.dict_default,
     languages,
+    selectLanguage,
   ]);
 
   // Handle keyboard navigation
@@ -332,7 +380,7 @@ export default function UserDict({ user }: UserDictProps) {
           break;
       }
     },
-    [showDropdown, filteredLanguages, selectedIndex]
+    [showDropdown, filteredLanguages, selectedIndex, selectLanguage]
   );
 
   useEffect(() => {
@@ -357,10 +405,21 @@ export default function UserDict({ user }: UserDictProps) {
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Prevent interaction when tasks are processing
+    if (hasProcessingTasks) {
+      handleBlockedAction();
+      return;
+    }
     setSearchTerm(e.target.value);
   };
 
   const handleVideoClick = () => {
+    // Prevent interaction when tasks are processing
+    if (hasProcessingTasks) {
+      handleBlockedAction();
+      return;
+    }
+
     if (!videoStarted) {
       setVideoStarted(true);
     } else if (!selectedLanguage && animationComplete) {
@@ -491,108 +550,145 @@ export default function UserDict({ user }: UserDictProps) {
     <div
       className={`card shadow-lg space-y-4 bg-base-100 border border-base-200 p-4 transition-all duration-500 ease-in-out ${
         selectedLanguage && !isClosing ? "col-span-8" : "col-span-4"
-      }`}
+      } ${hasProcessingTasks ? "opacity-60 cursor-not-allowed" : ""}`}
+      onClick={hasProcessingTasks ? handleBlockedAction : undefined}
     >
       <div className="flex flex-col items-center space-y-4">
         <div className="flex items-center">
           <h3 className="text-lg font-bold mr-4">Your Custom Pronunciations</h3>
-          <Info
-            className="w-5 h-5 cursor-pointer hover:text-primary transition-colors"
-            onClick={handleInfoClick}
-          />
+          <div
+            className="tooltip"
+            data-tip="Click to watch instructional video"
+          >
+            <Info
+              className="w-5 h-5 cursor-pointer hover:text-primary transition-colors"
+              onClick={handleInfoClick}
+            />
+          </div>
         </div>
+
+        {/* Processing Tasks Notification */}
+        {hasProcessingTasks && (
+          <div className="alert text-sm py-2">
+            <svg
+              className="stroke-current shrink-0 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <span>
+              Custom Pronunciations feature is temporarily unavailable while
+              tasks are being processed.
+            </span>
+          </div>
+        )}
 
         {/* Video Animation */}
         {showVideo && (
-          <div
-            className="relative flex flex-col items-center transition-all duration-300 ease-in-out"
-            onClick={handleVideoClick}
-          >
-            <video
-              ref={videoRef}
-              className="w-auto h-[25rem] cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
-              style={{
-                transform: `translateX(${videoOffset}%)`,
-                transition: videoStarted
-                  ? "none"
-                  : "transform 0.3s ease-in-out",
-              }}
-              muted
-              playsInline
+          <div className="tooltip tooltip-right" data-tip="Click me!">
+            <div
+              className="relative flex flex-col items-center transition-all duration-300 ease-in-out"
+              onClick={handleVideoClick}
             >
-              <source
-                src={
-                  isClosing
-                    ? "/src/assets/dict-reverse.webm"
-                    : "/src/assets/dict.webm"
-                }
-                type="video/webm"
-              />
-              Your browser does not support the video tag.
-            </video>
-
-            {/* Language Search Input Overlay - only show after animation completes and no default language */}
-            {!selectedLanguage && animationComplete && (
-              <div
-                className="absolute top-8 left-[100%] transform -translate-x-1/2 w-96 transition-all duration-300 ease-in-out animate-fade-in"
-                ref={dropdownRef}
+              <video
+                ref={videoRef}
+                className="w-auto h-[25rem] cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
+                style={{
+                  transform: `translateX(${videoOffset}%)`,
+                  transition: videoStarted
+                    ? "none"
+                    : "transform 0.3s ease-in-out",
+                }}
+                muted
+                playsInline
               >
-                <div className="relative">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchTerm}
-                    onFocus={() => {
-                      setSearchTerm("");
-                      setShowDropdown(true);
-                    }}
-                    onChange={handleSearchChange}
-                    placeholder="Search languages..."
-                    className="input input-bordered w-full bg-base-100/90 backdrop-blur-sm"
-                    autoComplete="off"
-                  />
-                  <ChevronDown className="absolute right-3 top-2/3 transform -translate-y-1/2 w-4 h-4 text-base-content/60" />
+                <source
+                  src={
+                    isClosing
+                      ? "/src/assets/dict-reverse.webm"
+                      : "/src/assets/dict.webm"
+                  }
+                  type="video/webm"
+                />
+                Your browser does not support the video tag.
+              </video>
 
-                  {/* Language Dropdown */}
-                  {showDropdown && filteredLanguages.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                      {filteredLanguages.map((language, index) => (
-                        <div
-                          key={language.id}
-                          className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
-                            index === selectedIndex
-                              ? "bg-primary text-primary-content"
-                              : "hover:bg-base-200"
-                          }`}
-                          onClick={() => selectLanguage(language)}
-                        >
-                          {/* Language Flag */}
-                          <img
-                            src={`/langs/${language.code}/${language.code}_flag_50.png`}
-                            alt={`${language.display_name} flag`}
-                            className="w-6 h-6 object-cover rounded-sm flex-shrink-0"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                            }}
-                          />
-                          <div className="flex-1">
-                            <div className="font-medium">
-                              {language.display_name}
+              {/* Language Search Input Overlay - only show after animation completes and no default language */}
+              {!selectedLanguage && animationComplete && (
+                <div
+                  className="absolute top-8 left-[100%] transform -translate-x-1/2 w-96 transition-all duration-300 ease-in-out animate-fade-in"
+                  ref={dropdownRef}
+                >
+                  <div className="relative">
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchTerm}
+                      onFocus={() => {
+                        if (hasProcessingTasks) {
+                          handleBlockedAction();
+                          return;
+                        }
+                        setSearchTerm("");
+                        setShowDropdown(true);
+                      }}
+                      onChange={handleSearchChange}
+                      placeholder="Search languages..."
+                      className={`input input-bordered w-full bg-base-100/90 backdrop-blur-sm ${
+                        hasProcessingTasks ? "cursor-not-allowed" : ""
+                      }`}
+                      autoComplete="off"
+                      disabled={hasProcessingTasks}
+                    />
+                    <ChevronDown className="absolute right-3 top-2/3 transform -translate-y-1/2 w-4 h-4 text-base-content/60" />
+
+                    {/* Language Dropdown */}
+                    {showDropdown && filteredLanguages.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                        {filteredLanguages.map((language, index) => (
+                          <div
+                            key={language.id}
+                            className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
+                              index === selectedIndex
+                                ? "bg-primary text-primary-content"
+                                : "hover:bg-base-200"
+                            }`}
+                            onClick={() => selectLanguage(language)}
+                          >
+                            {/* Language Flag */}
+                            <img
+                              src={`/langs/${language.code}/${language.code}_flag_50.png`}
+                              alt={`${language.display_name} flag`}
+                              className="w-6 h-6 object-cover rounded-sm flex-shrink-0"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                              }}
+                            />
+                            <div className="flex-1">
+                              <div className="font-medium">
+                                {language.display_name}
+                              </div>
+                              <div className="text-sm opacity-70">
+                                {language.language_name}
+                              </div>
                             </div>
-                            <div className="text-sm opacity-70">
-                              {language.language_name}
+                            <div className="text-xs opacity-60 font-mono">
+                              {language.code}
                             </div>
                           </div>
-                          <div className="text-xs opacity-60 font-mono">
-                            {language.code}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
@@ -608,13 +704,20 @@ export default function UserDict({ user }: UserDictProps) {
                 type="text"
                 value={searchTerm}
                 onFocus={() => {
+                  if (hasProcessingTasks) {
+                    handleBlockedAction();
+                    return;
+                  }
                   setSearchTerm("");
                   setShowDropdown(true);
                 }}
                 onChange={handleSearchChange}
                 placeholder="Search languages..."
-                className="input input-bordered w-full"
+                className={`input input-bordered w-full ${
+                  hasProcessingTasks ? "cursor-not-allowed" : ""
+                }`}
                 autoComplete="off"
+                disabled={hasProcessingTasks}
               />
               <ChevronDown className="absolute right-3 top-2/3 transform -translate-y-1/2 w-4 h-4 text-base-content/60" />
 
@@ -707,9 +810,15 @@ export default function UserDict({ user }: UserDictProps) {
                 proper formatting.
               </p>
               <button
-                onClick={() => setShowUploadModal(true)}
+                onClick={() => {
+                  if (hasProcessingTasks) {
+                    handleBlockedAction();
+                    return;
+                  }
+                  setShowUploadModal(true);
+                }}
                 className="btn btn-sm btn-neutral font-thin mt-2 text-xs"
-                disabled={isLoading}
+                disabled={isLoading || hasProcessingTasks}
               >
                 <Upload className="w-3 h-3 mr-1" />
                 Upload file instead
@@ -735,6 +844,11 @@ export default function UserDict({ user }: UserDictProps) {
                     : "leading-[0.6rem] bg-base-200 cursor-pointer"
                 }`}
                 onClick={() => {
+                  // Prevent editing when tasks are processing
+                  if (hasProcessingTasks) {
+                    handleBlockedAction();
+                    return;
+                  }
                   // Format text content to remove line numbers and error highlight
                   setInvalidPhones(false);
                   if (dictContentRef.current) {
@@ -843,9 +957,15 @@ export default function UserDict({ user }: UserDictProps) {
                   Close
                 </button>
                 <button
-                  onClick={() => handleSave()}
+                  onClick={() => {
+                    if (hasProcessingTasks) {
+                      handleBlockedAction();
+                      return;
+                    }
+                    handleSave();
+                  }}
                   className="btn btn-sm btn-neutral font-thin"
-                  disabled={isSaving || isLoading}
+                  disabled={isSaving || isLoading || hasProcessingTasks}
                 >
                   {isSaving ? (
                     <>

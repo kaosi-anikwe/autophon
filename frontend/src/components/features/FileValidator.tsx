@@ -26,7 +26,15 @@ export default function FileValidator({
     );
   }
 
-  const allowedExtensions = ["lab", "textgrid", "eaf", "tsv", "txt", "xlsx"];
+  const allowedExtensions = [
+    "lab",
+    "textgrid",
+    "eaf",
+    "tsv",
+    "txt",
+    "xlsx",
+    "zip",
+  ];
 
   // Get cookie value by name
   function getCookie(name: string) {
