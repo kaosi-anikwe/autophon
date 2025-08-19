@@ -22,8 +22,8 @@
   --color-info-content: #fff;
   --color-success: #5a8a3a;
   --color-success-content: #fff;
-  --color-warning: oklch(75% 0.183 55.934);
-  --color-warning-content: oklch(26% 0.079 36.259);
+  --color-warning: #b8860b;
+  --color-warning-content: #fff;
   --color-error: #eb6864;
   --color-error-content: #fff;
   --radius-selector: 0.25rem;
@@ -57,8 +57,8 @@
   --color-info-content: #f0f0f0;
   --color-success: #7ba05b;
   --color-success-content: #f0f0f0;
-  --color-warning: oklch(75% 0.183 55.934);
-  --color-warning-content: oklch(26% 0.079 36.259);
+  --color-warning: #daa520;
+  --color-warning-content: #1a1a1a;
   --color-error: #f08a86;
   --color-error-content: #000;
   --radius-selector: 0.25rem;
