@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,9 +18,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export default function ForgotPassword() {
   const dispatch = useAppDispatch();
   const toast = useToast();
-  const { resetPasswordLoading } = useAppSelector(
-    (state) => state.auth
-  );
+  const { resetPasswordLoading } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -41,14 +39,16 @@ export default function ForgotPassword() {
       await dispatch(resetPassword(data.email)).unwrap();
       // Success - show toast and clear form
       toast.success(
-        "Password reset email sent! Please check your inbox and follow the instructions to reset your password.",
+        "If an account with this email exists, a password reset link has been sent",
         "Reset Email Sent"
       );
       reset(); // Clear the form
     } catch (error) {
       // Error - show error toast (error message is in the rejected action payload)
       toast.error(
-        typeof error === 'string' ? error : "Password reset failed. Please try again.",
+        typeof error === "string"
+          ? error
+          : "Password reset failed. Please try again.",
         "Reset Failed"
       );
     }
@@ -61,7 +61,10 @@ export default function ForgotPassword() {
         Enter your email address, and we will email you a link to change your
         password.
       </p>
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-12 gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-12 gap-4"
+      >
         <div className="col-span-10 mb-1">
           <label htmlFor="email" className="floating-label">
             <span>Email address</span>
@@ -70,7 +73,9 @@ export default function ForgotPassword() {
               id="email"
               type="email"
               placeholder="Enter your email"
-              className={`w-full input validator ${errors.email ? "input-error" : ""}`}
+              className={`w-full input validator ${
+                errors.email ? "input-error" : ""
+              }`}
               disabled={resetPasswordLoading}
             />
             {errors.email && (
@@ -80,8 +85,8 @@ export default function ForgotPassword() {
             )}
           </label>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="col-span-2 btn btn-primary font-thin"
           disabled={resetPasswordLoading}
         >

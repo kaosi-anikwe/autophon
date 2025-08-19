@@ -1,4 +1,8 @@
-import axios, { AxiosError, type AxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  type AxiosRequestConfig,
+  type CancelToken,
+} from "axios";
 import type { Dictionary, User } from "../types/api";
 
 // Extend AxiosRequestConfig to include retry flag
@@ -519,7 +523,7 @@ export const taskReuploadAPI = {
     taskId: string,
     audioFile: File,
     onUploadProgress?: (progressEvent: any) => void,
-    cancelToken?: any
+    cancelToken?: CancelToken
   ): Promise<ReuploadTaskResponse> => {
     const formData = new FormData();
     formData.append("audio_file", audioFile);
@@ -539,7 +543,11 @@ export const taskReuploadAPI = {
       config.cancelToken = cancelToken;
     }
 
-    const response = await api.post(`/tasks/${taskId}/reupload`, formData, config);
+    const response = await api.post(
+      `/tasks/${taskId}/reupload`,
+      formData,
+      config
+    );
     return response.data;
   },
 };
@@ -555,6 +563,47 @@ export const taskCancellationAPI = {
   // Cancel task alignment
   cancelTask: async (taskId: string): Promise<CancelTaskResponse> => {
     const response = await api.put(`/tasks/${taskId}/cancel`);
+    return response.data;
+  },
+};
+
+// Email verification interfaces
+export interface EmailVerificationResponse {
+  success: boolean;
+  message: string;
+}
+
+// Password reset interfaces
+export interface ResetPasswordRequest {
+  password: string;
+  token: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+// Email verification API
+export const emailVerificationAPI = {
+  // Verify email with token
+  verifyEmail: async (token: string): Promise<EmailVerificationResponse> => {
+    const response = await api.get(`/verify-email?token=${token}`);
+    return response.data;
+  },
+};
+
+// Password reset API
+export const passwordResetAPI = {
+  // Reset password with token
+  resetPasswordConfirm: async (
+    password: string,
+    token: string
+  ): Promise<ResetPasswordResponse> => {
+    const response = await api.post(`/auth/reset-password-confirm`, {
+      password,
+      token,
+    });
     return response.data;
   },
 };

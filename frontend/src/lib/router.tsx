@@ -13,6 +13,10 @@ import {
   HistoryPage,
   AdminPage,
   LogoutPage,
+  VerifyEmailPage,
+  ResetPasswordPage,
+  NotFoundPage,
+  ServerErrorPage,
 } from "../pages";
 
 export const router = createBrowserRouter([
@@ -31,6 +35,18 @@ export const router = createBrowserRouter([
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      {
+        path: "verify-email",
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPasswordPage />,
+      },
+      {
+        path: "500",
+        element: <ServerErrorPage />,
       },
       {
         path: "profile",
@@ -99,5 +115,9 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);

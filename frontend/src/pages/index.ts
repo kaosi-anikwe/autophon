@@ -8,3 +8,7 @@ export { SupportPage } from "./SupportPage";
 export { HistoryPage } from "./HistoryPage";
 export { AdminPage } from "./AdminPage";
 export { LogoutPage } from "./LogoutPage";
+export { default as VerifyEmailPage } from "./VerifyEmail";
+export { default as ResetPasswordPage } from "./ResetPassword";
+export { default as NotFoundPage } from "./NotFound";
+export { default as ServerErrorPage } from "./ServerError";
