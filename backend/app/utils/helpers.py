@@ -125,7 +125,7 @@ def missing_word_html(word_list, seperator=True) -> str:
                     )
                 else:
                     colored_phonemes.append(
-                        f"<span class='text-primary'>{phoneme}</span>"
+                        f"<span class='text-accent'>{phoneme}</span>"
                     )
             colored_phoneme_str = " ".join(colored_phonemes)
             n_digits = len(str(len(word_list))) - len(str(i))

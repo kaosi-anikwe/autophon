@@ -135,16 +135,6 @@ class TaskReuploadResource(Resource):
         if not expected_names and task.download_title:
             expected_names.append(task.download_title)
 
-        # Last resort: extract from task_path
-        if not expected_names and task.task_path:
-            task_dir = os.path.join(UPLOADS, task.task_path)
-            if os.path.exists(task_dir):
-                for root, dirs, files in os.walk(task_dir):
-                    for file in files:
-                        if isAudioFile(file):
-                            expected_names.append(file)
-                            break
-
         return expected_names
 
     def _get_held_paths(self, task):

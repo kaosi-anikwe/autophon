@@ -1,3 +1,4 @@
+import os
 from flask import request
 from datetime import datetime
 from flask_restful import Resource
@@ -94,7 +95,34 @@ class TaskListResource(Resource):
             tasks = query.all()
 
             schema = TaskSchema(many=True)
-            return {"tasks": schema.dump(tasks), "count": len(tasks)}, 200
+            task_data = schema.dump(tasks)
+            
+            # Add cite information for anonymous users
+            if user_uuid and not current_user:
+                admin_path = os.getenv("ADMIN")
+                if admin_path:
+                    for task in task_data:
+                        # Extract language code from the task's lang field
+                        lang_code = task.get("lang", "").replace("(suggested)", "").strip()
+                        if lang_code:
+                            cite_file_path = os.path.join(admin_path, lang_code, f"{lang_code}_cite.txt")
+                            try:
+                                if os.path.exists(cite_file_path):
+                                    with open(cite_file_path, "r", encoding="utf-8") as f:
+                                        # Splice lines [4:] and join with newlines
+                                        task["cite"] = "\n".join(
+                        [line for line in f.readlines()[4:] if line != "\n"]
+                    )
+
+                                else:
+                                    task["cite"] = ""
+                            except (IOError, UnicodeDecodeError) as e:
+                                logger.warning(f"Failed to read cite file for {lang_code}: {e}")
+                                task["cite"] = ""
+                        else:
+                            task["cite"] = ""
+
+            return {"tasks": task_data, "count": len(task_data)}, 200
 
         except Exception as e:
             log_exception(logger, "Error retrieving tasks")
@@ -372,18 +400,15 @@ class TaskCancelResource(Resource):
                 try:
                     logger.info(f"Stopping align process with PID: {task.pid}")
                     os.kill(task.pid, 15)  # send SIGTERM
-                    task.task_status = TaskStatus.CANCELLED
-                    task.cancelled = True
                 except (ProcessLookupError, OSError) as e:
                     # Process might already be dead
                     logger.warning(f"Could not kill process {task.pid}: {e}")
-                    task.task_status = TaskStatus.CANCELLED
-                    task.cancelled = True
-            else:
-                # Alignment hasn't begun - reset to uploaded
-                task.aligned = None
-                task.task_status = TaskStatus.UPLOADED
-                task.cancelled = False
+            
+            # Reset task to uploaded status for realignment at a later time
+            task.aligned = None
+            task.task_status = TaskStatus.UPLOADED
+            task.cancelled = False
+            task.pid = None  # Clear PID as process is no longer running
 
             task.update()
 

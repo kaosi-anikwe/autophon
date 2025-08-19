@@ -55,7 +55,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
     final_temp = db.Column(db.String(500))
 
     # Processing results
-    size = db.Column(db.Numeric(10, 2))
+    size = db.Column(db.Numeric(10, 1))
     words = db.Column(db.Integer)
     missing_words = db.Column(db.Integer)
     duration = db.Column(db.Integer)

@@ -1416,15 +1416,15 @@ class AlignmentWorker:
         logger.info(f"Received signal {signum}, initiating graceful shutdown...")
         shutdown_requested.set()
 
-        # Cancel active tasks
+        # Cancel active tasks and reset them for realignment
         for task_id in list(self.active_tasks):
-            logger.info(f"Cancelling active task: {task_id}")
-            # Update task status back to uploaded for retry later
+            logger.info(f"Cancelling active task: {task_id} and resetting to uploaded")
+            # Update task status back to uploaded for realignment later
             with app.app_context():
                 task = Task.query.filter_by(task_id=task_id).first()
                 if task:
                     self.processor.update_task_status(
-                        task, TaskStatus.CANCELLED, cancelled=True
+                        task, TaskStatus.UPLOADED, cancelled=False, pid=None, aligned=None
                     )
 
         # Shutdown executor

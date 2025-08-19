@@ -413,7 +413,7 @@ class StaticDownloadResource(Resource):
         Download static files
 
         Args:
-            file_type: Type of static file ('guides', 'docs', etc.)
+            file_type: Type of static file ('guides', 'profile', 'cite')
             filename: Name of the file to download
         """
         try:
@@ -421,6 +421,8 @@ class StaticDownloadResource(Resource):
                 return self._download_user_guide(filename)
             elif file_type == "profile":
                 return self._user_image(filename)
+            elif file_type == "cite":
+                return self._download_citation(filename)
             else:
                 return {"status": "error", "message": "Invalid file type"}, 400
 
@@ -462,3 +464,31 @@ class StaticDownloadResource(Resource):
             User.profile_image()
 
         return send_file(image_path, download_name=f"{uuid}.png", mimetype="image/png")
+
+    def _download_citation(self, filename):
+        """Download citation text files"""
+        # Extract language code from filename (expecting format like "langcode_cite.txt")
+        if not filename.endswith("_cite.txt"):
+            return {"status": "error", "message": "Invalid citation file format"}, 400
+        
+        lang_code = filename.replace("_cite.txt", "")
+        
+        # Construct file path: /ADMIN/<language_code>/<language_code>_cite.txt
+        static_path = os.path.join(
+            os.getenv("ADMIN"), lang_code, filename
+        )
+        
+        logger.info(f"CITATION PATH: {static_path}")
+
+        if not os.path.exists(static_path):
+            return {"status": "error", "message": "Citation file not found"}, 404
+
+        # Generate display name
+        display_name = f"{lang_code}_citation.txt"
+
+        return send_file(
+            static_path,
+            as_attachment=True,
+            download_name=display_name,
+            mimetype="text/plain",
+        )
