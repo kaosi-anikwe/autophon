@@ -60,7 +60,7 @@ class Register(Resource):
             for task in tasks:
                 task.user_id = user.id
                 task.update()
-            
+
             # Remove anonymous user_id
             request.cookies.clear()
 

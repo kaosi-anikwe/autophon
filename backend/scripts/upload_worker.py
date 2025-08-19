@@ -129,10 +129,16 @@ class UploadTaskProcessor:
                 time.sleep(self.config.retry_delay)
 
         # All attempts failed
-        status_updated = self.update_task_status(task, TaskStatus.FAILED, pre_error=True)
+        status_updated = self.update_task_status(
+            task, TaskStatus.FAILED, pre_error=True
+        )
         if not status_updated:
-            logger.critical(f"Failed to update task {task.task_id} to FAILED status - this may cause infinite retry loop!")
-        logger.error(f"Upload {task.task_id} failed after {self.config.retry_attempts} attempts")
+            logger.critical(
+                f"Failed to update task {task.task_id} to FAILED status - this may cause infinite retry loop!"
+            )
+        logger.error(
+            f"Upload {task.task_id} failed after {self.config.retry_attempts} attempts"
+        )
         return False
 
     def process_upload(self, task: Task) -> bool:
@@ -358,7 +364,7 @@ class UploadWorker:
         try:
             with app.app_context():
                 from datetime import datetime, timezone, timedelta
-                
+
                 # Look for tasks in UPLOADING status
                 tasks = (
                     Task.query.filter(
@@ -375,25 +381,37 @@ class UploadWorker:
                 for task in tasks:
                     if task.task_id in self.active_tasks:
                         continue
-                    
+
                     # Safeguard: Skip tasks that have been in UPLOADING status for too long
                     # This prevents infinite retry loops if status updates fail
-                    if hasattr(task, 'updated_at') and task.updated_at:
+                    if hasattr(task, "updated_at") and task.updated_at:
                         # Handle timezone-aware/naive datetime comparison
                         if task.updated_at.tzinfo is None:
                             # Database datetime is naive, assume UTC
-                            task_updated_utc = task.updated_at.replace(tzinfo=timezone.utc)
+                            task_updated_utc = task.updated_at.replace(
+                                tzinfo=timezone.utc
+                            )
                         else:
                             # Database datetime is already timezone-aware
                             task_updated_utc = task.updated_at
-                        
-                        time_in_uploading = datetime.now(timezone.utc) - task_updated_utc
-                        if time_in_uploading > timedelta(minutes=30):  # 30 minute timeout
-                            logger.warning(f"Task {task.task_id} stuck in UPLOADING for {time_in_uploading} - marking as failed")
-                            self.update_task_status(task, TaskStatus.FAILED, pre_error=True, 
-                                                  error_msg="Timeout: stuck in uploading status")
+
+                        time_in_uploading = (
+                            datetime.now(timezone.utc) - task_updated_utc
+                        )
+                        if time_in_uploading > timedelta(
+                            minutes=30
+                        ):  # 30 minute timeout
+                            logger.warning(
+                                f"Task {task.task_id} stuck in UPLOADING for {time_in_uploading} - marking as failed"
+                            )
+                            self.update_task_status(
+                                task,
+                                TaskStatus.FAILED,
+                                pre_error=True,
+                                error_msg="Timeout: stuck in uploading status",
+                            )
                             continue
-                    
+
                     available_tasks.append(task)
 
                 return available_tasks

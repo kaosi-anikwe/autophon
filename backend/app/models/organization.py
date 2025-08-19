@@ -8,13 +8,15 @@ class Organization(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False, unique=True)
-    normalized_name = db.Column(db.String(500), nullable=False)  # For efficient searching
+    normalized_name = db.Column(
+        db.String(500), nullable=False
+    )  # For efficient searching
     active = db.Column(db.Boolean, default=True, nullable=False)
 
     # Create index for fast searching
     __table_args__ = (
-        Index('ix_organization_normalized_name', 'normalized_name'),
-        Index('ix_organization_active', 'active'),
+        Index("ix_organization_normalized_name", "normalized_name"),
+        Index("ix_organization_active", "active"),
     )
 
     def __init__(self, name, **kwargs):
@@ -39,12 +41,15 @@ class Organization(db.Model, TimestampMixin, DatabaseHelperMixin):
         """Search organizations by name with case-insensitive partial matching"""
         if not query:
             return cls.query.filter_by(active=True).limit(limit).all()
-        
+
         normalized_query = cls.normalize_name(query)
-        return cls.query.filter(
-            cls.active == True,
-            cls.normalized_name.contains(normalized_query)
-        ).limit(limit).all()
+        return (
+            cls.query.filter(
+                cls.active == True, cls.normalized_name.contains(normalized_query)
+            )
+            .limit(limit)
+            .all()
+        )
 
     @classmethod
     def get_all_active(cls, limit=None):

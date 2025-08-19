@@ -96,28 +96,39 @@ class TaskListResource(Resource):
 
             schema = TaskSchema(many=True)
             task_data = schema.dump(tasks)
-            
+
             # Add cite information for anonymous users
             if user_uuid and not current_user:
                 admin_path = os.getenv("ADMIN")
                 if admin_path:
                     for task in task_data:
                         # Extract language code from the task's lang field
-                        lang_code = task.get("lang", "").replace("(suggested)", "").strip()
+                        lang_code = (
+                            task.get("lang", "").replace("(suggested)", "").strip()
+                        )
                         if lang_code:
-                            cite_file_path = os.path.join(admin_path, lang_code, f"{lang_code}_cite.txt")
+                            cite_file_path = os.path.join(
+                                admin_path, lang_code, f"{lang_code}_cite.txt"
+                            )
                             try:
                                 if os.path.exists(cite_file_path):
-                                    with open(cite_file_path, "r", encoding="utf-8") as f:
+                                    with open(
+                                        cite_file_path, "r", encoding="utf-8"
+                                    ) as f:
                                         # Splice lines [4:] and join with newlines
-                                        task["cite"] = "\n".join(
-                        [line for line in f.readlines()[4:] if line != "\n"]
-                    )
+                                        task["cite"] = "<br>".join(
+                                            [
+                                                line
+                                                for line in f.readlines()[2:]
+                                            ]
+                                        )
 
                                 else:
                                     task["cite"] = ""
                             except (IOError, UnicodeDecodeError) as e:
-                                logger.warning(f"Failed to read cite file for {lang_code}: {e}")
+                                logger.warning(
+                                    f"Failed to read cite file for {lang_code}: {e}"
+                                )
                                 task["cite"] = ""
                         else:
                             task["cite"] = ""
@@ -403,7 +414,7 @@ class TaskCancelResource(Resource):
                 except (ProcessLookupError, OSError) as e:
                     # Process might already be dead
                     logger.warning(f"Could not kill process {task.pid}: {e}")
-            
+
             # Reset task to uploaded status for realignment at a later time
             task.aligned = None
             task.task_status = TaskStatus.UPLOADED

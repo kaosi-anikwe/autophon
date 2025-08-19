@@ -356,7 +356,7 @@ export default function AlignerRow({
 
   // Handle download click - show citation modal for homepage users
   const handleDownloadClick = (e: React.MouseEvent) => {
-    if (homepage) {
+    if (homepage && task.task_status === "completed") {
       e.preventDefault();
       setShowCitationModal(true);
     }
@@ -366,7 +366,7 @@ export default function AlignerRow({
   // Generate citation download URL
   const getCitationDownloadUrl = () => {
     if (task.language?.code) {
-      return `https://new.autophontest.se/api/v1/cite/${task.language.code}/${task.language.code}_cite.txt`;
+      return `https://new.autophontest.se/api/v1/static/cite/${task.language.code}_cite.txt`;
     }
     return null;
   };
@@ -717,7 +717,7 @@ export default function AlignerRow({
       <div className={"p-2 flex items-center justify-center"}>
         {task.task_status === "processing" || task.task_status === "aligned" ? (
           // Cancel alignment button for processing/aligned tasks
-          <div className="tooltip" data-tip="Cancel alignment">
+          <div className="tooltip tooltip-left" data-tip="Cancel alignment">
             <button
               className="btn btn-ghost btn-xs text-error hover:bg-error/10"
               onClick={() => cancelAlignmentMutation.mutate(task.task_id)}
@@ -735,7 +735,7 @@ export default function AlignerRow({
             </button>
           </div>
         ) : downloadUrl ? (
-          <div className="tooltip" data-tip="Download files">
+          <div className="tooltip tooltip-left" data-tip="Download files">
             <a
               href={downloadUrl}
               className="btn btn-ghost btn-xs"
@@ -747,7 +747,7 @@ export default function AlignerRow({
           </div>
         ) : hasPreError ? (
           <div className="text-center flex justify-around">
-            <div className="tooltip" data-tip="No files available">
+            <div className="tooltip tooltip-left" data-tip="No files available">
               <FileX className="w-4 h-4 text-error" />
             </div>
           </div>
@@ -806,34 +806,34 @@ export default function AlignerRow({
               </div>
             </div>
 
-            <div className="modal-action">
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => setShowCitationModal(false)}
-              >
-                Cancel
-              </button>
-
+            <div className="modal-action justify-between">
               {getCitationDownloadUrl() && (
                 <a
                   href={getCitationDownloadUrl()!}
-                  className="btn btn-accent"
+                  className="underline"
                   download
-                  onClick={() => setShowCitationModal(false)}
                 >
                   Click to download citation list
                 </a>
               )}
 
-              <a
-                href={downloadUrl!}
-                className="btn btn-primary"
-                download
-                onClick={() => setShowCitationModal(false)}
-              >
-                Agree & Download Files
-              </a>
+              <div className="space-x-2">
+                <button
+                  type="button"
+                  className="btn btn-ghost font-thin"
+                  onClick={() => setShowCitationModal(false)}
+                >
+                  Cancel
+                </button>
+                <a
+                  href={downloadUrl!}
+                  className="btn btn-primary font-thin"
+                  download
+                  onClick={() => setShowCitationModal(false)}
+                >
+                  Agree & Download Files
+                </a>
+              </div>
             </div>
           </div>
         </div>

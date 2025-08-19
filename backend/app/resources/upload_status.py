@@ -470,14 +470,12 @@ class StaticDownloadResource(Resource):
         # Extract language code from filename (expecting format like "langcode_cite.txt")
         if not filename.endswith("_cite.txt"):
             return {"status": "error", "message": "Invalid citation file format"}, 400
-        
+
         lang_code = filename.replace("_cite.txt", "")
-        
+
         # Construct file path: /ADMIN/<language_code>/<language_code>_cite.txt
-        static_path = os.path.join(
-            os.getenv("ADMIN"), lang_code, filename
-        )
-        
+        static_path = os.path.join(os.getenv("ADMIN"), lang_code, filename)
+
         logger.info(f"CITATION PATH: {static_path}")
 
         if not os.path.exists(static_path):
