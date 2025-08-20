@@ -64,6 +64,7 @@ class UserLoginSchema(Schema):
 
     email = fields.Email(required=True)
     password = fields.Str(required=True, load_only=True)
+    admin = fields.Bool(load_default=False)
 
 
 class UserPublicSchema(Schema):

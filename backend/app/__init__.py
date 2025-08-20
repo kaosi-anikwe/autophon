@@ -135,18 +135,11 @@ def create_app(config_name=None):
     def health_check():
         return {"status": "healthy", "message": "API is running"}
 
-    @app.route("/api/v1/site-status")
-    def site_status():
-        """Check if site is active"""
-        return {
-            "active": getattr(app, "site_active", True),
-            "message": "Site status retrieved successfully",
-        }
-
     @app.before_request
     def check_site_status():
-        """Check site status before each request (except for certain endpoints)"""
+        """Check site status before each request with admin bypass"""
         from flask import request, g
+        from flask_jwt_extended import get_jwt_identity
 
         # Reload site status for each request to get real-time updates
         load_site_status(app)
@@ -154,15 +147,52 @@ def create_app(config_name=None):
         # Make site status available in request context
         g.site_is_active = getattr(app, "site_active", True)
 
-        # Allow certain endpoints even when site is inactive
-        allowed_when_inactive = ["/api/v1/health", "/api/v1/site-status"]
+        # If site is active, allow all requests
+        if g.site_is_active:
+            return
 
-        if not g.site_is_active and request.path not in allowed_when_inactive:
-            # Allow all admin API endpoints when site is inactive
-            if request.path.startswith("/api/v1/admin/"):
-                pass
-            else:
-                # Return site inactive message for regular users
-                return {"message": "Site is currently inactive", "active": False}, 503
+        # Site is inactive - check authorization and apply restrictions
+
+        # Always allow these endpoints for everyone (no auth required)
+        always_allowed = [
+            "/api/v1/config",
+            "/api/v1/health",
+            "/api/v1/admin/site-status",
+            "/api/v1/public/languages",
+            "/api/v1/engines",
+            "/api/v1/team",
+            "/api/v1/team-images",
+            "/api/v1/contact/send-email",
+            "/api/v1/auth/verify",
+            "/api/v1/auth/login",
+            "/api/v1/auth/logout",
+        ]
+
+        # Check if path is always allowed
+        if request.path in always_allowed or request.path.startswith("/api/v1/static/"):
+            return
+
+        # Check if user is authenticated and is admin
+        try:
+            # Try to get JWT identity without strict verification
+            from flask_jwt_extended import verify_jwt_in_request
+
+            verify_jwt_in_request(optional=True)
+            current_user_id = get_jwt_identity()
+
+            if current_user_id:
+                from app.models.user import User
+
+                current_user = User.query.get(int(current_user_id))
+
+                # If user is admin, allow access to all routes
+                if current_user and current_user.admin:
+                    return
+        except Exception:
+            # JWT verification failed or other error - treat as non-admin
+            pass
+
+        # Site is inactive and user is not admin - block access
+        return {"message": "Site is currently inactive", "active": False}, 503
 
     return app
