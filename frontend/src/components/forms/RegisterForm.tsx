@@ -29,6 +29,7 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const toast = useToast();
   const { error, isAuthenticated } = useAppSelector((state) => state.auth);
+  const [errorShown, setErrorShown] = useState(false);
 
   // Use the organizations hook for autocomplete
   const {
@@ -76,8 +77,10 @@ export default function RegisterForm() {
 
   useEffect(() => {
     // Show error toast when error occurs
-    if (error) {
+    if (error && !errorShown) {
       toast.error(error, "Registration Failed");
+      setErrorShown(true);
+      setFormSubmitted(false);
     }
   }, [error, toast]);
 
@@ -231,6 +234,7 @@ export default function RegisterForm() {
 
       // Mark form as submitted to prevent repeated submissions
       setFormSubmitted(true);
+      setErrorShown(false);
 
       // For now, just console log - actual registration will come later
       // toast.success(
