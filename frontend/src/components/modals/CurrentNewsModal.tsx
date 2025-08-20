@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { Modal } from "../ui/Modal";
-import { useAppSelector } from "../../hooks/useAppDispatch";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useAppSelector } from "../../hooks/useAppDispatch";
 
 export default function CurrentNewsModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,6 @@ export default function CurrentNewsModal() {
     if (isInitialized && !isAuthenticated && previousAuthState === null) {
       setIsOpen(true);
       setPreviousAuthState(false);
-      console.log("previous set to false");
     }
   }, [isInitialized, isAuthenticated, previousAuthState]);
 

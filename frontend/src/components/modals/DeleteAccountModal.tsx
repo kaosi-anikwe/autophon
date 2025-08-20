@@ -135,16 +135,16 @@ export default function DeleteAccountModal({
           />
 
           {/* Modal */}
-          <motion.div 
+          <motion.div
             className="relative bg-base-100 rounded-lg shadow-xl w-full max-w-md mx-4 p-6"
             initial={{ scale: 0.8, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 300, 
+            transition={{
+              type: "spring",
+              stiffness: 300,
               damping: 30,
-              duration: 0.3
+              duration: 0.3,
             }}
           >
             {/* Header */}
@@ -164,64 +164,67 @@ export default function DeleteAccountModal({
               </motion.button>
             </div>
 
-        {/* Warning Content */}
-        <div className="mb-6">
-          <div className="alert alert-error mb-4">
-            <AlertTriangle className="w-5 h-5" />
-            <div className="text-sm">
-              <div className="font-semibold mb-1">
-                This action is irreversible!
+            {/* Warning Content */}
+            <div className="mb-6">
+              <div className="alert alert-error mb-4">
+                <AlertTriangle className="w-5 h-5" />
+                <div className="text-sm">
+                  <div className="font-semibold mb-1">
+                    This action is irreversible!
+                  </div>
+                  <div>
+                    All your uploaded files and data will be permanently
+                    deleted.
+                  </div>
+                </div>
               </div>
-              <div>
-                All your uploaded files and data will be permanently deleted.
+
+              <div className="text-sm text-base-content mb-4">
+                <p className="mb-2">Once you delete your account:</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>
+                    All your uploaded audio files will be permanently deleted
+                  </li>
+                  <li>All alignment results and TextGrid files will be lost</li>
+                  <li>Your task history will be erased</li>
+                  <li>Any custom dictionaries will be removed</li>
+                  <li>This action cannot be undone</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm font-medium mb-2">
+                  To confirm, please type{" "}
+                  <span className="font-bold text-error">DELETE</span> below:
+                </p>
+
+                {/* OTP-style input */}
+                <div className="flex gap-2 justify-center">
+                  {deleteCode.map((char, index) => (
+                    <input
+                      key={index}
+                      ref={(el) => {
+                        inputRefs.current[index] = el;
+                      }}
+                      type="text"
+                      value={char}
+                      onChange={(e) => handleInputChange(index, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(index, e)}
+                      onPaste={index === 0 ? handlePaste : undefined}
+                      className="input input-bordered w-12 h-12 text-center text-lg font-bold"
+                      maxLength={1}
+                      disabled={deleteAccountLoading}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="text-sm text-base-content mb-4">
-            <p className="mb-2">Once you delete your account:</p>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>All your uploaded audio files will be permanently deleted</li>
-              <li>All alignment results and TextGrid files will be lost</li>
-              <li>Your task history will be erased</li>
-              <li>Any custom dictionaries will be removed</li>
-              <li>This action cannot be undone</li>
-            </ul>
-          </div>
-
-          <div className="mb-4">
-            <p className="text-sm font-medium mb-2">
-              To confirm, please type{" "}
-              <span className="font-bold text-error">DELETE</span> below:
-            </p>
-
-            {/* OTP-style input */}
-            <div className="flex gap-2 justify-center">
-              {deleteCode.map((char, index) => (
-                <input
-                  key={index}
-                  ref={(el) => {
-                    inputRefs.current[index] = el;
-                  }}
-                  type="text"
-                  value={char}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={index === 0 ? handlePaste : undefined}
-                  className="input input-bordered w-12 h-12 text-center text-lg font-bold"
-                  maxLength={1}
-                  disabled={deleteAccountLoading}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
 
             {/* Actions */}
             <div className="flex gap-3">
               <motion.button
                 onClick={onClose}
-                className="btn btn-ghost flex-1"
+                className="btn btn-ghost font-thin flex-1"
                 disabled={deleteAccountLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -231,7 +234,7 @@ export default function DeleteAccountModal({
               <motion.button
                 onClick={handleConfirmDeletion}
                 disabled={!isDeleteCodeValid || deleteAccountLoading}
-                className="btn btn-error flex-1"
+                className="btn btn-error font-thin flex-1"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >

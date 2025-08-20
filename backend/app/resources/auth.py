@@ -128,7 +128,7 @@ class Register(Resource):
         except IntegrityError as e:
             db.session.rollback()
             logger.warning(f"Registration integrity error: {str(e)}")
-            response = {"message": "User with this email already exists"}
+            response = {"message": "There was an issue creating your account. Try again or contact support"}
             log_response_info(logger, response, 409)
             return response, 409
         except Exception as e:
@@ -613,6 +613,8 @@ class VerifyEmail(Resource):
             verification_token = VerificationToken.get_valid_token(
                 token, TokenType.EMAIL_VERIFICATION
             )
+
+            logger.info(f"VERIFICATIO TOKEN: {VerificationToken}")
 
             if not verification_token:
                 return {"message": "Invalid or expired verification token"}, 400

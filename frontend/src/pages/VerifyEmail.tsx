@@ -89,7 +89,7 @@ export default function VerifyEmail() {
                   Your email has been successfully verified. You can now log in
                   to your account.
                 </p>
-                <Link to="/login" className="btn btn-primary w-full">
+                <Link to="/login" className="btn btn-primary font-thin w-full">
                   Go to Login
                 </Link>
               </div>
@@ -102,10 +102,13 @@ export default function VerifyEmail() {
                   contact support if the problem persists.
                 </p>
                 <div className="flex gap-2 justify-center">
-                  <Link to="/register" className="btn btn-ghost bg-base-200">
+                  <Link
+                    to="/register"
+                    className="btn btn-ghost font-thin bg-base-200"
+                  >
                     Register Again
                   </Link>
-                  <Link to="/login" className="btn btn-primary">
+                  <Link to="/login" className="btn btn-primary font-thin">
                     Go to Login
                   </Link>
                 </div>

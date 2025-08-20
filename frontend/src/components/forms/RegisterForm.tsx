@@ -255,22 +255,22 @@ export default function RegisterForm() {
   );
 
   // Auto-submit form when privacy is agreed (must be after onSubmit definition)
-  useEffect(() => {
-    console.log("Privacy state changed:", {
-      captchaVerified,
-      privacyAgreed,
-      formSubmitted,
-    });
-    if (captchaVerified && privacyAgreed && !formSubmitted) {
-      console.log("Both captcha and privacy verified, submitting form...");
-      // Small delay for better UX
-      const timer = setTimeout(() => {
-        handleSubmit(onSubmit)();
-      }, 500);
+  // useEffect(() => {
+  //   console.log("Privacy state changed:", {
+  //     captchaVerified,
+  //     privacyAgreed,
+  //     formSubmitted,
+  //   });
+  //   if (captchaVerified && privacyAgreed && !formSubmitted) {
+  //     console.log("Both captcha and privacy verified, submitting form...");
+  //     // Small delay for better UX
+  //     const timer = setTimeout(() => {
+  //       handleSubmit(onSubmit)();
+  //     }, 500);
 
-      return () => clearTimeout(timer);
-    }
-  }, [captchaVerified, privacyAgreed, formSubmitted, handleSubmit, onSubmit]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [captchaVerified, privacyAgreed, formSubmitted, handleSubmit, onSubmit]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 my-4">
