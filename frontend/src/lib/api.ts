@@ -329,6 +329,7 @@ export interface UpdateProfileRequest {
   email?: string;
   org?: string;
   industry?: string;
+  dict_default?: string;
 }
 
 // Email verification interfaces

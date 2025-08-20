@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
   const dispatch = useAppDispatch();
   const toast = useToast();
   const { isLoading, error } = useAppSelector((state) => state.auth);
+  const [errorShown, setErrorShown] = useState(false);
 
   const {
     register,
@@ -33,10 +34,11 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
 
   useEffect(() => {
     // Show error toast when error occurs
-    if (error) {
+    if (error && !errorShown) {
       toast.error(error, "Login Failed");
+      setErrorShown(true);
     }
-  }, [error, toast]);
+  }, [error, errorShown, toast]);
 
   const onSubmit = async (data: LoginFormData) => {
     dispatch(login(data));
@@ -44,7 +46,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
 
   return (
     <>
-      <motion.h5 
+      <motion.h5
         className="text-xl font-bold mb-1"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -102,10 +104,10 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
           whileHover={!isLoading ? { scale: 1.05 } : {}}
           whileTap={!isLoading ? { scale: 0.95 } : {}}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? "..." : "Login"}
         </motion.button>
       </motion.form>
-      <motion.div 
+      <motion.div
         className="grid grid-cols-12 gap-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -113,7 +115,10 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
       >
         <div className="text-left text-sm col-span-5">
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary hover:underline transition-colors duration-200">
+          <Link
+            to="/register"
+            className="text-primary hover:underline transition-colors duration-200"
+          >
             Sign up
           </Link>
         </div>

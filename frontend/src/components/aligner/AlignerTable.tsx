@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Trash2, Info } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 
 import type { Task } from "@/types/api";
 import AlignerRow from "./AlignerRow";
@@ -114,9 +115,9 @@ export default function AlignerTable({
   }
 
   return (
-    <div className="max-h-[40rem] overflow-y-auto overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+    <div className="rounded-box border border-base-content/5 bg-base-100">
       {/* Grid Container */}
-      <div className="grid grid-cols-[40px_32px_1fr_200px_200px_64px_64px_64px_96px_140px_64px] w-full justify-items-stretch">
+      <div className="grid grid-cols-[40px_32px_1fr_200px_200px_64px_64px_64px_96px_140px_64px] max-h-[40rem] overflow-y-auto overflow-x-auto w-full justify-items-stretch">
         {/* Sticky Header */}
         <div className="col-span-11 grid grid-cols-subgrid sticky top-0 bg-base-100 z-10 border-b border-base-300">
           {/* Delete icon */}
@@ -305,37 +306,71 @@ export default function AlignerTable({
         </div>
 
         {/* Data Rows */}
-        {!tasks || tasks.length === 0 ? (
-          <div className="col-span-11 p-4 text-center bg-base-200 border-t border-neutral">
-            No data available in table
-          </div>
-        ) : (
-          tasks.map((task, index) => (
-            <div
-              key={task.id}
-              className={`contents group transition-colors duration-75 ${
-                selectedTasks.has(task.task_id)
-                  ? "[&>*]:bg-primary/10 hover:[&>*]:bg-primary/20"
-                  : index % 2 === 0
-                  ? "[&>*]:bg-base-100 hover:[&>*]:bg-base-200/50"
-                  : "[&>*]:bg-base-200/10 hover:[&>*]:bg-base-200/70"
-              }`}
+        <AnimatePresence mode="popLayout">
+          {!tasks || tasks.length === 0 ? (
+            <motion.div
+              key="empty-state"
+              className="col-span-11 p-4 text-center bg-base-200 border-t border-neutral"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
             >
-              <AlignerRow
-                task={task}
-                checked={selectedTasks.has(task.task_id)}
-                onCheckedChange={(checked) =>
-                  handleTaskSelect(task.task_id, checked)
-                }
-                showDeleteButton={
-                  selectedTasks.size === 1 && selectedTasks.has(task.task_id)
-                }
-                onDelete={() => handleBulkDelete([task.task_id])}
-                homepage={homepage}
-              />
-            </div>
-          ))
-        )}
+              No data available in table
+            </motion.div>
+          ) : (
+            tasks.map((task, index) => (
+              <motion.div
+                key={task.task_id}
+                className={`contents group transition-colors duration-75 ${
+                  selectedTasks.has(task.task_id)
+                    ? "[&>*]:bg-primary/10 hover:[&>*]:bg-primary/20"
+                    : index % 2 === 0
+                    ? "[&>*]:bg-base-100 hover:[&>*]:bg-base-200/50"
+                    : "[&>*]:bg-base-200/10 hover:[&>*]:bg-base-200/70"
+                }`}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    duration: 0.3,
+                    delay: index * 0.05, // Stagger animation
+                    ease: "easeOut",
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -20,
+                  scale: 0.95,
+                  transition: {
+                    duration: 0.2,
+                    ease: "easeIn",
+                  },
+                }}
+                layout
+                whileHover={{
+                  scale: 1.01,
+                  transition: { duration: 0.2 },
+                }}
+              >
+                <AlignerRow
+                  task={task}
+                  checked={selectedTasks.has(task.task_id)}
+                  onCheckedChange={(checked) =>
+                    handleTaskSelect(task.task_id, checked)
+                  }
+                  showDeleteButton={
+                    selectedTasks.size === 1 && selectedTasks.has(task.task_id)
+                  }
+                  onDelete={() => handleBulkDelete([task.task_id])}
+                  homepage={homepage}
+                />
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Delete Confirmation Modal */}
@@ -357,7 +392,7 @@ export default function AlignerTable({
                 Cancel
               </button>
               <button
-                className="btn btn-error"
+                className="btn btn-error font-thin"
                 onClick={confirmDelete}
                 disabled={deleteMutation.isPending}
               >

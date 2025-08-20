@@ -94,7 +94,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/dashboard",
+    path: "/aligner",
     element: <AdminLayout />,
     children: [
       {

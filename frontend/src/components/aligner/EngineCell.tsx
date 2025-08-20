@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useEffect, useCallback } from "react";
 
 import { api } from "@/lib/api";
@@ -25,6 +25,7 @@ export default function EngineCell({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   // Fetch all languages to get display_name options
   const { data: languagesData } = useQuery<Language[]>({
@@ -76,6 +77,7 @@ export default function EngineCell({
         );
         setShowDropdown(false);
         toast.success(`Language changed to ${language?.display_name}`);
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           if (error.response?.data) {
@@ -92,7 +94,7 @@ export default function EngineCell({
         setIsChangingLanguage(false);
       }
     },
-    [languagesData, task.task_id, toast]
+    [languagesData, queryClient, task.task_id, toast]
   );
 
   const isDisabled =

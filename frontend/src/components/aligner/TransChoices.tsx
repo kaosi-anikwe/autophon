@@ -52,7 +52,7 @@ const TRANSCHOICES: TransChoiceType[] = [
   },
   {
     title: "Computational Ling",
-    video: "exp-a",
+    video: "comp-ling",
     instructions:
       "Transcriptions as separate same-name lab and audio files, absent of time stamps.",
     fileSystem: (
@@ -72,7 +72,7 @@ const TRANSCHOICES: TransChoiceType[] = [
   },
   {
     title: "Variationist Ling",
-    video: "exp-a",
+    video: "var-ling",
     instructions:
       "Longer transcription files in TextGrid, eaf, tsv, txt, or xlsx format with same-name audio files.",
     fileSystem: (
@@ -142,13 +142,17 @@ export default function TransChoices({
 
       {/* Footer Info */}
       <div className="text-center space-y-4">
-        <p className="text-base-300 text-sm">
+        <p className="text-base-content/50 text-sm">
           *Audio codecs accepted: WAV, MP3, AVI, M4A, AC-3, AIFF, ALAC, FLAC,
           M4R, OGG, OPUS, WMA
         </p>
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <a href="#" className="text-accent hover:underline text-sm">
+          <a
+            href="/Test_files.zip"
+            download
+            className="text-accent hover:underline text-sm"
+          >
             download transcription template here
           </a>
 

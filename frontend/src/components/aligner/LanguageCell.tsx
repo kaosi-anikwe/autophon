@@ -8,6 +8,19 @@ import type { Task, Language } from "@/types/api";
 import { useToast } from "@/contexts/ToastContext";
 import LanguageDropdown from "./LanguageDropdown";
 
+// Generic function to get unique objects by a specific property
+function getUniqueBy<T, K extends keyof T>(array: T[], property: K): T[] {
+  const seen = new Set<T[K]>();
+  return array.filter((obj) => {
+    const value = obj[property];
+    if (seen.has(value)) {
+      return false;
+    }
+    seen.add(value);
+    return true;
+  });
+}
+
 export default function LanguageCell({
   task,
   onLanguageSelected,
@@ -123,7 +136,7 @@ export default function LanguageCell({
   // Show error state for pre-processing errors
   if (hasPreError) {
     return (
-      <span className="flex items-center gap-2 text-error text-sm rounded border border-base-200 p-1">
+      <span className="flex items-center gap-2 w-full text-error text-sm rounded border border-base-200 p-1">
         <AlertCircle className="w-4 h-4" />
         pre-processing error
       </span>
@@ -174,7 +187,7 @@ export default function LanguageCell({
             key={selectedLanguage}
             value={selectedLanguage!}
             onChange={handleLanguageChange}
-            languages={languagesData}
+            languages={getUniqueBy(languagesData, "language_name")}
             disabled={isDisabled}
             onClose={() => setShowDropdown(false)}
             inline={true}

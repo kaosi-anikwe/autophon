@@ -8,6 +8,29 @@ interface LanguageItemProps {
   language: LanguageHomepage;
 }
 
+interface LanguageGroupProps {
+  title: string;
+  languages: LanguageHomepage[];
+}
+
+interface AllLanguagesTooltipProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+// Generic function to get unique objects by a specific property
+function getUniqueBy<T, K extends keyof T>(array: T[], property: K): T[] {
+  const seen = new Set<T[K]>();
+  return array.filter((obj) => {
+    const value = obj[property];
+    if (seen.has(value)) {
+      return false;
+    }
+    seen.add(value);
+    return true;
+  });
+}
+
 function LanguageItem({ language }: LanguageItemProps) {
   const flagImagePath = `/langs/${language.code}/${language.code}_flag_50.png`;
   const guidePath = `https://new.autophontest.se/api/v1/static/guides/${language.code}.pdf`;
@@ -33,11 +56,6 @@ function LanguageItem({ language }: LanguageItemProps) {
       </div>
     </div>
   );
-}
-
-interface LanguageGroupProps {
-  title: string;
-  languages: LanguageHomepage[];
 }
 
 function LanguageGroup({ title, languages }: LanguageGroupProps) {
@@ -90,11 +108,6 @@ function ErrorState({ error }: { error: Error }) {
   );
 }
 
-interface AllLanguagesTooltipProps {
-  isVisible: boolean;
-  onClose: () => void;
-}
-
 function AllLanguagesTooltip({ isVisible, onClose }: AllLanguagesTooltipProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["all-languages"],
@@ -139,7 +152,7 @@ function AllLanguagesTooltip({ isVisible, onClose }: AllLanguagesTooltipProps) {
 
           {data && (
             <div className="grid grid-cols-3 gap-2">
-              {data.languages.map((language) => (
+              {getUniqueBy(data.languages, "display_name").map((language) => (
                 <div key={language.id} className="flex items-center gap-2 py-1">
                   <img
                     src={`/langs/${language.code}/${language.code}_flag_50.png`}

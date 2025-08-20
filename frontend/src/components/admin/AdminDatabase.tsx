@@ -13,6 +13,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { adminAPI } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
 import type { GenerateUserReportRequest } from "@/types/api";
+import HistoryFileItem from "./ui/HistoryFile";
+import { AxiosError } from "axios";
 
 export default function AdminDatabase() {
   const [userLimitDate, setUserLimitDate] = useState("");
@@ -53,38 +55,15 @@ export default function AdminDatabase() {
         "Download Complete"
       );
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || "Failed to generate user report",
-        "Generation Failed"
-      );
-    },
-  });
-
-  const downloadHistoryMutation = useMutation({
-    mutationFn: adminAPI.downloadHistoryFile,
-    onSuccess: (blob, variables) => {
-      // Create download link for the history file
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = variables.filename;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast.success(
-        `${variables.filename} downloaded successfully!`,
-        "Download Complete"
-      );
-    },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || "Failed to download file",
-        "Download Failed"
-      );
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message || "Failed to generate user report",
+          "Generation Failed"
+        );
+      } else {
+        toast.error(error as string, "Generation Failed");
+      }
     },
   });
 
@@ -98,32 +77,6 @@ export default function AdminDatabase() {
     }
 
     generateUserReportMutation.mutate(data);
-  };
-
-  const handleDownloadHistory = (filename: string) => {
-    downloadHistoryMutation.mutate({ filename });
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
-  const getFileTypeIcon = (filename: string) => {
-    if (filename.endsWith(".zip")) {
-      return <Database className="w-5 h-5 text-info" />;
-    }
-    return <FileSpreadsheet className="w-5 h-5 text-success" />;
-  };
-
-  const getFileTypeBadge = (filename: string) => {
-    if (filename.endsWith(".zip")) {
-      return <span className="badge badge-info badge-sm">ZIP</span>;
-    }
-    return <span className="badge badge-success badge-sm">XLSX</span>;
   };
 
   return (
@@ -263,35 +216,7 @@ export default function AdminDatabase() {
             ) : historyFiles && historyFiles.length > 0 ? (
               <div className="space-y-3">
                 {historyFiles.map((file) => (
-                  <div
-                    key={file.filename}
-                    className="flex items-center justify-between p-4 border border-base-200 rounded-lg hover:bg-base-200/30"
-                  >
-                    <div className="flex items-center gap-3">
-                      {getFileTypeIcon(file.filename)}
-                      <div>
-                        <div className="font-medium flex items-center gap-2">
-                          {file.filename}
-                          {getFileTypeBadge(file.filename)}
-                        </div>
-                        <div className="text-sm text-base-content/60">
-                          {formatFileSize(file.size)} • {file.date}
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleDownloadHistory(file.filename)}
-                      disabled={downloadHistoryMutation.isPending}
-                      className="btn btn-success btn-sm"
-                    >
-                      {downloadHistoryMutation.isPending ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Download className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
+                  <HistoryFileItem key={file.filename} file={file} />
                 ))}
               </div>
             ) : (

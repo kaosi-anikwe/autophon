@@ -1,14 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
 
-import { useAppSelector } from "../../hooks/useAppDispatch";
 import { ThemeDropdown } from "../ui/ThemeToggle";
+import { useToast } from "@/contexts/ToastContext";
+import { useAppSelector } from "../../hooks/useAppDispatch";
 
 export function Header() {
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const { status } = useAppSelector((state) => state.siteStatus);
+  const toast = useToast();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleAlignerClick = () => {
+    toast.info(
+      "Please verify your email address to use the aligner",
+      "Action Blocked"
+    );
+  };
 
   return (
     <header className="fixed z-50 w-full bg-base-100 shadow-md">
@@ -91,18 +100,29 @@ export function Header() {
                 </li>
                 {isAuthenticated && (
                   <>
-                    <li>
-                      <Link
-                        to="/dashboard"
-                        className={`${
-                          isActive("/dashboard")
-                            ? "bg-neutral text-neutral-content"
-                            : ""
-                        }  `}
-                      >
-                        Aligner
-                      </Link>
-                    </li>
+                    {user?.verified && (
+                      <li>
+                        <Link
+                          to="/aligner"
+                          className={`${
+                            isActive("/aligner")
+                              ? "bg-neutral text-neutral-content"
+                              : ""
+                          }  `}
+                        >
+                          Aligner
+                        </Link>
+                      </li>
+                    )}
+
+                    {!user?.verified && (
+                      <li>
+                        <Link to="" onClick={handleAlignerClick}>
+                          Aligner
+                        </Link>
+                      </li>
+                    )}
+
                     <li>
                       <div className="indicator">
                         <button disabled className="cursor-not-allowed">
@@ -207,9 +227,9 @@ export function Header() {
                   <>
                     <li>
                       <Link
-                        to="/dashboard"
+                        to="/aligner"
                         className={`${
-                          isActive("/dashboard")
+                          isActive("/aligner")
                             ? "bg-neutral text-neutral-content"
                             : ""
                         }  `}

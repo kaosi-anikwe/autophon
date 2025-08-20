@@ -1,19 +1,18 @@
 import { z } from "zod";
-import { useEffect } from "react";
 import {
   Settings,
   Globe,
   Shield,
   UserX,
   Plus,
-  Trash2,
   Loader2,
   CheckCircle,
   XCircle,
   AlertTriangle,
   Calendar,
-  Mail,
 } from "lucide-react";
+import { useEffect } from "react";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +22,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import type { UpdateSiteStatusRequest } from "@/types/api";
 import { fetchSiteStatus } from "../../store/siteStatusSlice";
+import BlockedEmailItem from "./ui/BlockedEmail";
 
 const siteStatusSchema = z.object({
   active: z.boolean(),
@@ -91,11 +91,15 @@ export default function AdminSettings() {
       queryClient.invalidateQueries({ queryKey: ["siteStatus"] });
       dispatch(fetchSiteStatus());
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || "Failed to update site status",
-        "Update Failed"
-      );
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message || "Failed to update site status",
+          "Update Failed"
+        );
+      } else {
+        toast.error(error as string, "Update Failed");
+      }
     },
   });
 
@@ -106,11 +110,15 @@ export default function AdminSettings() {
       queryClient.invalidateQueries({ queryKey: ["blockedEmails"] });
       resetEmail();
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message || "Failed to manage email",
-        "Action Failed"
-      );
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message || "Failed to manage email",
+          "Action Failed"
+        );
+      } else {
+        toast.error(error as string, "Action Failed");
+      }
     },
   });
 
@@ -134,15 +142,6 @@ export default function AdminSettings() {
       email: data.email,
       action: "add",
     });
-  };
-
-  const handleRemoveEmail = (email: string) => {
-    if (window.confirm(`Are you sure you want to unblock ${email}?`)) {
-      manageEmailMutation.mutate({
-        email,
-        action: "remove",
-      });
-    }
   };
 
   return (
@@ -364,30 +363,10 @@ export default function AdminSettings() {
             ) : blockedEmails && blockedEmails.length > 0 ? (
               <div className="space-y-3">
                 {blockedEmails.map((blockedEmail) => (
-                  <div
+                  <BlockedEmailItem
                     key={blockedEmail}
-                    className="flex items-center justify-between p-4 border border-base-200 rounded-lg hover:bg-base-200/30"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-error" />
-                      <div>
-                        <div className="font-medium">{blockedEmail}</div>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleRemoveEmail(blockedEmail)}
-                      disabled={manageEmailMutation.isPending}
-                      className="btn btn-accent btn-sm"
-                      title="Unblock email"
-                    >
-                      {manageEmailMutation.isPending ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
+                    blockedEmail={blockedEmail}
+                  />
                 ))}
               </div>
             ) : (

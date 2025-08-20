@@ -30,6 +30,12 @@ export function SiteStatusGuard({ bypassCheck = false }: SiteStatusGuardProps) {
     }
   }, [isInitialized, status, user, bypassCheck, location.pathname, navigate]);
 
+  useEffect(() => {
+    if (!user?.verified && location.pathname === "/aligner") {
+      navigate("/", { replace: true });
+    }
+  }, [navigate, user, location]);
+
   // For any other route when site is inactive, render nothing (redirect will handle it)
   return null;
 }

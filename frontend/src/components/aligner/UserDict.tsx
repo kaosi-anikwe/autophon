@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 import { useToast } from "@/contexts/ToastContext";
 import type { Dictionary, LanguageHomepage, User, Task } from "../../types/api";
-import { languagesAPI, dictionaryAPI, api } from "../../lib/api";
+import { languagesAPI, dictionaryAPI, profileAPI, api } from "../../lib/api";
 import { DictUploadModal } from "../modals/DictUploadModal";
 import { Modal } from "../ui/Modal";
 
@@ -45,6 +45,70 @@ export default function UserDict({ user }: UserDictProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dictContentRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
+
+  // Function to preserve cursor position during state updates
+  const preserveCursorPosition = useCallback((updateFn: () => void) => {
+    if (!dictContentRef.current) {
+      updateFn();
+      return;
+    }
+
+    const selection = window.getSelection();
+    let cursorOffset = 0;
+    let targetNode: Node | null = null;
+
+    // Save current cursor position
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      targetNode = range.startContainer;
+      cursorOffset = range.startOffset;
+    }
+
+    // Update the state
+    updateFn();
+
+    // Restore cursor position after state update
+    setTimeout(() => {
+      if (dictContentRef.current && targetNode && selection) {
+        try {
+          const range = document.createRange();
+
+          // Try to find the same text node or a suitable replacement
+          let nodeToUse = targetNode;
+          if (!dictContentRef.current.contains(targetNode)) {
+            // If the original node is no longer in the DOM, use the first text node
+            const walker = document.createTreeWalker(
+              dictContentRef.current,
+              NodeFilter.SHOW_TEXT,
+              null
+            );
+            nodeToUse = walker.nextNode() || dictContentRef.current;
+          }
+
+          // Ensure cursor offset doesn't exceed text length
+          const maxOffset =
+            nodeToUse.nodeType === Node.TEXT_NODE
+              ? nodeToUse.textContent?.length || 0
+              : 0;
+          const safeOffset = Math.min(cursorOffset, maxOffset);
+
+          if (nodeToUse.nodeType === Node.TEXT_NODE && maxOffset > 0) {
+            range.setStart(nodeToUse, safeOffset);
+            range.setEnd(nodeToUse, safeOffset);
+          } else {
+            // Fallback: place cursor at the end
+            range.selectNodeContents(dictContentRef.current);
+            range.collapse(false);
+          }
+
+          selection.removeAllRanges();
+          selection.addRange(range);
+        } catch (error) {
+          console.warn("Could not restore cursor position:", error);
+        }
+      }
+    }, 0);
+  }, []);
 
   // Helper function to check if user_id cookie exists (for anonymous uploads)
   const hasUserIdCookie = () => {
@@ -314,15 +378,18 @@ export default function UserDict({ user }: UserDictProps) {
       if (animationComplete && currentTime >= 6) {
         // Loop from 5 to 6 seconds after initial animation
         video.currentTime = 5;
-        video.play();
+        // Don't call play() here as it causes an extra playthrough
       }
     };
 
     const handleLoadedData = () => {
       if (videoStarted) {
         video.currentTime = 0;
-        video.playbackRate = 5; // Set 3x speed
-        video.play().catch(console.error);
+        video.playbackRate = 5; // Set 5x speed
+        // Only auto-play if we're closing or if animation hasn't completed yet
+        if (isClosing || videoStarted || !animationComplete) {
+          video.play().catch(console.error);
+        }
       }
     };
 
@@ -332,8 +399,11 @@ export default function UserDict({ user }: UserDictProps) {
     // Start the video if it's loaded and video has been started
     if (video.readyState >= 2 && videoStarted) {
       video.currentTime = 0;
-      video.playbackRate = 5; // Set 3x speed
-      video.play().catch(console.error);
+      video.playbackRate = 5; // Set 5x speed
+      // Only auto-play if we're closing or if animation hasn't completed yet
+      if (isClosing || videoStarted || !animationComplete) {
+        video.play().catch(console.error);
+      }
     }
 
     return () => {
@@ -510,7 +580,21 @@ export default function UserDict({ user }: UserDictProps) {
           text,
           "replace" // Default mode when clicking save is replace
         );
-        toast.success("Dictionary saved successfully!");
+
+        // Update user's default dictionary to the selected language
+        try {
+          await profileAPI.updateProfile({
+            dict_default: selectedLanguage.code,
+          });
+          toast.success("Dictionary saved and set as default!");
+        } catch (profileError) {
+          // Dictionary was saved successfully, but updating default failed
+          console.error("Failed to update default dictionary:", profileError);
+          toast.success(
+            "Dictionary saved successfully! (Note: Could not set as default)"
+          );
+        }
+
         await selectLanguage(selectedLanguage);
       } else {
         toast.error(
@@ -615,25 +699,26 @@ export default function UserDict({ user }: UserDictProps) {
                 },
                 scale: {
                   duration: 0.2,
-                }
+                },
               }}
             >
               <motion.video
                 ref={videoRef}
                 className="w-auto h-[25rem] cursor-pointer object-contain max-h-80 transition-all duration-300 ease-in-out"
+                muted
+                playsInline
+                preload="auto"
+                whileHover={{
+                  filter: "brightness(1.1) saturate(1.1)",
+                }}
+                transition={{
+                  filter: { duration: 0.3 },
+                }}
                 style={{
                   transform: `translateX(${videoOffset}%)`,
                   transition: videoStarted
                     ? "none"
                     : "transform 0.3s ease-in-out",
-                }}
-                muted
-                playsInline
-                whileHover={{
-                  filter: "brightness(1.1) saturate(1.1)",
-                }}
-                transition={{
-                  filter: { duration: 0.3 }
                 }}
               >
                 <source
@@ -946,16 +1031,21 @@ export default function UserDict({ user }: UserDictProps) {
                     e.currentTarget.textContent = customPronunciations;
                     return;
                   }
+
+                  // Use cursor preservation function for state updates
+                  preserveCursorPosition(() => {
+                    setCustomPronunciations(e.currentTarget.innerHTML);
+                  });
                 }}
                 onPaste={handlePasteWithLimit}
-                onBlur={() => {
-                  // Update state when user finishes editing
-                  if (dictContentRef.current) {
-                    setCustomPronunciations(
-                      dictContentRef.current.innerHTML || ""
-                    );
-                  }
-                }}
+                // onBlur={() => {
+                //   // Update state when user finishes editing
+                //   if (dictContentRef.current) {
+                //     setCustomPronunciations(
+                //       dictContentRef.current.innerHTML || ""
+                //     );
+                //   }
+                // }}
               />
             )}
 
@@ -997,8 +1087,16 @@ export default function UserDict({ user }: UserDictProps) {
                   }}
                   className="btn btn-sm btn-neutral font-thin"
                   disabled={isSaving || isLoading || hasProcessingTasks}
-                  whileHover={!isSaving && !isLoading && !hasProcessingTasks ? { scale: 1.05 } : {}}
-                  whileTap={!isSaving && !isLoading && !hasProcessingTasks ? { scale: 0.95 } : {}}
+                  whileHover={
+                    !isSaving && !isLoading && !hasProcessingTasks
+                      ? { scale: 1.05 }
+                      : {}
+                  }
+                  whileTap={
+                    !isSaving && !isLoading && !hasProcessingTasks
+                      ? { scale: 0.95 }
+                      : {}
+                  }
                   transition={{ duration: 0.2 }}
                 >
                   {isSaving ? (
@@ -1040,7 +1138,7 @@ export default function UserDict({ user }: UserDictProps) {
         onClose={handleCloseVideoModal}
         title="How to use"
         size="md"
-        closeOnBackdropClick={true}
+        closeOnBackdropClick
       >
         <div className="flex justify-center">
           <video
@@ -1051,7 +1149,6 @@ export default function UserDict({ user }: UserDictProps) {
             preload="metadata"
           >
             <source src="/videos/dict_guide.mov" type="video/mp4" />
-            {/* <source src="/videos/dict_guide.mp4" type="video/mp4" /> */}
             Your browser does not support the video tag.
           </video>
         </div>

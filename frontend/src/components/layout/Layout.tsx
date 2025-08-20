@@ -7,6 +7,7 @@ import { SiteStatusMonitor } from "./SiteStatusMonitor";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import backgroundImage from "../../assets/photo-grid_2d.png";
 import SiteStatusGuard from "./SiteStatusGuard";
+import CurrentNewsModal from "../modals/CurrentNewsModal";
 
 export function Layout() {
   usePageTitle();
@@ -34,6 +35,7 @@ export function Layout() {
         </div>
       </main>
       <Footer />
+      <CurrentNewsModal />
     </div>
   );
 }

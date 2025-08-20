@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ export function Modal({
   closeOnBackdropClick = true,
   actions,
 }: ModalProps) {
+  const [shouldBounce, setShouldBounce] = useState(false);
+
   const sizeClasses = {
     sm: "relative modal-box p-4 w-11/12 max-w-md bottom-20",
     md: "relative modal-box p-4 w-11/12 max-w-2xl bottom-20",
@@ -32,37 +35,60 @@ export function Modal({
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && closeOnBackdropClick) {
-      onClose();
+    if (e.target === e.currentTarget) {
+      if (closeOnBackdropClick) {
+        onClose();
+      } else {
+        // Trigger bounce animation when clicking backdrop but can't close
+        setShouldBounce(true);
+        setTimeout(() => setShouldBounce(false), 500);
+      }
     }
   };
 
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <motion.dialog 
-          className="modal modal-open" 
+        <motion.dialog
+          className="modal modal-open"
           onClick={handleBackdropClick}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          <motion.div 
+          <motion.div
             className={sizeClasses[size]}
             initial={{ scale: 0.8, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
+            animate={
+              shouldBounce
+                ? {
+                    opacity: 1,
+                    scale: [1, 1.05, 0.95, 1.02, 1],
+                    x: 0,
+                    y: 0,
+                    transition: {
+                      duration: 0.5,
+                      ease: "easeInOut",
+                    },
+                  }
+                : {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    transition: {
+                      type: "spring",
+                      stiffness: 700,
+                      damping: 30,
+                    },
+                  }
+            }
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 300, 
-              damping: 30,
-              duration: 0.3
-            }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             {(title || showCloseButton) && (
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center border-b border-base-200 pb-1 justify-between mb-4">
                 {title && <h3 className="font-bold text-lg">{title}</h3>}
                 {showCloseButton && (
                   <motion.button

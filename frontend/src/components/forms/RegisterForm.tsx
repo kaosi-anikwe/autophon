@@ -31,14 +31,14 @@ export default function RegisterForm() {
   const { error, isAuthenticated } = useAppSelector((state) => state.auth);
 
   // Use the organizations hook for autocomplete
-  const { 
-    organizations, 
-    isLoading: orgLoading, 
-    searchOrganizations 
+  const {
+    organizations,
+    isLoading: orgLoading,
+    searchOrganizations,
   } = useOrganizations({
     minQueryLength: 2,
     debounceMs: 300,
-    maxResults: 5
+    maxResults: 5,
   });
 
   const {
@@ -61,7 +61,10 @@ export default function RegisterForm() {
         "Welcome to Autophon! Your account has been created successfully.",
         "Registration Successful"
       );
-      navigate("/dashboard");
+      toast.info(
+        "Please click the link we sent to your inbox to verify your email"
+      );
+      navigate("/");
       setHasNavigated(true);
     }
   }, [isAuthenticated, hasNavigated, navigate, toast]);
@@ -103,7 +106,7 @@ export default function RegisterForm() {
   const handleOrgInputChange = (value: string) => {
     setOrgSearchTerm(value);
     setValue("org", value);
-    
+
     if (!isFreeformOrg) {
       if (value.length >= 2) {
         searchOrganizations(value);
@@ -421,7 +424,9 @@ export default function RegisterForm() {
                     {orgLoading ? (
                       <div className="px-4 py-3 flex items-center space-x-2 text-base-content/60">
                         <Loader2 size={16} className="animate-spin" />
-                        <span className="text-sm">Searching organizations...</span>
+                        <span className="text-sm">
+                          Searching organizations...
+                        </span>
                       </div>
                     ) : organizations.length > 0 ? (
                       organizations.map((org, index) => (
@@ -437,7 +442,8 @@ export default function RegisterForm() {
                       ))
                     ) : orgSearchTerm.length >= 2 ? (
                       <div className="px-4 py-2 text-base-content/60 text-sm">
-                        No organizations found. Try the manual entry option below.
+                        No organizations found. Try the manual entry option
+                        below.
                       </div>
                     ) : (
                       <div className="px-4 py-2 text-base-content/60 text-sm">

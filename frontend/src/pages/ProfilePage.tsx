@@ -1,4 +1,4 @@
-import UserProfile from "@/components/UserProfile";
+import UserProfile from "@/components/profile/UserProfile";
 import { useAppSelector } from "../hooks/useAppDispatch";
 
 export function ProfilePage() {
