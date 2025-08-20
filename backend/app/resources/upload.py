@@ -125,8 +125,13 @@ class FileUploadResource(Resource):
                 verify_jwt_in_request(optional=True)
                 jwt_user_id = int(get_jwt_identity())
                 if jwt_user_id:
-                    current_user_obj = User.query.get(jwt_user_id)
+                    current_user_obj: User = User.query.get(jwt_user_id)
                     if current_user_obj:
+                        if not current_user_obj.verified:
+                            return {
+                                "success": False,
+                                "message": "User not verified",
+                            }, 401
                         user_id = jwt_user_id
                         anonymous = False
                         logger.info(f"Authenticated user: {current_user_obj.email}")

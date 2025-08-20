@@ -10,7 +10,7 @@ from app.resources.admin import (
     AdminUserActionsResource,
 )
 from app.resources.languages import (
-    LanguageListResource,
+    AdminLanguageListResource,
     LanguageResource,
     LanguageByCodeResource,
     LanguageEnginesResource,
@@ -30,7 +30,7 @@ admin_api.add_resource(AdminDashboardResource, "/dashboard")
 admin_api.add_resource(AdminUserActionsResource, "/user-actions")
 
 # Language Management routes (Admin only)
-admin_api.add_resource(LanguageListResource, "/languages")
+admin_api.add_resource(AdminLanguageListResource, "/languages")
 admin_api.add_resource(LanguageResource, "/languages/<int:language_id>")
 admin_api.add_resource(LanguageByCodeResource, "/languages/code/<string:code>")
 admin_api.add_resource(

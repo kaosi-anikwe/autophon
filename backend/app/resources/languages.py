@@ -28,7 +28,7 @@ from app.schemas import (
 )
 
 
-class LanguageListResource(Resource, AdminRequiredMixin):
+class AdminLanguageListResource(Resource, AdminRequiredMixin):
     """Handle operations on language collection (Admin only)"""
 
     @jwt_required()
@@ -746,7 +746,6 @@ class PublicLanguageListResource(Resource):
             return {"message": f"Error retrieving languages: {str(e)}"}, 500
 
 
-
 class LanguageListResource(Resource):
     """Handle operations on language collection"""
 
@@ -788,4 +787,3 @@ class LanguageListResource(Resource):
         except Exception as e:
             log_exception(logger, "Error retrieving languages")
             return {"message": f"Error retrieving languages: {str(e)}"}, 500
-

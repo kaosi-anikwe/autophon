@@ -590,7 +590,7 @@ export interface ResetPasswordResponse {
 export const emailVerificationAPI = {
   // Verify email with token
   verifyEmail: async (token: string): Promise<EmailVerificationResponse> => {
-    const response = await api.get(`/verify-email?token=${token}`);
+    const response = await api.get(`/auth/verify-email?token=${token}`);
     return response.data;
   },
 };

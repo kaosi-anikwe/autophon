@@ -649,7 +649,7 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
                 Task.task_status.in_([TaskStatus.UPLOADING, TaskStatus.UPLOADED])
             ).count()
             failed_today = tasks_today_query.filter(
-                Task.task_status == "failed"
+                Task.task_status == TaskStatus.FAILED
             ).count()
             processing_today = tasks_today_query.filter(
                 Task.task_status.in_([TaskStatus.ALIGNED, TaskStatus.PROCESSING])

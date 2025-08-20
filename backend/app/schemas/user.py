@@ -54,6 +54,7 @@ class UserUpdateSchema(Schema):
     last_name = fields.Str(validate=validate.Length(min=1, max=100))
     email = fields.Email(validate=validate.Length(max=120))
     org = fields.Str(validate=validate.Length(max=500))
+    dict_default = fields.Str()
     industry = fields.Str(validate=validate.Length(max=255))
     verified = fields.Bool()
     edited = fields.Bool()

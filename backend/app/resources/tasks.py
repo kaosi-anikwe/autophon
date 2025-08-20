@@ -501,7 +501,9 @@ class TaskBulkDeleteResource(Resource):
                             deleted_tasks.append(task.task_id)
                         except Exception as e:
                             # If individual deletion fails, continue with others
-                            logger.error(f"Failed to delete task {task.task_id}: {str(e)}")
+                            logger.error(
+                                f"Failed to delete task {task.task_id}: {str(e)}"
+                            )
                 elif task.user_uuid != user_uuid:
                     permission_denied.append(task.task_id)
                 else:

@@ -61,9 +61,6 @@ class Register(Resource):
                 task.user_id = user.id
                 task.update()
 
-            # Remove anonymous user_id
-            request.cookies.clear()
-
             # Send verification email automatically
             try:
                 from app.models.verification_token import VerificationToken, TokenType

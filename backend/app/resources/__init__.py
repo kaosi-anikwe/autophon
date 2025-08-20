@@ -25,6 +25,7 @@ from .users import (
 
 # Language resources
 from .languages import (
+    AdminLanguageListResource,
     LanguageListResource,
     LanguageResource,
     LanguageByCodeResource,
@@ -150,6 +151,7 @@ __all__ = [
     "UserTasksResource",
     # Language resources
     "LanguageListResource",
+    "AdminLanguageListResource",
     "LanguageResource",
     "LanguageByCodeResource",
     "LanguageEnginesResource",
