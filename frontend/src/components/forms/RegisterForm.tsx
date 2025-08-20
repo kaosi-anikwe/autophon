@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import UserGuides from "../features/UserGuides";
 import Captcha from "../features/Captcha";
 import { PrivacyAgreementModal } from "../modals/PrivacyAgreementModal";
 
-export default function RegisterForm() {
+const RegisterForm = memo(function RegisterForm() {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
@@ -655,4 +655,6 @@ export default function RegisterForm() {
       />
     </form>
   );
-}
+});
+
+export default RegisterForm;

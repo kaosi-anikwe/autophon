@@ -1,4 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
+import { Suspense } from "react";
+
+import spinnerGif from "../assets/spinner.gif";
 import { Layout } from "../components/layout/Layout";
 import { AdminLayout } from "../components/layout/AdminLayout";
 import { ProtectedRoute } from "../components/layout/ProtectedRoute";
@@ -20,6 +23,20 @@ import {
   AdminLoginPage,
 } from "../pages";
 
+// Loading component for Suspense fallback
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[35rem]">
+    <div className="text-center">
+      <img className="w-24 h-auto" src={spinnerGif} alt="loading" />
+    </div>
+  </div>
+);
+
+// Wrapper component for lazy-loaded pages
+const LazyPage = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoader />}>{children}</Suspense>
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -27,55 +44,101 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <LazyPage>
+            <HomePage />
+          </LazyPage>
+        ),
       },
       {
         path: "login",
-        element: <HomePage />,
+        element: (
+          <LazyPage>
+            <HomePage />
+          </LazyPage>
+        ),
       },
       {
         path: "register",
-        element: <RegisterPage />,
+        element: (
+          <LazyPage>
+            <RegisterPage />
+          </LazyPage>
+        ),
       },
       {
         path: "verify-email",
-        element: <VerifyEmailPage />,
+        element: (
+          <LazyPage>
+            <VerifyEmailPage />
+          </LazyPage>
+        ),
       },
       {
         path: "reset-password",
-        element: <ResetPasswordPage />,
+        element: (
+          <LazyPage>
+            <ResetPasswordPage />
+          </LazyPage>
+        ),
       },
       {
         path: "500",
-        element: <ServerErrorPage />,
+        element: (
+          <LazyPage>
+            <ServerErrorPage />
+          </LazyPage>
+        ),
       },
       {
         path: "admin-login",
-        element: <AdminLoginPage />,
+        element: (
+          <LazyPage>
+            <AdminLoginPage />
+          </LazyPage>
+        ),
       },
       {
         path: "profile",
         element: (
           <ProtectedRoute>
-            <ProfilePage />
+            <LazyPage>
+              <ProfilePage />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
       {
         path: "team",
-        element: <TeamPage />,
+        element: (
+          <LazyPage>
+            <TeamPage />
+          </LazyPage>
+        ),
       },
       {
         path: "about",
-        element: <AboutPage />,
+        element: (
+          <LazyPage>
+            <AboutPage />
+          </LazyPage>
+        ),
       },
       {
         path: "support",
-        element: <SupportPage />,
+        element: (
+          <LazyPage>
+            <SupportPage />
+          </LazyPage>
+        ),
       },
       {
         path: "logout",
-        element: <LogoutPage />,
+        element: (
+          <LazyPage>
+            <LogoutPage />
+          </LazyPage>
+        ),
       },
     ],
   },
@@ -87,7 +150,9 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedRoute>
-            <HistoryPage />
+            <LazyPage>
+              <HistoryPage />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
@@ -101,7 +166,9 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedRoute>
-            <DashboardPage />
+            <LazyPage>
+              <DashboardPage />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
@@ -115,7 +182,9 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedRoute>
-            <AdminPage />
+            <LazyPage>
+              <AdminPage />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
@@ -123,6 +192,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <NotFoundPage />,
+    element: (
+      <LazyPage>
+        <NotFoundPage />
+      </LazyPage>
+    ),
   },
 ]);

@@ -17,7 +17,6 @@ export function LogoutPage() {
         toast.success("You have been logged out successfully.", "Logged Out");
       } catch (error) {
         // Even if logout fails, we still show success since user intent is clear
-        toast.info("You have been logged out.", "Logged Out");
         console.log(error);
       } finally {
         navigate("/");

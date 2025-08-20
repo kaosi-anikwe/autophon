@@ -20,7 +20,7 @@ export default function TeamMemberSection({
       <div className="md:col-span-10">
         <div className="card bg-base-100 shadow-lg border-0 p-3 min-h-full">
           <h3 className="text-[1.75rem] text-left font-bold">{name}</h3>
-          <p className="text-base-300 mb-2">{role}</p>
+          <p className="text-base-content/50 mb-2">{role}</p>
           <div
             className="leading-normal"
             dangerouslySetInnerHTML={{ __html: bio }}

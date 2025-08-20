@@ -503,7 +503,7 @@ export default function AdminLanguages() {
             </div>
             <div className="stat">
               <div className="stat-title text-sm">Homepage</div>
-              <div className="stat-value text-2xl text-accent">
+              <div className="stat-value text-2xl text-warning">
                 {languagesData?.languages?.filter((l) => l.homepage).length ||
                   0}
               </div>

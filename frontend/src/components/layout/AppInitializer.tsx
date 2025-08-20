@@ -43,7 +43,7 @@ export function AppInitializer({ children }: AppInitializerProps) {
     (siteStatusLoading && !siteStatusInitialized)
   ) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[38rem]">
         <div className="text-center">
           <img className="w-24 h-auto" src={spinnerGif} alt="loading" />
         </div>

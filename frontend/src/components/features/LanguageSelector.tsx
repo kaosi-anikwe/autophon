@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
 import { languagesAPI } from "../../lib/api";
 import type { LanguageHomepage, LanguagesResponse } from "../../types/api";
 
@@ -43,12 +41,12 @@ export function LanguageSelector({
         <h2 className="text-2xl font-bold text-center">Select Language</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="p-4">
+            <div key={i} className="card bg-base-100 shadow-lg p-4">
               <div className="animate-pulse">
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-3 bg-gray-200 rounded w-1/2"></div>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       </div>
@@ -62,12 +60,12 @@ export function LanguageSelector({
         <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
           {error}
         </div>
-        <Button
+        <button
           onClick={() => window.location.reload()}
-          variant="outline"
+          className="btn btn-outline"
         >
           Try Again
-        </Button>
+        </button>
       </div>
     );
   }
@@ -91,9 +89,9 @@ export function LanguageSelector({
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {languageList.map((language) => (
-            <Card
+            <div
               key={language.id}
-              className={`p-4 cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${
+              className={`card cursor-pointer transition-all duration-200 hover:shadow-md border-2 p-4 ${
                 selectedLanguage?.id === language.id
                   ? "border-blue-500 bg-blue-50"
                   : "border-gray-200 hover:border-gray-300"
@@ -114,7 +112,7 @@ export function LanguageSelector({
                   Alphabet: {language.alphabet}
                 </p>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       </div>

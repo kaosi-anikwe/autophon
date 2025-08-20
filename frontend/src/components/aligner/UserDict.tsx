@@ -633,8 +633,8 @@ export default function UserDict({ user }: UserDictProps) {
 
   return (
     <div
-      className={`card shadow-lg space-y-4 bg-base-100 border border-base-200 p-4 transition-all duration-500 ease-in-out ${
-        selectedLanguage && !isClosing ? "col-span-8" : "col-span-4"
+      className={`card shadow-lg space-y-4 bg-base-100 border border-base-200 p-4 transition-all duration-500 ease-in-out col-span-12 ${
+        selectedLanguage && !isClosing ? "md:col-span-8" : "md:col-span-4"
       } ${hasProcessingTasks ? "opacity-60 cursor-not-allowed" : ""}`}
       onClick={hasProcessingTasks ? handleBlockedAction : undefined}
     >

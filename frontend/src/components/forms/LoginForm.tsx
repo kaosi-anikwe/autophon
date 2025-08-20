@@ -99,12 +99,12 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
 
         <motion.button
           type="submit"
-          className="md:col-span-2 col-span-3 btn btn-primary font-thin"
+          className="md:col-span-2 col-span-3 btn btn-primary font-thin mb-4"
           disabled={isLoading}
           whileHover={!isLoading ? { scale: 1.05 } : {}}
           whileTap={!isLoading ? { scale: 0.95 } : {}}
         >
-          {isLoading ? "..." : "Login"}
+          {isLoading ? "Logging..." : "Login"}
         </motion.button>
       </motion.form>
       <motion.div
@@ -113,7 +113,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        <div className="text-left text-sm col-span-5">
+        <div className="text-left text-sm md:col-span-5 col-span-12">
           Don't have an account?{" "}
           <Link
             to="/register"
@@ -122,7 +122,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
             Sign up
           </Link>
         </div>
-        <div className="text-left text-sm col-span-5">
+        <div className="text-left text-sm md:col-span-5 col-span-12">
           {onForgotPasswordClick ? (
             <motion.button
               type="button"

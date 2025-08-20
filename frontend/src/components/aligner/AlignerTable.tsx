@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Trash2, Info } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -17,7 +17,7 @@ type AlignerTableProps = {
   isLoading?: boolean;
 };
 
-export default function AlignerTable({
+const AlignerTable = memo(function AlignerTable({
   tasks,
   homepage = false,
   isLoading = false,
@@ -417,4 +417,6 @@ export default function AlignerTable({
       )}
     </div>
   );
-}
+});
+
+export default AlignerTable;

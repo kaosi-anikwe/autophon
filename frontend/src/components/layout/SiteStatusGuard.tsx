@@ -10,7 +10,7 @@ export function SiteStatusGuard({ bypassCheck = false }: SiteStatusGuardProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { status, isInitialized } = useAppSelector((state) => state.siteStatus);
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Only redirect if we're not already on the homepage and site is inactive
@@ -31,7 +31,15 @@ export function SiteStatusGuard({ bypassCheck = false }: SiteStatusGuardProps) {
   }, [isInitialized, status, user, bypassCheck, location.pathname, navigate]);
 
   useEffect(() => {
-    if (!user?.verified && location.pathname === "/aligner") {
+    if (
+      isInitialized &&
+      isAuthenticated &&
+      status &&
+      status.active &&
+      user &&
+      !user?.verified &&
+      location.pathname === "/aligner"
+    ) {
       navigate("/", { replace: true });
     }
   }, [navigate, user, location]);

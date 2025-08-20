@@ -207,7 +207,9 @@ export default function AdminDashboard() {
                 <div className="text-2xl font-bold text-success">
                   {dashboardStats.tasks_processed_today.completed}
                 </div>
-                <div className="text-xs text-success font-medium">Completed</div>
+                <div className="text-xs text-success font-medium">
+                  Completed
+                </div>
               </div>
 
               {/* Processing Tasks */}
@@ -242,7 +244,9 @@ export default function AdminDashboard() {
             <div className="border-t border-base-200 pt-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="text-sm text-base-content/60">Success Rate</div>
+                  <div className="text-sm text-base-content/60">
+                    Success Rate
+                  </div>
                   <div className="text-xl font-bold text-success">
                     {dashboardStats.tasks_processed_today.count > 0
                       ? Math.round(
@@ -255,7 +259,9 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-base-content/60">Data Processed</div>
+                  <div className="text-sm text-base-content/60">
+                    Data Processed
+                  </div>
                   <div className="text-xl font-bold text-info">
                     {dashboardStats.tasks_processed_today.size_display}
                   </div>
@@ -275,22 +281,28 @@ export default function AdminDashboard() {
 
             <div className="space-y-4">
               <div>
-                <div className="text-sm text-base-content/60 mb-1">Total Tasks (All Time)</div>
+                <div className="text-sm text-base-content/60 mb-1">
+                  Total Tasks (All Time)
+                </div>
                 <div className="text-2xl font-bold text-primary">
                   {dashboardStats.additional_stats.total_tasks_all_time.toLocaleString()}
                 </div>
               </div>
 
               <div>
-                <div className="text-sm text-base-content/60 mb-1">New Users Today</div>
+                <div className="text-sm text-base-content/60 mb-1">
+                  New Users Today
+                </div>
                 <div className="text-2xl font-bold text-success">
                   {dashboardStats.additional_stats.new_users_today}
                 </div>
               </div>
 
               <div>
-                <div className="text-sm text-base-content/60 mb-1">Active Users Now</div>
-                <div className="text-2xl font-bold text-accent">
+                <div className="text-sm text-base-content/60 mb-1">
+                  Active Users Now
+                </div>
+                <div className="text-2xl font-bold text-info">
                   {dashboardStats.currently_logged_in}
                 </div>
               </div>
@@ -315,11 +327,15 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span>Queue Length</span>
-                <span className="font-medium">{dashboardStats.tasks_processed_today.pending}</span>
+                <span className="font-medium">
+                  {dashboardStats.tasks_processed_today.pending}
+                </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span>Processing</span>
-                <span className="font-medium">{dashboardStats.tasks_processed_today.processing}</span>
+                <span className="font-medium">
+                  {dashboardStats.tasks_processed_today.processing}
+                </span>
               </div>
             </div>
           </div>
@@ -335,11 +351,15 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span>Total Files</span>
-                <span className="font-medium">{dashboardStats.total_file_size.display}</span>
+                <span className="font-medium">
+                  {dashboardStats.total_file_size.display}
+                </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span>Today's Data</span>
-                <span className="font-medium">{dashboardStats.tasks_processed_today.size_display}</span>
+                <span className="font-medium">
+                  {dashboardStats.tasks_processed_today.size_display}
+                </span>
               </div>
             </div>
           </div>
@@ -355,11 +375,15 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span>Total Users</span>
-                <span className="font-medium">{dashboardStats.total_users.toLocaleString()}</span>
+                <span className="font-medium">
+                  {dashboardStats.total_users.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span>New Today</span>
-                <span className="font-medium">{dashboardStats.additional_stats.new_users_today}</span>
+                <span className="font-medium">
+                  {dashboardStats.additional_stats.new_users_today}
+                </span>
               </div>
             </div>
           </div>
@@ -382,15 +406,20 @@ export default function AdminDashboard() {
                           dashboardStats.tasks_processed_today.count) *
                           100
                       )
-                    : 0}%
+                    : 0}
+                  %
                 </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span>Tasks/MB Ratio</span>
                 <span className="font-medium">
                   {dashboardStats.tasks_processed_today.size_mb > 0
-                    ? (dashboardStats.tasks_processed_today.count / dashboardStats.tasks_processed_today.size_mb).toFixed(1)
-                    : '0'} tasks/MB
+                    ? (
+                        dashboardStats.tasks_processed_today.count /
+                        dashboardStats.tasks_processed_today.size_mb
+                      ).toFixed(1)
+                    : "0"}{" "}
+                  tasks/MB
                 </span>
               </div>
             </div>

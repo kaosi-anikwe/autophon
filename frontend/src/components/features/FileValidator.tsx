@@ -258,7 +258,7 @@ export default function FileValidator({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mb-2">
       <div className="form-control">
         <input
           type="file"

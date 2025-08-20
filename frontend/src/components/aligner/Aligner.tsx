@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { AxiosError } from "axios";
 import axios from "axios";
 import TransChoices from "./TransChoices";
@@ -67,7 +67,7 @@ const preProcessTime = (fileSize: number) => {
   return estimatedTime;
 };
 
-export default function Aligner({ title, homepage }: AlignerProps) {
+const Aligner = memo(function Aligner({ title, homepage }: AlignerProps) {
   const { user } = useAppSelector((state) => state.auth);
   const [modalState, setModalState] = useState<ModalState>({
     type: "closed",
@@ -279,7 +279,11 @@ export default function Aligner({ title, homepage }: AlignerProps) {
   const handleCaptchaVerified = (verified: boolean) => {
     if (verified && pendingFiles && transChoice) {
       // Captcha passed, proceed with upload
-      setModalState((prev) => ({ ...prev, uploading: true }));
+      setModalState((prev) => ({
+        ...prev,
+        type: "selectingFile",
+        uploading: true,
+      }));
       uploadMutation.mutate({ files: pendingFiles, transChoice });
       setPendingFiles(null);
     } else {
@@ -361,7 +365,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
 
         {/* Upload Progress */}
         {modalState.uploading && (
-          <div className="mt-4">
+          <div className="my-4">
             {/* File Upload Progress */}
             <ProgressBar
               title="Uploading files..."
@@ -378,7 +382,7 @@ export default function Aligner({ title, homepage }: AlignerProps) {
             )}
 
             <div className="flex justify-between items-center mt-3">
-              <p className="text-xs text-base-300">
+              <p className="text-xs text-base-content/30">
                 {modalState.isPreprocessing
                   ? "Files are being processed on the server. This cannot be cancelled."
                   : "Please do not close this window during upload."}
@@ -398,13 +402,13 @@ export default function Aligner({ title, homepage }: AlignerProps) {
           </div>
         )}
 
-        <p className="text-xs leading-[1.5] text-base-content/50 text-left py-1">
-          A single upload may be no larger than {sizeLimit / 1000 || 750} MB. If
-          your zip folder contains hundreds or thousands of small files, the
-          progress bar will park itself at 100% for as long as 30 minutes. Do
-          not refresh; rather, wait it out, and it will eventually load. We are
-          currently working on a patch to fix this. If you need help, select
-          change transcription mode for video guides.
+        <p className="text-xs leading-[1.5] text-base-content/80 text-left py-1">
+          A single upload may be no larger than <b>{sizeLimit / 1000 || 750}</b>{" "}
+          MB. If your zip folder contains hundreds or thousands of small files,
+          the progress bar will park itself at 100% for as long as 30 minutes.
+          Do not refresh; rather, wait it out, and it will eventually load. We
+          are currently working on a patch to fix this. If you need help, select{" "}
+          <b>change transcription mode</b> for video guides.
         </p>
         {!modalState.uploading && (
           <button
@@ -538,4 +542,6 @@ export default function Aligner({ title, homepage }: AlignerProps) {
       </div>
     </>
   );
-}
+});
+
+export default Aligner;

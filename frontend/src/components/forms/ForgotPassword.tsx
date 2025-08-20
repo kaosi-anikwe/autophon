@@ -65,7 +65,7 @@ export default function ForgotPassword() {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-12 gap-4"
       >
-        <div className="col-span-10 mb-1">
+        <div className="md:col-span-10 col-span-12 mb-1">
           <label htmlFor="email" className="floating-label">
             <span>Email address</span>
             <input
@@ -87,7 +87,7 @@ export default function ForgotPassword() {
         </div>
         <button
           type="submit"
-          className="col-span-2 btn btn-primary font-thin"
+          className="md:col-span-2 col-span-3 btn btn-primary font-thin mb-4"
           disabled={resetPasswordLoading}
         >
           {resetPasswordLoading ? (

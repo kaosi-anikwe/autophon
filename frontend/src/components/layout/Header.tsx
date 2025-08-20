@@ -140,6 +140,9 @@ export function Header() {
           </div>
           {/* User controls on the right */}
           <div className="flex-none">
+            {/* Theme toggle */}
+            <ThemeDropdown className="mr-6" />
+
             {/* Mobile menu button */}
             <div className="dropdown lg:hidden">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
@@ -225,18 +228,28 @@ export function Header() {
                 </li>
                 {isAuthenticated && (
                   <>
-                    <li>
-                      <Link
-                        to="/aligner"
-                        className={`${
-                          isActive("/aligner")
-                            ? "bg-neutral text-neutral-content"
-                            : ""
-                        }  `}
-                      >
-                        Aligner
-                      </Link>
-                    </li>
+                    {user?.verified && (
+                      <li>
+                        <Link
+                          to="/aligner"
+                          className={`${
+                            isActive("/aligner")
+                              ? "bg-neutral text-neutral-content"
+                              : ""
+                          }  `}
+                        >
+                          Aligner
+                        </Link>
+                      </li>
+                    )}
+
+                    {!user?.verified && (
+                      <li>
+                        <Link to="" onClick={handleAlignerClick}>
+                          Aligner
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <div className="indicator">
                         <button disabled className="cursor-not-allowed">
@@ -249,11 +262,27 @@ export function Header() {
                     </li>
                   </>
                 )}
+
+                {/* Login/Signup options in mobile menu */}
+                {!isAuthenticated && status?.active && (
+                  <>
+                    <li className="mt-2 py-2 border-t border-base-300">
+                      <Link to="/login#login" className="text-center">
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/register"
+                        className="text-center bg-primary text-primary-content hover:bg-primary/80"
+                      >
+                        Sign Up
+                      </Link>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
-
-            {/* Theme toggle */}
-            <ThemeDropdown className="mr-6" />
 
             {/* User profile */}
             {isAuthenticated && (
@@ -284,8 +313,12 @@ export function Header() {
               </div>
             )}
 
+            {/* Login/Signup buttons - only on large screens */}
             {!isAuthenticated && status?.active && (
-              <ul tabIndex={0} className="menu menu-horizontal px-1 space-x-1">
+              <ul
+                tabIndex={0}
+                className="menu menu-horizontal px-1 space-x-1 hidden lg:flex"
+              >
                 <li>
                   <Link to="/login#login" className="btn font-thin">
                     Login

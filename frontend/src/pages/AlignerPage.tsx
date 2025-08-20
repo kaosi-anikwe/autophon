@@ -3,14 +3,14 @@ import UserDict from "@/components/aligner/UserDict";
 import UserGuides from "@/components/features/UserGuides";
 import { useAppSelector } from "@/hooks/useAppDispatch";
 
-export function DashboardPage() {
+export function AlignerPage() {
   const { user } = useAppSelector((state) => state.auth);
   return (
     <div className="px-8">
       <Aligner title="Add Files" homepage={false} />
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4 py-8">
+      <div className="grid grid-cols-12 gap-4 my-4 py-8">
         <UserDict user={user!} />
-        <div className="col-span-4 col-start-9">
+        <div className="md:col-span-4 md:col-start-9 col-span-12">
           <UserGuides>
             <h3 className="text-lg font-bold text-center mb-2">User Guides</h3>
           </UserGuides>

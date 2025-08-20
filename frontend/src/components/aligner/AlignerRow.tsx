@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Download,
@@ -79,7 +79,7 @@ type AligerRowProps = {
   homepage?: boolean;
 };
 
-export default function AlignerRow({
+const AlignerRow = memo(function AlignerRow({
   task,
   checked = false,
   onCheckedChange,
@@ -840,4 +840,6 @@ export default function AlignerRow({
       )}
     </>
   );
-}
+});
+
+export default AlignerRow;

@@ -1,15 +1,15 @@
-// import { useState } from "react";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 
 import LoginForm from "@/components/forms/LoginForm";
 import { useAppSelector } from "../hooks/useAppDispatch";
-import Aligner from "@/components/aligner/Aligner";
 import ForgotPassword from "@/components/forms/ForgotPassword";
 import { SupportedEngines } from "../components/home/SupportedEngines";
 import { SupportedLanguages } from "../components/home/SupportedLanguages";
 import { useConfig, useAppDegradedState } from "../contexts/AppConfigContext";
+
+// Lazy load the heavy Aligner component
+const Aligner = lazy(() => import("@/components/aligner/Aligner"));
 
 export function HomePage() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -38,46 +38,23 @@ export function HomePage() {
 
   return (
     <>
-      <motion.h6 
-        className="font-normal uppercase text-xl tracking-wide mb-2 text-left"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+      <h6 className="font-normal uppercase text-xl tracking-wide mb-2 text-left animate-fade-in">
         Automatic phonetic annotation & online forced aligner
-      </motion.h6>
+      </h6>
 
-      <motion.h1 
-        className="text-[3.5rem] leading-[1.1] font-black text-left flex items-center justify-start gap-2 align-center"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <motion.img
+      <h1 className="text-[3.5rem] leading-[1.1] font-black text-left flex items-center justify-start gap-2 align-center animate-slide-up">
+        <img
           src="/favicon.png"
           alt="Icon"
-          className="w-[0.75em] h-[0.75em] align-baseline mb-4"
-          initial={{ rotate: -180, scale: 0 }}
-          animate={{ rotate: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 200 }}
+          className="w-[0.75em] h-[0.75em] align-baseline mb-4 animate-spin-in"
         />
         Autophon
-      </motion.h1>
+      </h1>
 
       {/* Main row g-4 grid */}
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 animate-fade-in-up">
         {/* Left Column - col-md-8 */}
-        <motion.div 
-          className="md:col-span-8 py-0"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
+        <div className="md:col-span-8 py-0 animate-slide-in-left">
           {/* Card matching home-card styling */}
           <div className="card bg-base-100 shadow-lg min-h-[250px] xl:min-h-[300px] border-0 p-3 h-full">
             <h5 className="text-xl font-bold">What the app does</h5>
@@ -211,31 +188,27 @@ export function HomePage() {
                 </section>
               )}
           </div>
-        </motion.div>
+        </div>
         {/* Right Column - col-md-4 */}
-        <motion.div 
-          className="md:col-span-4"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 1.0 }}
-        >
+        <div className="md:col-span-4 animate-slide-in-right">
           <div className="card bg-base-100 shadow-lg min-h-[250px] xl:min-h-[300px] p-3 h-full">
             <SupportedLanguages />
 
             <SupportedEngines />
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Anonymous Table Section - only for non-authenticated users and if site is active */}
       {!isAuthenticated && !siteStatusLoading && status?.active && (
-        <motion.div 
-          className="py-3"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-        >
-          <Aligner title="Align files here" homepage />
+        <div className="py-3 animate-fade-in-up-delayed">
+          <Suspense fallback={
+            <div className="flex items-center justify-center p-8">
+              <div className="loading loading-spinner loading-lg"></div>
+            </div>
+          }>
+            <Aligner title="Align files here" homepage />
+          </Suspense>
           <div className="p-3">
             {config?.userLimits && config.audioExtensions && (
               <>
@@ -276,7 +249,7 @@ export function HomePage() {
               </div>
             )}
           </div>
-        </motion.div>
+        </div>
       )}
     </>
   );
