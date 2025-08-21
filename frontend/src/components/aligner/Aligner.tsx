@@ -1,11 +1,11 @@
-import { useState, useRef, memo } from "react";
-import { AxiosError } from "axios";
 import axios from "axios";
+import { AxiosError } from "axios";
 import TransChoices from "./TransChoices";
 import { CirclePlus } from "lucide-react";
-import ProgressBar from "../ui/ProgressBar";
-import FileValidator from "../features/FileValidator";
 import Captcha from "../features/Captcha";
+import ProgressBar from "../ui/ProgressBar";
+import { useState, useRef, memo } from "react";
+import FileValidator from "../features/FileValidator";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import TranscriptionSelect from "../modals/TranscriptionSelect";
 
@@ -252,7 +252,7 @@ const Aligner = memo(function Aligner({ title, homepage }: AlignerProps) {
   useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
-      const response = await api.get("/languages");
+      const response = await api.get("/dict-languages");
       return response.data.languages;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes

@@ -76,14 +76,14 @@ api_bp = Blueprint("api", __name__)
 api = Api(api_bp)
 
 # Authentication routes
-api.add_resource(Register, "/auth/register")
 api.add_resource(Login, "/auth/login")
 api.add_resource(Logout, "/auth/logout")
+api.add_resource(Register, "/auth/register")
+api.add_resource(VerifyToken, "/auth/verify")
 api.add_resource(RefreshToken, "/auth/refresh")
 api.add_resource(ChangePassword, "/auth/change-password")
 api.add_resource(ResetPasswordRequest, "/auth/reset-password")
 api.add_resource(ResetPasswordConfirm, "/auth/reset-password-confirm")
-api.add_resource(VerifyToken, "/auth/verify")
 api.add_resource(LogoutAllDevices, "/auth/logout-all")
 api.add_resource(TokenCleanup, "/auth/cleanup-tokens")
 api.add_resource(RevokeUserTokens, "/auth/revoke-user-tokens")
@@ -103,7 +103,7 @@ api.add_resource(UserTasksResource, "/users/<int:user_id>/tasks")
 # Public Language routes (homepage)
 api.add_resource(PublicLanguageListResource, "/public/languages")
 # In app language route
-api.add_resource(LanguageListResource, "/languages")
+api.add_resource(LanguageListResource, "/dict-languages")
 
 
 # Engine routes

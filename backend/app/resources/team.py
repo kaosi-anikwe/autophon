@@ -128,10 +128,9 @@ class ContactEmailResource(Resource):
             )
 
             # Send email to multiple recipients
-            receiver_emails = f"{data['email']}, anikwehenryasa@gmail.com"
-            # receiver_emails = (
-            #     f"{data['email']}, n8.young@gmail.com, anikwehenryasa@gmail.com"
-            # )
+            receiver_emails = (
+                f"{data['email']}, n8.young@gmail.com, anikwehenryasa@gmail.com"
+            )
 
             send_email(
                 receiver_email=receiver_emails,

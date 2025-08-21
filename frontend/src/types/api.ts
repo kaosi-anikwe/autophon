@@ -153,6 +153,11 @@ export interface LanguagesResponse {
   count: number;
 }
 
+export interface DictionaryLanguagesResponse {
+  languages: Language[];
+  count: number;
+}
+
 // Engine types
 export interface Engine {
   id: number;

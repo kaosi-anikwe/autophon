@@ -44,7 +44,7 @@ export default function LanguageCell({
   const { data: languagesData } = useQuery<Language[]>({
     queryKey: ["languages"],
     queryFn: async () => {
-      const response = await api.get("/languages");
+      const response = await api.get("/dict-languages");
       return response.data.languages;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes

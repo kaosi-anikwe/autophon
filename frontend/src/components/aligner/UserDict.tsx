@@ -1,14 +1,16 @@
 import { AxiosError } from "axios";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Info, ChevronDown, Upload } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
 
-import { useToast } from "@/contexts/ToastContext";
-import type { Dictionary, LanguageHomepage, User, Task } from "../../types/api";
-import { languagesAPI, dictionaryAPI, profileAPI, api } from "../../lib/api";
-import { DictUploadModal } from "../modals/DictUploadModal";
 import { Modal } from "../ui/Modal";
+import dictVideo from "../../assets/dict.webm";
+import { useToast } from "@/contexts/ToastContext";
+import { DictUploadModal } from "../modals/DictUploadModal";
+import dictReverseVideo from "../../assets/dict-reverse.webm";
+import type { Dictionary, User, Task, Language } from "../../types/api";
+import { languagesAPI, dictionaryAPI, profileAPI, api } from "../../lib/api";
 
 interface UserDictProps {
   user: User;
@@ -20,15 +22,14 @@ export default function UserDict({ user }: UserDictProps) {
   const [showVideo, setShowVideo] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const [videoOffset, setVideoOffset] = useState(-15);
-  const [selectedLanguage, setSelectedLanguage] =
-    useState<LanguageHomepage | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(
+    null
+  );
   const [selectedDictionary, setSelectedDictionary] =
     useState<Dictionary | null>(null);
-  const [languages, setLanguages] = useState<LanguageHomepage[]>([]);
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredLanguages, setFilteredLanguages] = useState<
-    LanguageHomepage[]
-  >([]);
+  const [filteredLanguages, setFilteredLanguages] = useState<Language[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [customPronunciations, setCustomPronunciations] = useState("");
@@ -150,7 +151,7 @@ export default function UserDict({ user }: UserDictProps) {
   }, [toast]);
 
   const selectLanguage = useCallback(
-    async (language: LanguageHomepage) => {
+    async (language: Language) => {
       // Prevent language selection when tasks are processing
       if (hasProcessingTasks) {
         handleBlockedAction();
@@ -243,7 +244,7 @@ export default function UserDict({ user }: UserDictProps) {
   // Load languages on component mount
   const { data: allLanguagesResponse, error: allLanguagesError } = useQuery({
     queryKey: ["homepage-languages"],
-    queryFn: languagesAPI.getHomepageLanguages,
+    queryFn: languagesAPI.getDictLanguages,
     staleTime: 10 * 60 * 1000, // 10 minutes - languages don't change frequently
     retry: 2,
   });
@@ -251,11 +252,7 @@ export default function UserDict({ user }: UserDictProps) {
   // Handle languages data and errors in useEffect to prevent infinite rerenders
   useEffect(() => {
     if (allLanguagesResponse) {
-      const allLanguages = [
-        ...allLanguagesResponse.grouped_languages.nordic,
-        ...allLanguagesResponse.grouped_languages.other,
-      ];
-      setLanguages(allLanguages);
+      setLanguages(allLanguagesResponse.languages);
     }
   }, [allLanguagesResponse]);
 
@@ -722,11 +719,7 @@ export default function UserDict({ user }: UserDictProps) {
                 }}
               >
                 <source
-                  src={
-                    isClosing
-                      ? "/src/assets/dict-reverse.webm"
-                      : "/src/assets/dict.webm"
-                  }
+                  src={isClosing ? dictReverseVideo : dictVideo}
                   type="video/webm"
                 />
                 Your browser does not support the video tag.

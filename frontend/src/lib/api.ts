@@ -164,6 +164,7 @@ api.interceptors.response.use(
 // Add TypeScript interface imports
 import type {
   LanguagesResponse,
+  DictionaryLanguagesResponse,
   EnginesResponse,
   TeamResponse,
   AppConfig,
@@ -274,6 +275,10 @@ export const languagesAPI = {
     api
       .get(`/public/languages?homepage=false${type ? `&type=${type}` : ""}`)
       .then((response) => response.data),
+
+  // Get languages for dictionary operations
+  getDictLanguages: (): Promise<DictionaryLanguagesResponse> =>
+    api.get("/dict-languages").then((response) => response.data),
 };
 
 // Engines API
@@ -377,14 +382,14 @@ export const adminAPI = {
 
   // Get all users for admin management
   getUsers: async (
-    page = 1, 
-    per_page = 20, 
-    search?: string, 
-    include_deleted?: boolean, 
+    page = 1,
+    per_page = 20,
+    search?: string,
+    include_deleted?: boolean,
     admin_only?: boolean
   ): Promise<PaginatedUsersResponse> => {
     const params: Record<string, any> = { page, per_page };
-    
+
     if (search && search.trim()) {
       params.search = search.trim();
     }
@@ -394,7 +399,7 @@ export const adminAPI = {
     if (admin_only !== undefined) {
       params.admin_only = admin_only;
     }
-    
+
     const response = await api.get("/admin/users", { params });
     return response.data;
   },
