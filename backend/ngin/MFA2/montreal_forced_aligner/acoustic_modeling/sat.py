@@ -1,4 +1,5 @@
 """Class definitions for Speaker Adapted Triphone trainer"""
+
 from __future__ import annotations
 
 import logging

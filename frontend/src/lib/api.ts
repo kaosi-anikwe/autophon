@@ -168,7 +168,7 @@ import type {
   TeamResponse,
   AppConfig,
   AdminDashboardStats,
-  AdminUser,
+  PaginatedUsersResponse,
   UserActionRequest,
   UserActionResponse,
   GenerateUserReportRequest,
@@ -369,15 +369,34 @@ export const profileAPI = {
 // Admin API
 export const adminAPI = {
   // Get admin dashboard statistics
-  getDashboardStats: async (): Promise<AdminDashboardStats> => {
-    const response = await api.get("/admin/dashboard");
+  getDashboardStats: async (date?: string): Promise<AdminDashboardStats> => {
+    const params = date ? { date } : {};
+    const response = await api.get("/admin/dashboard", { params });
     return response.data;
   },
 
   // Get all users for admin management
-  getUsers: async (): Promise<AdminUser[]> => {
-    const response = await api.get("/admin/users");
-    return response.data.users;
+  getUsers: async (
+    page = 1, 
+    per_page = 20, 
+    search?: string, 
+    include_deleted?: boolean, 
+    admin_only?: boolean
+  ): Promise<PaginatedUsersResponse> => {
+    const params: Record<string, any> = { page, per_page };
+    
+    if (search && search.trim()) {
+      params.search = search.trim();
+    }
+    if (include_deleted !== undefined) {
+      params.include_deleted = include_deleted;
+    }
+    if (admin_only !== undefined) {
+      params.admin_only = admin_only;
+    }
+    
+    const response = await api.get("/admin/users", { params });
+    return response.data;
   },
 
   // Perform user action (verify, make_admin, block, delete)

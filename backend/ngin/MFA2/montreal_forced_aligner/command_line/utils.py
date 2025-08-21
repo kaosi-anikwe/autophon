@@ -1,4 +1,5 @@
 """Utility functions for command line commands"""
+
 from __future__ import annotations
 
 import functools

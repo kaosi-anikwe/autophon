@@ -1,4 +1,5 @@
 """Command line functions for segmenting audio files"""
+
 from __future__ import annotations
 
 import os

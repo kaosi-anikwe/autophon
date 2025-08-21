@@ -3,7 +3,6 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import (
     jwt_required,
     create_access_token,
@@ -15,9 +14,9 @@ from flask_jwt_extended import (
 )
 
 
-from app.extensions import db
 from app.models.user import User
 from app.models.task import Task
+from app.extensions import db, bc
 from app.models.token_blacklist import TokenBlacklist
 from app.schemas import UserCreateSchema, UserLoginSchema, UserSchema, UserUpdateSchema
 from app.utils.logger import (
@@ -46,11 +45,14 @@ class Register(Resource):
                 return {"message": "User with this email already exists"}, 409
 
             # Hash password
-            password_hash = generate_password_hash(data.pop("password"))
+            password_hash = bc.generate_password_hash(data.pop("password")).decode(
+                "utf-8"
+            )
 
             # Convert anonymous user
             user_uuid = request.cookies.get("user_id")
-            data["uuid"] = user_uuid
+            if not User.query.filter_by(uuid=user_uuid).first():
+                data["uuid"] = user_uuid
 
             # Create user
             user = User(**data, password_hash=password_hash)
@@ -128,7 +130,9 @@ class Register(Resource):
         except IntegrityError as e:
             db.session.rollback()
             logger.warning(f"Registration integrity error: {str(e)}")
-            response = {"message": "There was an issue creating your account. Try again or contact support"}
+            response = {
+                "message": "There was an issue creating your account. Try again or contact support"
+            }
             log_response_info(logger, response, 409)
             return response, 409
         except Exception as e:
@@ -152,7 +156,7 @@ class Login(Resource):
             user = User.query.filter_by(email=data["email"]).first()
 
             # Check if user exists and password is correct
-            if not user or not check_password_hash(
+            if not user or not bc.check_password_hash(
                 user.password_hash, data["password"]
             ):
                 logger.warning(
@@ -308,7 +312,7 @@ class ChangePassword(Resource):
                 }, 400
 
             # Validate current password
-            if not check_password_hash(user.password_hash, current_password):
+            if not bc.check_password_hash(user.password_hash, current_password):
                 return {"message": "Current password is incorrect"}, 401
 
             # Validate new password length
@@ -318,7 +322,7 @@ class ChangePassword(Resource):
                 }, 400
 
             # Update password
-            user.password_hash = generate_password_hash(new_password)
+            user.password_hash = bc.generate_password_hash(new_password).decode("utf-8")
 
             # Revoke all existing tokens for security
             user.revoke_all_tokens(reason="password_change")
@@ -417,9 +421,7 @@ class ResetPasswordConfirm(Resource):
                 return {"message": "User not found"}, 404
 
             # Update password
-            from werkzeug.security import generate_password_hash
-
-            user.password_hash = generate_password_hash(new_password)
+            user.password_hash = bc.generate_password_hash(new_password).decode("utf-8")
 
             # Mark token as used
             reset_token.mark_as_used()
@@ -614,7 +616,7 @@ class VerifyEmail(Resource):
                 token, TokenType.EMAIL_VERIFICATION
             )
 
-            logger.info(f"VERIFICATIO TOKEN: {VerificationToken}")
+            logger.info(f"VERIFICATIO TOKEN: {verification_token}")
 
             if not verification_token:
                 return {"message": "Invalid or expired verification token"}, 400
@@ -631,6 +633,7 @@ class VerifyEmail(Resource):
 
             # Mark email as verified
             user.verified = True
+            logger.info(f"USER: {user}")
             user.update()
 
             # Mark token as used

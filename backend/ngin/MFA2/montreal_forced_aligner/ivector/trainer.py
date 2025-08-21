@@ -1,4 +1,5 @@
 """Class definition for TrainableIvectorExtractor"""
+
 from __future__ import annotations
 
 import logging

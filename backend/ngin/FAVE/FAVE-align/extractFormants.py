@@ -144,7 +144,6 @@ SPECIAL = ["BR", "CG", "LS", "LG", "NS"]
 
 
 class Phone:
-
     """represents a single phone (label, times and Plotnik code (for vowels))"""
 
     # !!! not the same as class cmu.Phone !!!
@@ -167,7 +166,6 @@ class Phone:
 
 
 class Speaker:
-
     """represents a speaker (background info)"""
 
     def __init__(self):
@@ -188,7 +186,6 @@ class Speaker:
 
 
 class VowelMeasurement:
-
     """represents a vowel measurement"""
 
     # !!! not the same as class plotnik.VowelMeasurement !!!
@@ -248,7 +245,6 @@ class VowelMeasurement:
 
 
 class VowelMean:
-
     """represents the mean and standard deviation for a given vowel class"""
 
     def __init__(self):
@@ -283,7 +279,6 @@ class VowelMean:
 
 
 class Word:
-
     """represents a word (transcription, times and list of phones)"""
 
     def __init__(self):

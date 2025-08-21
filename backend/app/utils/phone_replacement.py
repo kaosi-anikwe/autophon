@@ -240,9 +240,9 @@ def run_replacement(
 
         for i in range(len(possible_phones[indexes[0]])):
             possible_phones_list = possible_phones[indexes[0]]
-            phones_with_xmin_as_key[
-                phone_data_keys[i]
-            ].text = textgrids.transcript.Transcript(possible_phones_list[i])
+            phones_with_xmin_as_key[phone_data_keys[i]].text = (
+                textgrids.transcript.Transcript(possible_phones_list[i])
+            )
 
     phones_mod_values = list(phones_with_xmin_as_key.values())
     phones_mod_tier = textgrids.Tier(phones_mod_values)

@@ -139,12 +139,12 @@ export function Header() {
             </div>
           </div>
           {/* User controls on the right */}
-          <div className="flex-none">
+          <div className="flex">
             {/* Theme toggle */}
-            <ThemeDropdown className="mr-6" />
+            <ThemeDropdown className="mr-4 my-auto" />
 
             {/* Mobile menu button */}
-            <div className="dropdown lg:hidden">
+            <div className="dropdown lg:hidden pt-0.5">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
                 <svg
                   className="w-5 h-5"
@@ -266,7 +266,7 @@ export function Header() {
                 {/* Login/Signup options in mobile menu */}
                 {!isAuthenticated && status?.active && (
                   <>
-                    <li className="mt-2 py-2 border-t border-base-300">
+                    <li className="mt-2 py-2 border-t border-base-200">
                       <Link to="/login#login" className="text-center">
                         Login
                       </Link>

@@ -4,6 +4,7 @@ Corpora
 
 
 """
+
 from __future__ import annotations
 
 from montreal_forced_aligner.corpus.acoustic_corpus import (

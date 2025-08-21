@@ -1,4 +1,5 @@
 """Class definitions for base aligner"""
+
 from __future__ import annotations
 
 import collections
@@ -559,9 +560,9 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
                         + counter.non_silence_following_counts[(w, p)]
                     )
                     pron_mapping[(w, p)]["silence_following_count"] = count
-                    pron_mapping[(w, p)][
-                        "non_silence_following_count"
-                    ] = counter.non_silence_following_counts[(w, p)]
+                    pron_mapping[(w, p)]["non_silence_following_count"] = (
+                        counter.non_silence_following_counts[(w, p)]
+                    )
                     w_p_silence_count = count + (silence_probability * lambda_2)
                     prob = format_probability(
                         w_p_silence_count / (total_count + lambda_2)
@@ -585,18 +586,18 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
                         continue
                     silence_count = counter.silence_before_counts[(w, p)]
                     non_silence_count = counter.non_silence_before_counts[(w, p)]
-                    pron_mapping[(w, p)][
-                        "silence_before_correction"
-                    ] = format_correction(
-                        (silence_count + lambda_3)
-                        / (bar_count_silence_wp[(w, p)] + lambda_3)
+                    pron_mapping[(w, p)]["silence_before_correction"] = (
+                        format_correction(
+                            (silence_count + lambda_3)
+                            / (bar_count_silence_wp[(w, p)] + lambda_3)
+                        )
                     )
 
-                    pron_mapping[(w, p)][
-                        "non_silence_before_correction"
-                    ] = format_correction(
-                        (non_silence_count + lambda_3)
-                        / (bar_count_non_silence_wp[(w, p)] + lambda_3)
+                    pron_mapping[(w, p)]["non_silence_before_correction"] = (
+                        format_correction(
+                            (non_silence_count + lambda_3)
+                            / (bar_count_non_silence_wp[(w, p)] + lambda_3)
+                        )
                     )
                 session.bulk_update_mappings(Pronunciation, pron_mapping.values())
                 session.flush()
@@ -919,9 +920,9 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
                             "phone_id": interval.label,
                             "utterance_id": utterance,
                             "workflow_id": workflow.id,
-                            "phone_goodness": interval.confidence
-                            if interval.confidence
-                            else 0.0,
+                            "phone_goodness": (
+                                interval.confidence if interval.confidence else 0.0
+                            ),
                         }
                     )
                 for interval in word_intervals:
@@ -952,9 +953,9 @@ class CorpusAligner(AcousticCorpusPronunciationMixin, AlignMixin, FileExporterMi
                         }
                     )
                 for i, index in enumerate(phone_word_mapping):
-                    new_phone_interval_mappings[i][
-                        "word_interval_id"
-                    ] = new_word_interval_mappings[index]["id"]
+                    new_phone_interval_mappings[i]["word_interval_id"] = (
+                        new_word_interval_mappings[index]["id"]
+                    )
                 phone_writer.writerows(new_phone_interval_mappings)
                 word_writer.writerows(new_word_interval_mappings)
                 if new_word_interval_mappings:

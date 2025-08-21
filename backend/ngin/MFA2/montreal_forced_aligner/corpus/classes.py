@@ -1,4 +1,5 @@
 """Class definitions for Speakers, Files, Utterances and Jobs"""
+
 from __future__ import annotations
 
 import os

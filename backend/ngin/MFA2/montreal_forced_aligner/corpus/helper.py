@@ -1,4 +1,5 @@
 """Helper functions for corpus parsing and loading"""
+
 from __future__ import annotations
 
 import typing

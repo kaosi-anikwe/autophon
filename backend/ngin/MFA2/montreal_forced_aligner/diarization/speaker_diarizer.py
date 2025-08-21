@@ -2,6 +2,7 @@
 Speaker classification
 ======================
 """
+
 from __future__ import annotations
 
 import collections
@@ -1321,15 +1322,15 @@ class SpeakerDiarizer(IvectorCorpusMixin, TopLevelMfaWorker, FileExporterMixin):
         if self.evaluation_mode:
             self.evaluate_clustering()
 
-        os.environ[
-            "OMP_NUM_THREADS"
-        ] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
-        os.environ[
-            "OPENBLAS_NUM_THREADS"
-        ] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
-        os.environ[
-            "MKL_NUM_THREADS"
-        ] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+        os.environ["OMP_NUM_THREADS"] = (
+            f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+        )
+        os.environ["OPENBLAS_NUM_THREADS"] = (
+            f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+        )
+        os.environ["MKL_NUM_THREADS"] = (
+            f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+        )
 
     def clean_up_unknown_speaker(self):
         with self.session() as session:

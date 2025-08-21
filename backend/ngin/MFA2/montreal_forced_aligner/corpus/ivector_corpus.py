@@ -1,4 +1,5 @@
 """Classes for corpora that use ivectors as features"""
+
 import logging
 import os
 import pickle

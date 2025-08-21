@@ -1,4 +1,5 @@
 """Multiprocessing functionality for speaker diarization"""
+
 from __future__ import annotations
 
 import logging
@@ -492,9 +493,9 @@ def cluster_matrix(
             if strict:
                 raise
     os.environ["OMP_NUM_THREADS"] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
-    os.environ[
-        "OPENBLAS_NUM_THREADS"
-    ] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+    os.environ["OPENBLAS_NUM_THREADS"] = (
+        f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
+    )
     os.environ["MKL_NUM_THREADS"] = f"{GLOBAL_CONFIG.current_profile.blas_num_threads}"
 
     return c_labels

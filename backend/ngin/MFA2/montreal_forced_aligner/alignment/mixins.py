@@ -1,4 +1,5 @@
 """Class definitions for alignment mixins"""
+
 from __future__ import annotations
 
 import csv
@@ -183,11 +184,13 @@ class AlignMixin(DictionaryMixin):
                     getattr(self, "db_string", ""),
                     log_path,
                     self.alignment_model_path,
-                    self.decode_options
-                    if self.phone_confidence
-                    and getattr(self, "uses_speaker_adaptation", False)
-                    and hasattr(self, "decode_options")
-                    else self.align_options,
+                    (
+                        self.decode_options
+                        if self.phone_confidence
+                        and getattr(self, "uses_speaker_adaptation", False)
+                        and hasattr(self, "decode_options")
+                        else self.align_options
+                    ),
                     self.feature_options,
                     self.phone_confidence,
                 )

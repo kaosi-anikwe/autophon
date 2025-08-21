@@ -1,4 +1,5 @@
 """Class definitions for PronunciationProbabilityTrainer"""
+
 import json
 import logging
 import os

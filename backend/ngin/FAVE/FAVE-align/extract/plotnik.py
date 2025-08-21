@@ -182,7 +182,6 @@ SPECIAL = ["BR", "CG", "LS", "LG", "NS"]
 
 
 class PltFile:
-
     """represents a Plotnik file (header and vowel measurements)"""
 
     def __init__(self):
@@ -224,7 +223,6 @@ class PltFile:
 
 
 class VowelMeasurement:
-
     """represents a single vowel token (one line in a Plotnik data file)"""
 
     F1 = 0  # first formant

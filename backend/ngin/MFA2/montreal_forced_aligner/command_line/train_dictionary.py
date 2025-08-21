@@ -1,4 +1,5 @@
 """Command line functions for training dictionaries with pronunciation probabilities"""
+
 from __future__ import annotations
 
 import os

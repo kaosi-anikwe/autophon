@@ -1,4 +1,5 @@
 """Class for generating pronunciations from G2P models"""
+
 from __future__ import annotations
 
 import csv

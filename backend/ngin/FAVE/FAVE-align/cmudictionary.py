@@ -485,7 +485,6 @@ import re
 
 
 class Phone:
-
     """represents a CMU dict phoneme (label and distinctive features)"""
 
     # !!! not to be confused with class extractFormants.Phone !!!

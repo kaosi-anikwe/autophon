@@ -3,6 +3,7 @@ Transcription functions
 -----------------------
 
 """
+
 from __future__ import annotations
 
 import os
@@ -1311,7 +1312,6 @@ class LatGenFmllrFunction(KaldiFunction):
 
 
 class FinalFmllrFunction(KaldiFunction):
-
     """
     Multiprocessing function for running final fMLLR estimation
 

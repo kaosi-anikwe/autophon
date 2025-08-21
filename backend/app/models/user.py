@@ -10,7 +10,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(6), unique=True)
+    uuid = db.Column(db.String(50), unique=True)
     title = db.Column(db.String(10))
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))

@@ -1,4 +1,5 @@
 """Classes for calculating alignments online"""
+
 from __future__ import annotations
 
 import os

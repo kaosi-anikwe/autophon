@@ -362,9 +362,9 @@ def get_monthly_download(user_id, date, task_list: list, totals: dict):
     # write footer
     footer_row = total_row + 2 + len(totals["lang_count"].keys()) + 2
 
-    sheet[
-        f"A{footer_row}"
-    ] = "If you have any questions about this statement, please contact"
+    sheet[f"A{footer_row}"] = (
+        "If you have any questions about this statement, please contact"
+    )
     sheet[f"A{footer_row}"].alignment = alignment
     sheet[f"A{footer_row}"].font = get_font()
 
@@ -393,9 +393,9 @@ def get_monthly_download(user_id, date, task_list: list, totals: dict):
     for column in sheet.iter_cols(
         min_row=10, max_row=last_row, min_col=3, max_col=sheet.max_column
     ):
-        sheet.column_dimensions[
-            f"{get_column_letter(column[0].column)}"
-        ].auto_size = True
+        sheet.column_dimensions[f"{get_column_letter(column[0].column)}"].auto_size = (
+            True
+        )
 
     sheet.merge_cells(f"A{footer_row}:G{footer_row}")
     sheet.merge_cells(f"A{footer_row + 1}:G{footer_row + 1}")

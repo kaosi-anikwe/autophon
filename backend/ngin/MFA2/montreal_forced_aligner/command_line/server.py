@@ -1,4 +1,5 @@
 """Command line functionality for managing servers"""
+
 import os
 
 import rich_click as click

@@ -1,4 +1,5 @@
 """Classes for training tokenizers"""
+
 import collections
 import logging
 import os

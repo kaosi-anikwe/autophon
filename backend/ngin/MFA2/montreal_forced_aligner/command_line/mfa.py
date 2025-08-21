@@ -1,4 +1,5 @@
 """Command line functions for calling the root mfa command"""
+
 from __future__ import annotations
 
 import atexit

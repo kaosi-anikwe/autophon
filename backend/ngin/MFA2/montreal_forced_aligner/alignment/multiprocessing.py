@@ -3,6 +3,7 @@ Alignment multiprocessing functions
 -----------------------------------
 
 """
+
 from __future__ import annotations
 
 import collections
@@ -1302,9 +1303,9 @@ class FineTuneFunction(KaldiFunction):
                 map(str, [boundary_id, f"{begin_offset:.4f}", f"{end_offset:.4f}"]),
             )
 
-            text_data[
-                boundary_id
-            ] = f"{self.phone_to_group_mapping[prev_label]} {self.phone_to_group_mapping[label]}"
+            text_data[boundary_id] = (
+                f"{self.phone_to_group_mapping[prev_label]} {self.phone_to_group_mapping[label]}"
+            )
             prev_label = label
 
         with mfa_open(utt2spk_path, "w") as f:
@@ -2036,7 +2037,6 @@ def compile_information_func(
 
 
 class AlignmentExtractionFunction(KaldiFunction):
-
     """
     Multiprocessing function to collect phone alignments from the aligned lattice
 

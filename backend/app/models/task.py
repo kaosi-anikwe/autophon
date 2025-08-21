@@ -35,7 +35,7 @@ class Task(db.Model, TimestampMixin, DatabaseHelperMixin):
     )  # nullable due to anonymous users
 
     # Anonymous user identifier
-    user_uuid = db.Column(db.String(6))
+    user_uuid = db.Column(db.String(50))
 
     # language and engine relationships
     lang_id = db.Column(db.Integer, db.ForeignKey("languages.id"))

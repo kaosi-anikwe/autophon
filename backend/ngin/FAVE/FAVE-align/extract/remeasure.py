@@ -8,7 +8,6 @@ from fave.extract.mahalanobis import mahalanobis
 
 
 class VowelMeasurement:
-
     """represents a vowel measurement"""
 
     # !!! not the same as class plotnik.VowelMeasurement !!!

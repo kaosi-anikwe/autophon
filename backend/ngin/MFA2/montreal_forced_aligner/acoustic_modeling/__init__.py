@@ -4,6 +4,7 @@ Training acoustic models
 
 
 """
+
 from montreal_forced_aligner.acoustic_modeling.base import (
     AcousticModelTrainingMixin,
 )  # noqa

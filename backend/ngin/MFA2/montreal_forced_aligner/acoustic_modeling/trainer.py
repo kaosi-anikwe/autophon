@@ -1,4 +1,5 @@
 """Class definitions for trainable aligners"""
+
 from __future__ import annotations
 
 import collections

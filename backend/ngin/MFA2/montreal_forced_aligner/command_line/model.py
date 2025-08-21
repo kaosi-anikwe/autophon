@@ -1,4 +1,5 @@
 """Command line functions for interacting with MFA models"""
+
 from __future__ import annotations
 
 import logging

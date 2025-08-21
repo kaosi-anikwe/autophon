@@ -2,6 +2,7 @@
 Corpus loading worker
 ---------------------
 """
+
 from __future__ import annotations
 
 import multiprocessing as mp
@@ -765,9 +766,11 @@ class ExportKaldiFilesFunction(KaldiFunction):
                     words = normalized_text.split()
                     text_ints[utterance] = " ".join(
                         [
-                            str(words_mapping[x])
-                            if x in words_mapping
-                            else str(words_mapping[d.oov_word])
+                            (
+                                str(words_mapping[x])
+                                if x in words_mapping
+                                else str(words_mapping[d.oov_word])
+                            )
                             for x in words
                         ]
                     )

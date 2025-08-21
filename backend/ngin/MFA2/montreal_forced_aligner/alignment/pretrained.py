@@ -1,4 +1,5 @@
 """Class definitions for aligning with pretrained acoustic models"""
+
 from __future__ import annotations
 
 import datetime
@@ -311,9 +312,11 @@ class PretrainedAligner(TranscriberMixin, TopLevelMfaWorker):
         with mfa_open(text_int_path, "w") as f:
             normalized_text_int = " ".join(
                 [
-                    str(word_mapping[x])
-                    if x in word_mapping
-                    else str(word_mapping[self.oov_word])
+                    (
+                        str(word_mapping[x])
+                        if x in word_mapping
+                        else str(word_mapping[self.oov_word])
+                    )
                     for x in utterance.normalized_text.split()
                 ]
             )

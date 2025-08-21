@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from app.config import config
 from app.utils.logger import setup_logging
-from app.extensions import db, migrate, jwt, cors, ma
+from app.extensions import db, migrate, jwt, cors, ma, bc
 
 load_dotenv()
 
@@ -106,6 +106,7 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    bc.init_app(app)
 
     # Configure CORS with credentials support
     cors.init_app(

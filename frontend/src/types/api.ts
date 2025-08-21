@@ -248,6 +248,22 @@ export interface AdminUser {
   uuid: string;
 }
 
+export interface PaginationInfo {
+  page: number;
+  per_page: number;
+  total: number;
+  pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+  next_num?: number;
+  prev_num?: number;
+}
+
+export interface PaginatedUsersResponse {
+  users: AdminUser[];
+  pagination: PaginationInfo;
+}
+
 export interface UserActionRequest {
   email: string;
   action: "verify" | "make_admin" | "block" | "delete";

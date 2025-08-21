@@ -1,4 +1,5 @@
 """Mixin module for G2P functionality"""
+
 import typing
 from abc import ABCMeta
 from pathlib import Path

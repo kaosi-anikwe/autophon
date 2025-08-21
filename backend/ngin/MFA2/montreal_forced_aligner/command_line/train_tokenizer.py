@@ -1,4 +1,5 @@
 """Command line functions for training tokenizer models"""
+
 from __future__ import annotations
 
 import os

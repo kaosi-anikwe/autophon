@@ -107,9 +107,9 @@ class AlignerDashboardResource(Resource):
                 "task_id": task.task_id,
                 "task_status": task.task_status,
                 "download_title": task.download_title or f"Task {task.task_id}",
-                "download_date": task.download_date.isoformat()
-                if task.download_date
-                else None,
+                "download_date": (
+                    task.download_date.isoformat() if task.download_date else None
+                ),
                 "trans_choice": task.trans_choice,
                 "lang": task.lang,
                 "size": str(task.size or 0),
@@ -121,9 +121,11 @@ class AlignerDashboardResource(Resource):
                 "created_at": task.created_at.isoformat() if task.created_at else None,
                 "updated_at": task.updated_at.isoformat() if task.updated_at else None,
                 "aligned_at": task.aligned.isoformat() if task.aligned else None,
-                "batch": task.trans_choice in ["exp-a", "comp-ling"]
-                if task.trans_choice
-                else False,
+                "batch": (
+                    task.trans_choice in ["exp-a", "comp-ling"]
+                    if task.trans_choice
+                    else False
+                ),
             }
 
             # Set download URLs
@@ -131,22 +133,22 @@ class AlignerDashboardResource(Resource):
                 task_data["textgrid_url"] = None
                 task_data["download_url"] = None
             else:
-                task_data[
-                    "textgrid_url"
-                ] = f"/api/v1/tasks/{task.task_id}/download/textgrid"
+                task_data["textgrid_url"] = (
+                    f"/api/v1/tasks/{task.task_id}/download/textgrid"
+                )
                 if task.task_status == TaskStatus.COMPLETED:
-                    task_data[
-                        "download_url"
-                    ] = f"/api/v1/tasks/{task.task_id}/download/complete"
+                    task_data["download_url"] = (
+                        f"/api/v1/tasks/{task.task_id}/download/complete"
+                    )
                 else:
                     task_data["download_url"] = None
 
             # Handle missing words
             if task.missing_words and int(task.missing_words) > 0:
                 task_data["has_missing_words"] = True
-                task_data[
-                    "missing_dict_url"
-                ] = f"/api/v1/tasks/{task.task_id}/download/missing_dict"
+                task_data["missing_dict_url"] = (
+                    f"/api/v1/tasks/{task.task_id}/download/missing_dict"
+                )
 
                 # Format missing words as HTML
                 try:
@@ -321,7 +323,7 @@ class AlignTaskResource(Resource):
             # Update task status to aligned and set duration
             task.task_status = TaskStatus.ALIGNED
             task.duration = duration
-            task.updated_at = utc_now()
+            task.aligned = utc_now()
             # Note: aligned field will be set by the background alignment process when it picks up the task
 
             db.session.commit()

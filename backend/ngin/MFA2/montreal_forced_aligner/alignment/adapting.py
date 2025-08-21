@@ -1,4 +1,5 @@
 """Class definitions for adapting acoustic models"""
+
 from __future__ import annotations
 
 import logging

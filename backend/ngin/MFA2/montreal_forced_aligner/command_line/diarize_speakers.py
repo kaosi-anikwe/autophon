@@ -1,4 +1,5 @@
 """Command line functions for classifying speakers"""
+
 from __future__ import annotations
 
 import os

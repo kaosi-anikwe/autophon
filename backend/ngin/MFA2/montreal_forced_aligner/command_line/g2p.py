@@ -1,4 +1,5 @@
 """Command line functions for generating pronunciations using G2P models"""
+
 from __future__ import annotations
 
 import os

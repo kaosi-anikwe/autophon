@@ -137,3 +137,5 @@ mysql.cnf
 scripts/systemd
 
 migrations/
+
+*.json

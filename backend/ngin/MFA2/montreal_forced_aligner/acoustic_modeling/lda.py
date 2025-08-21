@@ -1,4 +1,5 @@
 """Class definitions for LDA trainer"""
+
 from __future__ import annotations
 
 import logging

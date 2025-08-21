@@ -1452,7 +1452,7 @@ class AlignmentWorker:
                         Task.deleted.is_(None),
                         Task.cancelled != True,
                     )
-                    .order_by(Task.created_at)
+                    .order_by(Task.aligned)
                     .all()
                 )
 

@@ -1,4 +1,5 @@
 """Database classes"""
+
 from __future__ import annotations
 
 import logging
@@ -1132,9 +1133,11 @@ class File(MfaSqlBase):
                         Interval(
                             start=utterance.begin,
                             end=utterance.end,
-                            label=utterance.transcription_text
-                            if utterance.transcription_text
-                            else "",
+                            label=(
+                                utterance.transcription_text
+                                if utterance.transcription_text
+                                else ""
+                            ),
                         )
                     )
                 else:

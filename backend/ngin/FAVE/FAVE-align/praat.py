@@ -14,7 +14,6 @@
 
 
 class Formant:
-
     """represents a formant contour as a series of frames"""
 
     def __init__(self, name=None):
@@ -152,7 +151,6 @@ class Formant:
 
 
 class LPC:
-
     """represents a Praat LPC (linear predictive coding) object"""
 
     def __init__(self):
@@ -221,7 +219,6 @@ class LPC:
 
 
 class MFCC:
-
     """represents a Praat MFCC (mel frequency cepstral coefficients) object"""
 
     def __init__(self):
@@ -293,7 +290,6 @@ class MFCC:
 
 
 class Intensity:
-
     """represents an intensity contour"""
 
     def __init__(self):
@@ -402,7 +398,6 @@ class Intensity:
 
 
 class TextGrid:
-
     """represents a Praat TextGrid"""
 
     def __init__(self, name=""):
@@ -617,7 +612,6 @@ class TextGrid:
 
 
 class IntervalTier:
-
     """represents a Praat IntervalTier"""
 
     def __init__(self, name="", xmin=0, xmax=0):
@@ -777,7 +771,6 @@ class IntervalTier:
 
 
 class PointTier:
-
     """represents a Praat PointTier"""
 
     def __init__(self, name="", xmin=0, xmax=0):
@@ -845,7 +838,6 @@ class PointTier:
 
 
 class Interval:
-
     """represents an Interval"""
 
     def __init__(self, xmin=0, xmax=0, mark=""):
@@ -874,7 +866,6 @@ class Interval:
 
 
 class Point:
-
     """represents a Point"""
 
     def __init__(self, time, mark):

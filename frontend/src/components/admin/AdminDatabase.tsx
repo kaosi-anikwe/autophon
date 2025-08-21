@@ -131,7 +131,7 @@ export default function AdminDatabase() {
                   type="date"
                   value={userLimitDate}
                   onChange={(e) => setUserLimitDate(e.target.value)}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full mb-2"
                   placeholder="Leave empty for all users"
                 />
                 <label className="label">

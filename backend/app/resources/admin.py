@@ -299,9 +299,9 @@ class SiteStatusResource(Resource):
                         f"Site deactivated - {logged_out_count} users logged out"
                     )
                     response_data["users_logged_out"] = logged_out_count
-                    response_data[
-                        "message"
-                    ] = f"Site deactivated successfully. {logged_out_count} users logged out."
+                    response_data["message"] = (
+                        f"Site deactivated successfully. {logged_out_count} users logged out."
+                    )
 
                 except Exception as user_logout_error:
                     logger.warning(
@@ -323,7 +323,7 @@ class AdminUsersResource(Resource, AdminRequiredMixin):
 
     @jwt_required()
     def get(self):
-        """Fetch all users"""
+        """Fetch users with pagination support"""
         log_request_info(logger, request)
 
         # Check admin access
@@ -332,22 +332,95 @@ class AdminUsersResource(Resource, AdminRequiredMixin):
             return admin_check
 
         try:
-            users = User.query.all()
+            # Get pagination parameters from query string
+            page = request.args.get("page", 1, type=int)
+            per_page = request.args.get("per_page", 50, type=int)
+            search = request.args.get("search", "", type=str).strip()
+            include_deleted = (
+                request.args.get("include_deleted", "false").lower() == "true"
+            )
+            admin_only = request.args.get("admin_only", "false").lower() == "true"
 
-            if users:
+            # Validate pagination parameters
+            if page < 1:
+                page = 1
+            if per_page < 1 or per_page > 500:  # Limit max per_page to prevent abuse
+                per_page = 50
+
+            # Build base query
+            query = User.query
+
+            # Filter by deleted status
+            if not include_deleted:
+                query = query.filter((User.deleted == None) | (User.deleted == ""))
+
+            # Filter by admin status
+            if admin_only:
+                query = query.filter(User.admin == True)
+
+            # Apply search filter if provided
+            if search:
+                # Search across multiple fields
+                search_filter = (
+                    User.first_name.ilike(f"%{search}%")
+                    | User.last_name.ilike(f"%{search}%")
+                    | User.email.ilike(f"%{search}%")
+                    | User.uuid.ilike(f"%{search}%")
+                    | User.org.ilike(f"%{search}%")
+                )
+                query = query.filter(search_filter)
+
+            # Order by creation date (newest first)
+            query = query.order_by(User.created_at.desc())
+
+            # Execute paginated query
+            paginated_users = query.paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False,  # Don't raise error if page is out of range
+            )
+
+            # Serialize users
+            if paginated_users.items:
                 from app.schemas import UserSchema
 
                 user_schema = UserSchema(many=True, exclude=["password_hash"])
-                response = {"users": user_schema.dump(users)}
+                users_data = user_schema.dump(paginated_users.items)
             else:
-                response = {"users": []}
+                users_data = []
 
-            log_response_info(logger, response, 200)
+            # Build response with pagination metadata
+            response = {
+                "users": users_data,
+                "pagination": {
+                    "page": paginated_users.page,
+                    "per_page": paginated_users.per_page,
+                    "total": paginated_users.total,
+                    "pages": paginated_users.pages,
+                    "has_next": paginated_users.has_next,
+                    "has_prev": paginated_users.has_prev,
+                    "next_num": (
+                        paginated_users.next_num if paginated_users.has_next else None
+                    ),
+                    "prev_num": (
+                        paginated_users.prev_num if paginated_users.has_prev else None
+                    ),
+                },
+                "filters": {
+                    "search": search,
+                    "include_deleted": include_deleted,
+                    "admin_only": admin_only,
+                },
+            }
+
+            log_response_info(
+                logger, f"Retrieved {len(users_data)} users (page {page})", 200
+            )
             return response, 200
 
         except Exception as e:
             log_exception(logger, "Failed to get users")
-            response = {"message": f"Failed to get usesr: {str(e)}"}
+            response = {"message": f"Failed to get users: {str(e)}"}
             log_response_info(logger, response, 500)
             return response, 500
 
@@ -567,8 +640,15 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
             return admin_check
 
         try:
+            date = request.args.get("date")
+
+            if date:
+                date_obj = datetime.strptime(date, "%Y-%m-%d").replace(
+                    tzinfo=timezone.utc
+                )
+
             # Calculate statistics
-            dashboard_stats = self._calculate_dashboard_stats()
+            dashboard_stats = self._calculate_dashboard_stats(date_obj)
 
             log_response_info(logger, dashboard_stats, 200)
             return dashboard_stats, 200
@@ -579,11 +659,11 @@ class AdminDashboardResource(Resource, AdminRequiredMixin):
             log_response_info(logger, response, 500)
             return response, 500
 
-    def _calculate_dashboard_stats(self):
+    def _calculate_dashboard_stats(self, date_obj: datetime = None):
         """Calculate all dashboard statistics"""
         try:
             # Get today's date range for filtering
-            today = utc_now().date()
+            today = date_obj.date() if date_obj else utc_now().date()
             today_start = datetime.combine(today, datetime.min.time()).replace(
                 tzinfo=timezone.utc
             )

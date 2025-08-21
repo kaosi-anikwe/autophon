@@ -1,4 +1,5 @@
 """Command line functions for aligning corpora"""
+
 from __future__ import annotations
 
 import os

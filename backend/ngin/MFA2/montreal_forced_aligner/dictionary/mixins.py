@@ -22,7 +22,9 @@ DEFAULT_PUNCTUATION = list(
     r'、。।，？！!@<>→"”()“„–,.:;—¿?¡：）!\\&%#*~【】，…‥「」『』〝〟″⟨⟩♪・‹›«»～′$+=‘'
 )
 
-DEFAULT_WORD_BREAK_MARKERS = list(r'？！!()，,.:;¡¿?“„"”&~%#—…‥、。【】$+=〝〟″‹›«»・⟨⟩「」『』')
+DEFAULT_WORD_BREAK_MARKERS = list(
+    r'？！!()，,.:;¡¿?“„"”&~%#—…‥、。【】$+=〝〟″‹›«»・⟨⟩「」『』'
+)
 
 DEFAULT_QUOTE_MARKERS = list("“„\"”〝〟″「」『』‚ʻʿ‘′'")
 

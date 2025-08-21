@@ -3,6 +3,7 @@ Data classes
 ============
 
 """
+
 from __future__ import annotations
 
 import collections
@@ -76,9 +77,9 @@ class DatabaseImportData:
     sound_file_objects: typing.List[typing.Dict[str, typing.Any]] = dataclassy.factory(
         list
     )
-    speaker_ordering_objects: typing.List[
-        typing.Dict[str, typing.Any]
-    ] = dataclassy.factory(list)
+    speaker_ordering_objects: typing.List[typing.Dict[str, typing.Any]] = (
+        dataclassy.factory(list)
+    )
     utterance_objects: typing.List[typing.Dict[str, typing.Any]] = dataclassy.factory(
         list
     )
@@ -327,9 +328,7 @@ class PhoneSetType(enum.Enum):
         elif self is PhoneSetType.PINYIN:
             return re.compile(r"[a-z]{1,3}[12345]")
         elif self is PhoneSetType.IPA:
-            return re.compile(
-                r"[əɚʊɡɤʁɹɔɛʉɒβɲɟʝŋʃɕʰʲɾ̃̚ː˩˨˧˦˥̪̝̟̥̂̀̄ˑ̊ᵝ̠̹̞̩̯̬̺ˀˤ̻̙̘̰̤̜̑̽᷈᷄᷅̌̋̏‿̆͜͡ˌˈ̣]"
-            )
+            return re.compile(r"[əɚʊɡɤʁɹɔɛʉɒβɲɟʝŋʃɕʰʲɾ̃̚ː˩˨˧˦˥̪̝̟̥̂̀̄ˑ̊ᵝ̠̹̞̩̯̬̺ˀˤ̻̙̘̰̤̜̑̽᷈᷄᷅̌̋̏‿̆͜͡ˌˈ̣]")
         return None
 
     @property

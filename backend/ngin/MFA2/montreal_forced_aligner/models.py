@@ -3,6 +3,7 @@ Model classes
 =============
 
 """
+
 from __future__ import annotations
 
 import json
@@ -591,9 +592,9 @@ class AcousticModel(Archive):
                     default_value = True
                 else:
                     default_value = False
-                self._meta["dictionaries"][
-                    "position_dependent_phones"
-                ] = self._meta.get("position_dependent_phones", default_value)
+                self._meta["dictionaries"]["position_dependent_phones"] = (
+                    self._meta.get("position_dependent_phones", default_value)
+                )
         self.parse_old_features()
         return self._meta
 
@@ -1603,9 +1604,9 @@ class ModelManager:
                         for version, data in version_data.items():
                             if model_name not in self.remote_models[model_type]:
                                 self.remote_models[model_type][model_name] = {}
-                            self.remote_models[model_type][model_name][
-                                version
-                            ] = ModelRelease(*data)
+                            self.remote_models[model_type][model_name][version] = (
+                                ModelRelease(*data)
+                            )
                 return
             self._cache_info["list_etags"][page] = r.headers["etag"]
             data = r.json()

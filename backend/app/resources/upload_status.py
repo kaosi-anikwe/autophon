@@ -132,27 +132,27 @@ class UploadStatusResource(Resource):
             task_data["download_url"] = None
         else:
             # TextGrid download URL (incomplete/uploaded tasks)
-            task_data[
-                "textgrid_url"
-            ] = f"/api/v1/tasks/{task.task_id}/download/textgrid"
+            task_data["textgrid_url"] = (
+                f"/api/v1/tasks/{task.task_id}/download/textgrid"
+            )
 
             # Complete download URL (completed tasks)
             if task.task_status == TaskStatus.COMPLETED:
-                task_data[
-                    "download_url"
-                ] = f"/api/v1/tasks/{task.task_id}/download/complete"
+                task_data["download_url"] = (
+                    f"/api/v1/tasks/{task.task_id}/download/complete"
+                )
             else:
                 task_data["download_url"] = None
 
         # Process missing words if present
         if task.missing_words and int(task.missing_words) > 0:
             task_data["has_missing_words"] = True
-            task_data[
-                "missing_dict_url"
-            ] = f"/api/v1/tasks/{task.task_id}/download/missing_dict"
-            task_data[
-                "missing_words_html_url"
-            ] = f"/api/v1/tasks/{task.task_id}/missing-words"
+            task_data["missing_dict_url"] = (
+                f"/api/v1/tasks/{task.task_id}/download/missing_dict"
+            )
+            task_data["missing_words_html_url"] = (
+                f"/api/v1/tasks/{task.task_id}/missing-words"
+            )
         else:
             task_data["has_missing_words"] = False
             task_data["missing_dict_url"] = None
@@ -377,9 +377,11 @@ class TaskMissingWordsResource(Resource):
                     "has_missing_words": True,
                     "html_content": html_content,
                     "missing_words_count": len(missing_words),
-                    "dict_path": os.path.relpath(missing_dict_path)
-                    if missing_dict_path
-                    else None,
+                    "dict_path": (
+                        os.path.relpath(missing_dict_path)
+                        if missing_dict_path
+                        else None
+                    ),
                 },
             }
 

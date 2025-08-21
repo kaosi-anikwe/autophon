@@ -1,4 +1,5 @@
 """Multiprocessing functions for training ivector extractors"""
+
 from __future__ import annotations
 
 import os

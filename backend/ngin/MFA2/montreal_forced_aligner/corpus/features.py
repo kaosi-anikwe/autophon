@@ -1,4 +1,5 @@
 """Classes for configuring feature generation"""
+
 from __future__ import annotations
 
 import io

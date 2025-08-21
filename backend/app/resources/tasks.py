@@ -103,7 +103,7 @@ class TaskListResource(Resource):
                 admin_path = os.getenv("ADMIN")
                 if admin_path:
                     for task in task_data:
-                        if task.lang:
+                        if task["lang"]:
                             # Extract language code from the task's lang field
                             lang_code = (
                                 task.get("lang", "").replace("(suggested)", "").strip()
@@ -699,9 +699,9 @@ class TaskMonthlyReportResource(Resource):
                     "size": convert_size(int(task.size or 0)),
                     "lang": lang_display,
                     "words": task.words or 0,
-                    "task_status": task.task_status.value
-                    if task.task_status
-                    else "unknown",
+                    "task_status": (
+                        task.task_status.value if task.task_status else "unknown"
+                    ),
                 }
                 task_list.append(task_data)
 

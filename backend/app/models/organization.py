@@ -1,3 +1,4 @@
+import unicodedata
 from sqlalchemy import Index
 from app.extensions import db
 from .base import DatabaseHelperMixin, TimestampMixin
@@ -26,10 +27,25 @@ class Organization(db.Model, TimestampMixin, DatabaseHelperMixin):
 
     @staticmethod
     def normalize_name(name):
-        """Normalize name for efficient searching"""
+        """
+        Normalize name for efficient searching and duplicate detection.
+        This handles Unicode variations (e.g., ü vs u, é vs e) and case differences.
+        """
         if not name:
             return ""
-        return name.lower().strip()
+
+        # Strip whitespace
+        name = name.strip()
+
+        # Normalize Unicode: NFD decomposes characters, then we remove diacritical marks
+        normalized = unicodedata.normalize("NFD", name)
+        # Remove diacritical marks (category 'Mn' = nonspacing marks)
+        ascii_name = "".join(
+            char for char in normalized if unicodedata.category(char) != "Mn"
+        )
+
+        # Convert to lowercase for case-insensitive comparison
+        return ascii_name.lower()
 
     def update_name(self, new_name):
         """Update organization name and normalized version"""

@@ -1,4 +1,5 @@
 """Command line functions for validating corpora"""
+
 from __future__ import annotations
 
 import os

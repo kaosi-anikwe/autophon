@@ -1,4 +1,5 @@
 """Multiprocessing functionality for VAD"""
+
 from __future__ import annotations
 
 import logging

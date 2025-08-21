@@ -52,9 +52,9 @@ class TeamResource(Resource):
                             member["bio"] = "<br><br>".join(
                                 [line.strip() for line in document[2:] if line.strip()]
                             )
-                            member[
-                                "image"
-                            ] = f"/api/v1/team-images?category={category_name}&member={member_id}"
+                            member["image"] = (
+                                f"/api/v1/team-images?category={category_name}&member={member_id}"
+                            )
                             category["members"].append(member)
                     except (IOError, UnicodeDecodeError) as e:
                         logger.warning(f"Could not read bio file for {member_id}: {e}")

@@ -1,4 +1,5 @@
 """Command line functions for adapting acoustic models to new data"""
+
 from __future__ import annotations
 
 import os

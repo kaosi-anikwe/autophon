@@ -338,9 +338,9 @@ class MultispeakerDictionaryMixin(TemporaryDictionaryMixin, metaclass=abc.ABCMet
                         phone_set_type=self.phone_set_type,
                         root_temp_directory=self.dictionary_output_directory,
                         position_dependent_phones=self.position_dependent_phones,
-                        clitic_marker=self.clitic_marker
-                        if self.clitic_marker is not None
-                        else "",
+                        clitic_marker=(
+                            self.clitic_marker if self.clitic_marker is not None else ""
+                        ),
                         default="default" in speakers,
                         use_g2p=False,
                         max_disambiguation_symbol=0,

@@ -1,4 +1,5 @@
 """Class definitions for training G2P models"""
+
 from __future__ import annotations
 
 import itertools

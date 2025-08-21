@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   ShieldCheck,
@@ -11,6 +11,8 @@ import {
   Search,
   Filter,
   UserMinus,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -18,31 +20,88 @@ import { AxiosError } from "axios";
 import { adminAPI } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
 import { useAppSelector } from "@/hooks/useAppDispatch";
-import type { AdminUser, UserActionRequest } from "@/types/api";
+import type {
+  AdminUser,
+  UserActionRequest,
+  PaginatedUsersResponse,
+} from "@/types/api";
 
 export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterVerified, setFilterVerified] = useState<
-    "all" | "verified" | "unverified"
-  >("all");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filterAdmin, setFilterAdmin] = useState<"all" | "admin" | "user">(
     "all"
   );
   const [filterDeleted, setFilterDeleted] = useState<
     "all" | "active" | "deleted"
   >("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(20);
   const queryClient = useQueryClient();
   const toast = useToast();
   const { user: currentUser } = useAppSelector((state) => state.auth);
 
+  // Debounce search term to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 750);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Convert filter states to API parameters
+  const getServerFilters = () => {
+    let include_deleted: boolean | undefined;
+    let admin_only: boolean | undefined;
+
+    // Convert filterDeleted to include_deleted parameter
+    if (filterDeleted === "deleted") {
+      include_deleted = true;
+    } else if (filterDeleted === "active") {
+      include_deleted = false;
+    }
+    // "all" means undefined (no filter)
+
+    // Convert filterAdmin to admin_only parameter
+    if (filterAdmin === "admin") {
+      admin_only = true;
+    } else if (filterAdmin === "user") {
+      admin_only = false;
+    }
+    // "all" means undefined (no filter)
+
+    return { include_deleted, admin_only };
+  };
+
+  const { include_deleted, admin_only } = getServerFilters();
+
   const {
-    data: users,
+    data: usersData,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["adminUsers"],
-    queryFn: adminAPI.getUsers,
+  } = useQuery<PaginatedUsersResponse>({
+    queryKey: [
+      "adminUsers",
+      currentPage,
+      perPage,
+      debouncedSearchTerm,
+      include_deleted,
+      admin_only,
+    ],
+    queryFn: () =>
+      adminAPI.getUsers(
+        currentPage,
+        perPage,
+        debouncedSearchTerm,
+        include_deleted,
+        admin_only
+      ),
   });
+
+  const users = usersData?.users || [];
+  const pagination = usersData?.pagination;
 
   const userActionMutation = useMutation({
     mutationFn: adminAPI.performUserAction,
@@ -95,41 +154,6 @@ export default function AdminUsers() {
 
   const isDeletedUser = (user: AdminUser) => user.email.includes("deleted.com");
 
-  const filteredUsers =
-    users?.filter((user) => {
-      const matchesSearch =
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.display_name.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesVerified =
-        filterVerified === "all" ||
-        (filterVerified === "verified" && user.verified) ||
-        (filterVerified === "unverified" && !user.verified);
-
-      const matchesAdmin =
-        filterAdmin === "all" ||
-        (filterAdmin === "admin" && user.admin) ||
-        (filterAdmin === "user" && !user.admin);
-
-      const matchesDeleted =
-        filterDeleted === "all" ||
-        (filterDeleted === "deleted" && isDeletedUser(user)) ||
-        (filterDeleted === "active" && !isDeletedUser(user));
-
-      return matchesSearch && matchesVerified && matchesAdmin && matchesDeleted;
-    }) || [];
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          <span className="text-lg">Loading users...</span>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -159,7 +183,9 @@ export default function AdminUsers() {
         <div className="flex items-center gap-2">
           <Users className="w-6 h-6 text-primary" />
           <span className="text-lg font-bold text-primary">
-            {filteredUsers.length} users
+            {pagination
+              ? `${pagination.total} total users`
+              : `${users.length} users`}
           </span>
         </div>
       </div>
@@ -189,11 +215,12 @@ export default function AdminUsers() {
                 <Filter className="w-4 h-4 text-base-content/50" />
                 <select
                   value={filterDeleted}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFilterDeleted(
                       e.target.value as "all" | "active" | "deleted"
-                    )
-                  }
+                    );
+                    setCurrentPage(1);
+                  }}
                   className="select select-bordered select-sm"
                 >
                   <option value="all">All Users</option>
@@ -202,30 +229,14 @@ export default function AdminUsers() {
                 </select>
               </div>
 
-              {/* Verified Filter */}
-              <div>
-                <select
-                  value={filterVerified}
-                  onChange={(e) =>
-                    setFilterVerified(
-                      e.target.value as "all" | "verified" | "unverified"
-                    )
-                  }
-                  className="select select-bordered select-sm"
-                >
-                  <option value="all">All Status</option>
-                  <option value="verified">Verified</option>
-                  <option value="unverified">Unverified</option>
-                </select>
-              </div>
-
               {/* Admin Filter */}
               <div>
                 <select
                   value={filterAdmin}
-                  onChange={(e) =>
-                    setFilterAdmin(e.target.value as "all" | "admin" | "user")
-                  }
+                  onChange={(e) => {
+                    setFilterAdmin(e.target.value as "all" | "admin" | "user");
+                    setCurrentPage(1);
+                  }}
                   className="select select-bordered select-sm"
                 >
                   <option value="all">All Roles</option>
@@ -238,232 +249,326 @@ export default function AdminUsers() {
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="card bg-base-100 shadow-lg border border-base-200">
-        <div className="overflow-x-auto">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Role</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((user) => {
-                const isDeleted = isDeletedUser(user);
-                const isCurrentUserRow = isCurrentUser(user);
+      {isLoading && (
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            <span className="text-lg">Loading users...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Pagination Controls & Per Page Selector */}
+      {!isLoading && pagination && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+          {/* Per Page Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-nowrap text-sm text-base-content/70">
+              Items per page:
+            </span>
+            <select
+              value={perPage}
+              onChange={(e) => {
+                setPerPage(parseInt(e.target.value));
+                setCurrentPage(1); // Reset to first page when changing per page
+              }}
+              className="select select-bordered select-sm"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+
+          {/* Pagination Info and Controls */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-base-content/70 sm:flex-row">
+              Showing {(currentPage - 1) * perPage + 1} to{" "}
+              {Math.min(currentPage * perPage, pagination.total)} of{" "}
+              {pagination.total} results
+            </span>
+
+            <div className="join">
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={!pagination.has_prev}
+                className="join-item btn btn-sm"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
+                let pageNum;
+                if (pagination.pages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= pagination.pages - 2) {
+                  pageNum = pagination.pages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
 
                 return (
-                  <tr
-                    key={user.id}
-                    className={`hover:bg-base-200/50 ${
-                      isCurrentUserRow
-                        ? "bg-primary/5 border-l-4 border-primary"
-                        : ""
-                    } ${isDeleted ? "opacity-60" : ""}`}
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`join-item btn btn-sm ${
+                      currentPage === pageNum ? "btn-active" : ""
+                    }`}
                   >
-                    {/* User Info */}
-                    <td>
-                      <div className="flex items-center gap-3">
-                        <div className="avatar placeholder">
-                          <div
-                            className={`${
-                              isDeleted
-                                ? "bg-transparent/20 text-error"
-                                : "bg-transparent text-neutral-content"
-                            } rounded-full w-12`}
-                          >
-                            <img
-                              src={`https://new.autophontest.se/api/v1/static/profile/${user?.uuid}`}
-                              alt={user.display_name}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-bold flex items-center gap-2">
-                            {user.display_name}
-                            {isCurrentUserRow && (
-                              <span className="badge badge-primary font-thin badge-sm">
-                                You
-                              </span>
-                            )}
-                            {isDeleted && (
-                              <span className="badge badge-error font-thin badge-sm flex items-center gap-1">
-                                <UserMinus className="w-3 h-3" />
-                                Deleted
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm opacity-50">
-                            {user.title || "No title"}
-                          </div>
-                          {user.org && (
-                            <div className="text-xs opacity-40">{user.org}</div>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Email */}
-                    <td>
-                      <span
-                        className={`font-mono text-sm ${
-                          isDeleted ? "line-through text-error" : ""
-                        }`}
-                      >
-                        {user.email}
-                      </span>
-                    </td>
-
-                    {/* Verification Status */}
-                    <td>
-                      {isDeleted ? (
-                        <div className="flex items-center gap-1 text-error">
-                          <UserMinus className="w-4 h-4" />
-                          <span className="text-sm font-medium">Deleted</span>
-                        </div>
-                      ) : user.verified ? (
-                        <div className="flex items-center gap-1 text-success">
-                          <CheckCircle className="w-4 h-4" />
-                          <span className="text-sm font-medium">Verified</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 text-warning">
-                          <XCircle className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            Unverified
-                          </span>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Admin Status */}
-                    <td>
-                      {user.admin ? (
-                        <div className="flex items-center gap-1 text-info">
-                          <Crown className="w-4 h-4" />
-                          <span className="text-sm font-medium">Admin</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 text-base-content/60">
-                          <Users className="w-4 h-4" />
-                          <span className="text-sm">User</span>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Created Date */}
-                    <td>
-                      <span className="text-sm">
-                        {formatDate(user.created_at)}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td>
-                      <div className="flex gap-1">
-                        {!isDeleted && (
-                          <>
-                            {/* Verify Button */}
-                            {!user.verified && (
-                              <div className="tooltip" data-tip="Verify User">
-                                <button
-                                  onClick={() =>
-                                    handleUserAction(user.email, "verify")
-                                  }
-                                  disabled={userActionMutation.isPending}
-                                  className="btn btn-success btn-xs"
-                                  title="Verify User"
-                                >
-                                  <ShieldCheck className="w-3 h-3" />
-                                </button>
-                              </div>
-                            )}
-
-                            {/* Make Admin Button */}
-                            {!user.admin && !isCurrentUserRow && (
-                              <div className="tooltip" data-tip="Make Admin">
-                                <button
-                                  onClick={() =>
-                                    handleUserAction(user.email, "make_admin")
-                                  }
-                                  disabled={userActionMutation.isPending}
-                                  className="btn btn-info btn-xs"
-                                  title="Make Admin"
-                                >
-                                  <Crown className="w-3 h-3" />
-                                </button>
-                              </div>
-                            )}
-
-                            {/* Block Button */}
-                            {!isCurrentUserRow && (
-                              <div className="tooltip" data-tip="Block User">
-                                <button
-                                  onClick={() =>
-                                    handleUserAction(user.email, "block")
-                                  }
-                                  disabled={userActionMutation.isPending}
-                                  className="btn btn-warning btn-xs"
-                                  title="Block User"
-                                >
-                                  <UserX className="w-3 h-3" />
-                                </button>
-                              </div>
-                            )}
-
-                            {/* Delete Button */}
-                            {!isCurrentUserRow && (
-                              <div className="tooltip" data-tip="Delete User">
-                                <button
-                                  onClick={() =>
-                                    handleUserAction(user.email, "delete")
-                                  }
-                                  disabled={userActionMutation.isPending}
-                                  className="btn btn-error btn-xs"
-                                  title="Delete User"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        )}
-
-                        {isDeleted && (
-                          <span className="text-xs text-error font-medium">
-                            No actions available
-                          </span>
-                        )}
-
-                        {/* Loading Indicator */}
-                        {userActionMutation.isPending && (
-                          <div className="flex items-center justify-center w-6">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
+                    {pageNum}
+                  </button>
                 );
               })}
-            </tbody>
-          </table>
 
-          {filteredUsers.length === 0 && (
-            <div className="text-center py-8">
-              <Users className="w-12 h-12 text-base-content/20 mx-auto mb-4" />
-              <p className="text-base-content/60">
-                No users found matching your criteria
-              </p>
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={!pagination.has_next}
+                className="join-item btn btn-sm"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Users Table */}
+      {!isLoading && users && (
+        <div className="card bg-base-100 shadow-lg border border-base-200">
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Role</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => {
+                  const isDeleted = isDeletedUser(user);
+                  const isCurrentUserRow = isCurrentUser(user);
+
+                  return (
+                    <tr
+                      key={user.id}
+                      className={`hover:bg-base-200/50 ${
+                        isCurrentUserRow
+                          ? "bg-primary/5 border-l-4 border-primary"
+                          : ""
+                      } ${isDeleted ? "opacity-60" : ""}`}
+                    >
+                      {/* User Info */}
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <div className="avatar placeholder">
+                            <div
+                              className={`${
+                                isDeleted
+                                  ? "bg-transparent/20 text-error"
+                                  : "bg-transparent text-neutral-content"
+                              } rounded-full w-12`}
+                            >
+                              <img
+                                src={`https://new.autophontest.se/api/v1/static/profile/${user?.uuid}`}
+                                alt={user.display_name}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="font-bold flex items-center gap-2">
+                              {user.display_name}
+                              {isCurrentUserRow && (
+                                <span className="badge badge-primary font-thin badge-sm">
+                                  You
+                                </span>
+                              )}
+                              {isDeleted && (
+                                <span className="badge badge-error font-thin badge-sm flex items-center gap-1">
+                                  <UserMinus className="w-3 h-3" />
+                                  Deleted
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-sm opacity-50">
+                              {user.title || "No title"}
+                            </div>
+                            {user.org && (
+                              <div className="text-xs opacity-40">
+                                {user.org}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Email */}
+                      <td>
+                        <span
+                          className={`font-mono text-sm ${
+                            isDeleted ? "line-through text-error" : ""
+                          }`}
+                        >
+                          {user.email}
+                        </span>
+                      </td>
+
+                      {/* Verification Status */}
+                      <td>
+                        {isDeleted ? (
+                          <div className="flex items-center gap-1 text-error">
+                            <UserMinus className="w-4 h-4" />
+                            <span className="text-sm font-medium">Deleted</span>
+                          </div>
+                        ) : user.verified ? (
+                          <div className="flex items-center gap-1 text-success">
+                            <CheckCircle className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              Verified
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-warning">
+                            <XCircle className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              Unverified
+                            </span>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Admin Status */}
+                      <td>
+                        {user.admin ? (
+                          <div className="flex items-center gap-1 text-info">
+                            <Crown className="w-4 h-4" />
+                            <span className="text-sm font-medium">Admin</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-base-content/60">
+                            <Users className="w-4 h-4" />
+                            <span className="text-sm">User</span>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Created Date */}
+                      <td>
+                        <span className="text-sm">
+                          {formatDate(user.created_at)}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td>
+                        <div className="flex gap-1">
+                          {!isDeleted && (
+                            <>
+                              {/* Verify Button */}
+                              {!user.verified && (
+                                <div className="tooltip" data-tip="Verify User">
+                                  <button
+                                    onClick={() =>
+                                      handleUserAction(user.email, "verify")
+                                    }
+                                    disabled={userActionMutation.isPending}
+                                    className="btn btn-success btn-xs"
+                                    title="Verify User"
+                                  >
+                                    <ShieldCheck className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* Make Admin Button */}
+                              {!user.admin && !isCurrentUserRow && (
+                                <div className="tooltip" data-tip="Make Admin">
+                                  <button
+                                    onClick={() =>
+                                      handleUserAction(user.email, "make_admin")
+                                    }
+                                    disabled={userActionMutation.isPending}
+                                    className="btn btn-info btn-xs"
+                                    title="Make Admin"
+                                  >
+                                    <Crown className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* Block Button */}
+                              {!isCurrentUserRow && (
+                                <div className="tooltip" data-tip="Block User">
+                                  <button
+                                    onClick={() =>
+                                      handleUserAction(user.email, "block")
+                                    }
+                                    disabled={userActionMutation.isPending}
+                                    className="btn btn-warning btn-xs"
+                                    title="Block User"
+                                  >
+                                    <UserX className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* Delete Button */}
+                              {!isCurrentUserRow && (
+                                <div className="tooltip" data-tip="Delete User">
+                                  <button
+                                    onClick={() =>
+                                      handleUserAction(user.email, "delete")
+                                    }
+                                    disabled={userActionMutation.isPending}
+                                    className="btn btn-error btn-xs"
+                                    title="Delete User"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              )}
+                            </>
+                          )}
+
+                          {isDeleted && (
+                            <span className="text-xs text-error font-medium">
+                              No actions available
+                            </span>
+                          )}
+
+                          {/* Loading Indicator */}
+                          {userActionMutation.isPending && (
+                            <div className="flex items-center justify-center w-6">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            {users.length === 0 && (
+              <div className="text-center py-8">
+                <Users className="w-12 h-12 text-base-content/20 mx-auto mb-4" />
+                <p className="text-base-content/60">
+                  No users found matching your criteria
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }
