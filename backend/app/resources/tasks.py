@@ -615,7 +615,7 @@ class TaskHistoryResource(Resource):
                 "task_count": totals_query.task_count or 0,
                 "file_count": int(totals_query.file_count or 0),
                 "total_size": float(totals_query.total_size or 0),
-                "total_words": totals_query.total_words or 0,
+                "total_words": float(totals_query.total_words or 0),
                 "language_counts": {
                     lang_name: count for lang_name, count in lang_counts
                 },

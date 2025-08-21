@@ -53,7 +53,7 @@ class User(db.Model, TimestampMixin, DatabaseHelperMixin):
     def profile_image(self, force=False):
         return generate_user_icon(
             f"{self.first_name} {self.last_name}", self.uuid, force
-        )
+        ) if not self.deleted else ""
 
     def revoke_all_tokens(self, reason="manual"):
         """Revoke all tokens for this user by updating the revocation timestamp"""

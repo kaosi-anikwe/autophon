@@ -366,23 +366,27 @@ const Aligner = memo(function Aligner({ title, homepage }: AlignerProps) {
         {/* Upload Progress */}
         {modalState.uploading && (
           <div className="my-4">
-            {/* File Upload Progress */}
-            <ProgressBar
-              title="Uploading files..."
-              progress={modalState.uploadProgress}
-            />
-
-            {/* Preprocessing Progress */}
-            {modalState.isPreprocessing && (
+            <div className="space-y-2">
+              {/* File Upload Progress */}
               <ProgressBar
-                title="Processing files..."
-                progress={parseInt(modalState.preprocessingProgress.toFixed(0))}
-                type="secondary"
+                title="Uploading files..."
+                progress={modalState.uploadProgress}
               />
-            )}
+
+              {/* Preprocessing Progress */}
+              {modalState.isPreprocessing && (
+                <ProgressBar
+                  title="Processing files..."
+                  progress={parseInt(
+                    modalState.preprocessingProgress.toFixed(0)
+                  )}
+                  type="secondary"
+                />
+              )}
+            </div>
 
             <div className="flex justify-between items-center mt-3">
-              <p className="text-xs text-base-content/30">
+              <p className="text-xs text-base-content/60">
                 {modalState.isPreprocessing
                   ? "Files are being processed on the server. This cannot be cancelled."
                   : "Please do not close this window during upload."}

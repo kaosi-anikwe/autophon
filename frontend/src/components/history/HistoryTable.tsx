@@ -30,7 +30,7 @@ export default function HistoryTable({
     };
 
     return (
-      <span className={`badge ${statusClasses[status]} text-xs`}>
+      <span className={`badge ${statusClasses[status]} text-xs w-1/2`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );

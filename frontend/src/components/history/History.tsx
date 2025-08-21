@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import HistoryTable from "./HistoryTable";
 import { api } from "@/lib/api";
-import type { Task, HistoryTotals } from "@/types/api";
+import { XCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import HistoryTable from "./HistoryTable";
 import { useToast } from "@/contexts/ToastContext";
+import type { Task, HistoryTotals } from "@/types/api";
 import { useAppSelector } from "@/hooks/useAppDispatch";
 
 // Generate years from current year back to 2000
@@ -37,9 +39,14 @@ export default function History() {
   const [selectedMonth, setSelectedMonth] = useState(currentMonthName);
   const toast = useToast();
   const { user } = useAppSelector((state) => state.auth);
+  const [shownError, setShownError] = useState(false);
 
   // Fetch history data when month or year changes
-  const { data: historyData, isLoading } = useQuery({
+  const {
+    data: historyData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["taskHistory", selectedYear, selectedMonth],
     queryFn: async (): Promise<{ results: Task[]; totals: HistoryTotals }> => {
       const response = await api.get("/tasks/history", {
@@ -51,6 +58,13 @@ export default function History() {
       return response.data;
     },
   });
+
+  useEffect(() => {
+    if (error && !shownError) {
+      toast.error("Failed to load dashboard data", "Error");
+      setShownError(true);
+    }
+  }, [error, toast]);
 
   const isCurrentMonth = () => {
     if (
@@ -94,6 +108,22 @@ export default function History() {
     link.click();
     document.body.removeChild(link);
   };
+
+  if (!historyData && !isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center">
+          <XCircle className="w-12 h-12 text-error mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">
+            Failed to Load History Table
+          </h2>
+          <p className="text-base-content/70">
+            Unable to retrieve history table. Please try again later
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">

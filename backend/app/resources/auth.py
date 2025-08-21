@@ -616,8 +616,6 @@ class VerifyEmail(Resource):
                 token, TokenType.EMAIL_VERIFICATION
             )
 
-            logger.info(f"VERIFICATIO TOKEN: {verification_token}")
-
             if not verification_token:
                 return {"message": "Invalid or expired verification token"}, 400
 
@@ -633,7 +631,6 @@ class VerifyEmail(Resource):
 
             # Mark email as verified
             user.verified = True
-            logger.info(f"USER: {user}")
             user.update()
 
             # Mark token as used

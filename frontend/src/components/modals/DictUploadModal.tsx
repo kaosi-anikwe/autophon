@@ -160,13 +160,16 @@ export function DictUploadModal({
         )}
 
         <div className="flex justify-end space-x-2">
-          <button onClick={handleClose} className="btn btn-ghost bg-base-200">
+          <button
+            onClick={handleClose}
+            className="btn btn-ghost font-thin bg-base-200"
+          >
             Cancel
           </button>
           <button
             onClick={confirmFileUpload}
             disabled={!uploadedContent}
-            className="btn btn-neutral"
+            className="btn btn-neutral font-thin"
           >
             <FileText className="w-4 h-4 mr-2" />
             {uploadMode === "append"

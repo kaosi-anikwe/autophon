@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app import create_app
 from app.extensions import db
+from app.models.engine import Engine
+from app.models.language import Language
 from app.models.user import User
 from app.models.task import Task, TaskStatus, TaskFile, TaskFileName, FileType
 from app.utils.logger import get_logger
@@ -171,7 +173,7 @@ class ProductionDataLoader:
                     "org": user_data.get("org"),
                     "industry": user_data.get("industry"),
                     "admin": user_data.get("admin", False),
-                    "deleted": user_data.get("deleted", ""),
+                    "deleted": user_data.get("deleted", "") or None,
                     "password_hash": user_data.get(
                         "password", ""
                     ),  # Note: keeping existing hash
@@ -329,6 +331,15 @@ class ProductionDataLoader:
                 aligned = self.parse_mongo_date(task_data.get("aligned"))
                 if aligned:
                     task_fields["aligned"] = aligned
+
+                # Handle Language and engine relationships
+                language = Language.query.filter_by(code=task_lang).first()
+                if language:
+                    task_fields["lang_id"] = language.id
+
+                engine = Engine.query.filter_by(code=task_lang.split("_")[1]).first()
+                if engine:
+                    task_fields["engine_id"] = engine.id
 
                 if dry_run:
                     logger.info(
