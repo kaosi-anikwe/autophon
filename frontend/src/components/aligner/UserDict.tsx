@@ -243,7 +243,7 @@ export default function UserDict({ user }: UserDictProps) {
 
   // Load languages on component mount
   const { data: allLanguagesResponse, error: allLanguagesError } = useQuery({
-    queryKey: ["homepage-languages"],
+    queryKey: ["dict-languages"],
     queryFn: languagesAPI.getDictLanguages,
     staleTime: 10 * 60 * 1000, // 10 minutes - languages don't change frequently
     retry: 2,

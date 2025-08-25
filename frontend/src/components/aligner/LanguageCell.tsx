@@ -99,6 +99,7 @@ export default function LanguageCell({
 
   const isDisabled =
     task.task_status === "completed" ||
+    task.task_status === "failed" ||
     task.task_status === "uploading" ||
     task.pre_error ||
     isChangingLanguage;

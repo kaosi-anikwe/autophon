@@ -41,6 +41,7 @@ export default function LoginForm({ onForgotPasswordClick }: LoginFormProps) {
   }, [error, errorShown, toast]);
 
   const onSubmit = async (data: LoginFormData) => {
+    setErrorShown(false);
     dispatch(login(data));
   };
 
