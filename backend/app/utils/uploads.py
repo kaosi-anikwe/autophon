@@ -87,11 +87,8 @@ def delete_folders(folder_path: str, search_str: str) -> None:
 
 
 def processTextGridNew(
-    textgrid, missing_path, missing_dict_path, user_id, lang=None, dictionary_cache=None
+    textgrid, missing_path, missing_dict_path, user_id, lang=None
 ):
-    """Optimized version with dictionary caching and reduced I/O"""
-    if dictionary_cache is None:
-        dictionary_cache = {}
 
     suggested = False
     multitier = False
@@ -109,40 +106,34 @@ def processTextGridNew(
         logger.info(f"Sample text: {sample_text}")
         lang = predict_lang(sample_text.strip(), textgrid)
 
-    # load known words (with caching)
+    # load known words
     logger.info(f"LANG: {lang}")
-    cache_key_known = f"known_{lang}"
-    if cache_key_known not in dictionary_cache:
-        try:
-            with open(f"{ADMIN}/{lang}/{lang}.json", "r", encoding="utf-8") as f:
-                dictionary_cache[cache_key_known] = json.load(f)
-            logger.info("known words loaded and cached")
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            logger.error(f"Failed to load known words for {lang}: {e}")
-            dictionary_cache[cache_key_known] = {}
-    known_words = dictionary_cache[cache_key_known]
+    try:
+        with open(f"{ADMIN}/{lang}/{lang}.json", "r", encoding="utf-8") as f:
+            known_words = json.load(f)
+        logger.info("known words loaded")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Failed to load known words for {lang}: {e}")
+        known_words = {}
 
-    # load user words (with caching)
+    # load user words
     user_words = None
     user_dict_path = os.path.join(UPLOADS, str(user_id), "dic", f"{lang}.json")
-    cache_key_user = f"user_{user_id}_{lang}"
 
-    if cache_key_user not in dictionary_cache:
-        if os.path.exists(user_dict_path):
-            try:
-                with open(user_dict_path, "r", encoding="utf-8") as f:
-                    content = f.read().strip()
-                    if content:
-                        dictionary_cache[cache_key_user] = json.loads(content)
-                        logger.info("user words loaded and cached")
-                    else:
-                        dictionary_cache[cache_key_user] = None
-            except (json.JSONDecodeError, FileNotFoundError) as e:
-                logger.warning(f"Failed to load user dictionary: {e}")
-                dictionary_cache[cache_key_user] = None
-        else:
-            dictionary_cache[cache_key_user] = None
-    user_words = dictionary_cache[cache_key_user]
+    if os.path.exists(user_dict_path):
+        try:
+            with open(user_dict_path, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    user_words = json.loads(content)
+                    logger.info("user words loaded")
+                else:
+                    user_words = None
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            logger.warning(f"Failed to load user dictionary: {e}")
+            user_words = None
+    else:
+        user_words = None
 
     # check if multitier
     if len(textgrid.tiers) > 1:
@@ -535,9 +526,6 @@ def uploaderOps(
     suggested = False
     n_tiers = 0
 
-    # Cache for loaded dictionaries to avoid repeated file I/O
-    dictionary_cache = {}
-
     # Batch tracking for database operations
     task_files_to_insert = []
     task_filenames_to_insert = []
@@ -615,7 +603,6 @@ def uploaderOps(
                         missing_path,
                         missing_dict_path,
                         user_id=user_id,
-                        dictionary_cache=dictionary_cache,
                     )
                     multitier = processed["multitier"]
                     n_tiers += processed["n_tiers"]
@@ -772,7 +759,6 @@ def uploaderOps(
                         missing_dict_path,
                         user_id,
                         lang,
-                        dictionary_cache=dictionary_cache,
                     )
                     # save textgrid
                     textgrid_object.save(

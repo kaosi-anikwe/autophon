@@ -639,7 +639,7 @@ class VerifyEmail(Resource):
             logger.info(
                 f"Email verification successful for user: {user.email} (ID: {user.id})"
             )
-            return {"message": "Email verified successfully"}, 200
+            return {"success": True, "message": "Email verified successfully"}, 200
 
         except Exception as e:
             log_exception(logger, f"Email verification failed: {str(e)}")
